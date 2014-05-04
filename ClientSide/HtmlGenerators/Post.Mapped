@@ -1,0 +1,283 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Web.UI;
+using System.Data.Linq.Mapping;
+using PushPost.ClientSide.HtmlGenerators.Embedded;
+
+namespace PushPost.ClientSide.HtmlGenerators
+{
+    [Table(Name = "Posts")]
+    abstract public class Post
+    {
+        protected Guid _PostID;
+        [Column(IsPrimaryKey=true, Storage="_PostID")]
+        public Guid PostID 
+        {
+            get
+            {
+                if (_PostID == null || _PostID.Equals(Guid.Empty))
+                    _PostID = new Guid(GetHashCode());
+                return _PostID;
+            }
+            protected set
+            {
+                _PostID = value;
+            }
+        }
+
+        [Column]
+        public string Title;
+        [Column]
+        public string Author;
+        [Column]
+        public string MainText;
+        public List<Footer> Footers; // have their own table
+        [Column]
+        public DateTime Timestamp;
+        public List<IResource> Resources; // shorthand isn't saved in the database, don't need the resource links.
+        public List<Tag> Tags; // have their own table       
+        [Column]
+        public string _Category; // HACK set this back to private -- debugging only
+        public Post_Types.NavCategory Category
+        {
+            get 
+            { 
+                return Post_Types.NavCategory.Parse(_Category); 
+            }
+            set
+            {
+                _Category = value.ToString();
+            }
+        }
+
+
+        protected string HeaderClass;
+        protected string FooterClass;
+
+        protected int PreviewLength;
+
+        /// <summary>
+        /// Generates HTML markup for this post. 
+        /// </summary>
+        public virtual string GenerateHTML()
+        {
+            StringWriter buffer = new StringWriter();
+            using(HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            {
+                RenderHeader(writer);
+
+                writer.Write(writer.NewLine); // single line spacing
+
+                RenderBody(writer);
+
+                writer.Write(writer.NewLine); // single line spacing
+
+                RenderFooter(writer);
+
+                writer.Write(writer.NewLine + writer.NewLine); // double line spacing
+
+                RenderComments(writer);
+
+                writer.Write(writer.NewLine + writer.NewLine + writer.NewLine + writer.NewLine); // quad line spacing
+            }
+
+            return buffer.ToString();
+        }
+
+        /// <summary>
+        /// Generates a preview of the post containing title, author, date and an excerpt of the 
+        /// first paragraph.
+        /// </summary>
+        public virtual string GeneratePreview()
+        {
+            StringWriter buffer = new StringWriter();
+            using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            {
+                RenderHeader(writer);
+                writer.Write(writer.NewLine);
+
+                if (MainText.Length < PreviewLength)
+                    PreviewLength = MainText.Length;
+
+                // Throw an image at the top from the Resources list (if present)
+                foreach(IResource resource in Resources)
+                {
+                    if(resource is Image)
+                    {
+                        writer.Write(resource.CreateHTML());
+                        break;
+                    }
+                }
+
+                string preview = ResourceManager.RemoveReferences(MainText.Substring(0, PreviewLength)); // grab the first x characters
+
+                writer.Write(preview);
+            }
+
+            return buffer.ToString();
+        }
+
+        abstract protected void RenderHeader(HtmlTextWriter w);
+        abstract protected void RenderBody(HtmlTextWriter w);
+        abstract protected void RenderFooter(HtmlTextWriter w);
+        abstract protected void RenderComments(HtmlTextWriter w);
+        //abstract public Post Concrete();
+
+        public virtual string ParsedMainText
+        {
+            get
+            {
+                if (MainText.Equals(string.Empty))
+                    return string.Empty;
+
+                return ResourceManager.ExpandReferences(MainText, Resources);
+            }
+        }
+
+        public virtual List<string> ParsedFooters
+        {
+            get
+            {
+                List<string> parsed = new List<string>();
+
+                foreach(Footer footer in Footers)
+                {
+                    parsed.Add(footer.CreateHTML());
+                }
+
+                return parsed;
+
+                /*
+                List<string> parsed = new List<string>();
+
+                for (int i = 0; i < Footers.Count; i++)
+                {
+                    if (Footers[i].Equals(string.Empty))
+                        parsed.Add(string.Empty);
+
+                    parsed.Add(ResourceManager.ExpandReferences((Footers[i]), Resources));
+                }
+
+                return parsed;
+                */
+            }
+        }
+
+        public virtual byte[] GetHashCode()
+        {
+            System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+
+            byte[] title_block = Encoding.Default.GetBytes(this.Title);
+            byte[] authr_block = Encoding.Default.GetBytes(this.Author);
+            byte[] maint_block = Encoding.Default.GetBytes(this.MainText);
+            byte[] times_block = BitConverter.GetBytes(Timestamp.Ticks);
+
+            md5.TransformBlock(title_block, 0, title_block.Length, title_block, 0);
+            md5.TransformBlock(authr_block, 0, authr_block.Length, authr_block, 0);
+            md5.TransformBlock(maint_block, 0, maint_block.Length, maint_block, 0);
+            md5.TransformFinalBlock(times_block, 0, times_block.Length);
+
+            return md5.Hash;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder s = new StringBuilder();
+            // TODO build a nice string representation for Post
+            return s.ToString();
+        }
+
+        public virtual void AddTag(string tag)
+        {
+            Tags.Add(new Tag(this.PostID, tag));
+        }
+
+        public virtual void AddTags(string[] tags)
+        {
+            foreach (string tag in tags)
+                Tags.Add(new Tag(this.PostID, tag));
+        }
+
+        public Post()
+        {
+            Title = string.Empty;
+            Timestamp = DateTime.MinValue;
+            Author = string.Empty;
+            Category = Post_Types.NavCategory.None;
+            MainText = string.Empty;
+
+            Footers = new List<Embedded.Footer>();
+            Resources = new List<Embedded.IResource>();
+            Tags = new List<Embedded.Tag>();
+
+            HeaderClass = "post-title";
+            FooterClass = "footer";
+            PreviewLength = 250;
+        }
+
+        #region Deprecated shorthand-parsing
+        /*
+        protected virtual string ParseText(string text)
+        {
+            return ParseText(text, true);
+        }
+
+        protected virtual string RemoveResources(string text)
+        {
+            return ParseText(text, false);
+        }
+
+        protected virtual string ParseText(string text, bool insert)
+        {
+            string parsed = text;
+
+            // replace occurrences of +@(ResourceName) with HTML markup for the resource
+            for (int i = 0; i < parsed.Length; i++)
+            {
+                if (parsed[i].Equals('+') && i < parsed.Length - 2)
+                {
+                    int replaceIndex = i;
+                    if (parsed[++i].Equals('@') && parsed[++i].Equals('('))
+                    {
+                        string resource = string.Empty;
+                        while (!parsed[++i].Equals(')'))
+                            resource += parsed[i];
+
+                        parsed = parsed.Remove(replaceIndex, i - replaceIndex + 1); // get rid of the shorthand
+                        if(insert)
+                            parsed = parsed.Insert(replaceIndex, GetResource(resource).CreateHTML()); // insert the full HTML
+                    }
+                }
+            }
+
+            return parsed;
+        }
+
+        protected virtual int NextResourceIndex(string text)
+        {
+
+        }
+
+        protected virtual List<string> ResourceNames(string text)
+        {
+
+        }
+
+        private IResource GetResource(string resourceName)
+        {
+            foreach(IResource r in this.Resources)
+            {
+                if (r.Name.Equals(resourceName))
+                    return r;
+            }
+
+            return null;
+        }
+        */
+        #endregion
+    }
+}
