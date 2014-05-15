@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web.UI;
+using System.Linq;
 using System.Collections.Generic;
 using PushPost.ClientSide.HtmlGenerators.PostTypes;
 using System.Text;
@@ -49,16 +50,24 @@ namespace PushPost.ClientSide.HtmlGenerators
             CurrentPageIndex = currentIndex;
             DisplayLinksNum = 9; // default to showing links to 9 pages
 
-            if ((CurrentPageIndex > Links.Count) || (CurrentPageIndex < 1))
-                throw new ArgumentException("currentIndex is out of range.");
         }
+
+        /// <summary>
+        /// Constructs a new Breadcrumbs generator object with no links, and therefor no navigation
+        /// will be generated until the Links list is populated.
+        /// </summary>
+        public Breadcrumbs() : this(new List<string>(), 1) { }
                 
-        /// <returns>Returns a string containing the rendered HTML for Breadcrumbs generated from 
-        /// the "Links" list. </returns>
+        /// <returns>
+        /// Returns a string containing the rendered HTML for Breadcrumbs generated from 
+        /// the "Links" list. 
+        /// </returns>
         public string Create()
         {
             if (Links.Count < 1 || DisplayLinksNum < 1)
                 return string.Empty; // No links means no navigation neccessary
+            if ((CurrentPageIndex > Links.Count) || (CurrentPageIndex < 1))
+                throw new ArgumentException("CurrentIndex is outside the range of Links list.");
 
             int leftNum    = (int)Math.Floor((DisplayLinksNum - 1) / 2d);
             int rightNum   = DisplayLinksNum - leftNum - 1;
@@ -117,6 +126,21 @@ namespace PushPost.ClientSide.HtmlGenerators
 
                 return buffer.ToString();
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Breadcrumbs))
+                return false;
+
+            Breadcrumbs b = (Breadcrumbs)obj;
+
+            return
+            (
+                (this.Links.Except(b.Links).Count() == 0)         && 
+                 this.CurrentPageIndex.Equals(b.CurrentPageIndex) &&
+                 this.DisplayLinksNum.Equals(b.DisplayLinksNum)
+            );
         }
 
         public static string TestHarness()

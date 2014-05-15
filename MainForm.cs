@@ -25,7 +25,7 @@ namespace PushPost
 
             //ClientSide.Database.DatabaseTestHarness.TestRead();
 
-            this.TestHarnessBox.Text = PushPost.ClientSide.HtmlGenerators.Breadcrumbs.TestHarness();
+            this.TestHarnessBox.Text = PushPost.ClientSide.HtmlGenerators.Page.TestHarness();
         }
     }
 }

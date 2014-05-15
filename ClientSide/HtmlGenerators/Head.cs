@@ -14,13 +14,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
-        public List<string> Stylesheets
-        {
-            get;
-            set;
-        }
-
-        public List<string> FontURLs
+        public List<string> HypertextReferences
         {
             get;
             set;
@@ -31,14 +25,9 @@ namespace PushPost.ClientSide.HtmlGenerators
             this.Title = title;
         }
 
-        public Head(string title, List<string> stylesheets):this(title)
+        public Head(string title, List<string> hypertextReferences):this(title)
         {
-            this.Stylesheets = stylesheets;
-        }
-
-        public Head(string title, List<string> stylesheets, List<string> fonts):this(title, stylesheets)
-        {
-            this.FontURLs = fonts;
+            this.HypertextReferences = hypertextReferences;
         }
 
         public string Create()
@@ -49,14 +38,26 @@ namespace PushPost.ClientSide.HtmlGenerators
             build.AppendLine(@"<head>");
             build.AppendLine("\t<title>" + this.Title + @"</title>");
 
-            foreach (string font in this.FontURLs)
-                build.AppendLine("<link href='" + font + "' rel='stylesheet' type='text/css'>");
-            foreach (string stylesheet in this.Stylesheets)
-                build.AppendLine("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + stylesheet + "\"/>");
+            foreach (string font in this.HypertextReferences)
+                build.AppendLine("<link href='" + font + "' rel='stylesheet' type='text/css'/>");
 
             build.Append("</head>");
 
             return build.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Head))
+                return false;
+
+            Head b = (Head)obj;
+
+            return
+            (
+                this.Title.Equals(b.Title)                            &&
+               (this.HypertextReferences.Except(b.HypertextReferences).Count() == 0 )       
+            );
         }
     }
 }

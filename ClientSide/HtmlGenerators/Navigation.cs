@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Text;
+using System.Linq;
 using System.Web.UI;
 using System.Collections.Generic;
 using PushPost.ClientSide.HtmlGenerators.PostTypes;
@@ -39,7 +41,11 @@ namespace PushPost.ClientSide.HtmlGenerators
         {
             this.Categories = categories;
         }
-
+        
+        /// <returns>
+        /// Returns a string containing the rendered HTML for Navigation generated from 
+        /// the list of Categories. 
+        /// </returns>
         public string Create()
         {
             using (StringWriter buffer = new StringWriter())
@@ -55,6 +61,7 @@ namespace PushPost.ClientSide.HtmlGenerators
 
                         writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-links");
                         writer.RenderBeginTag(HtmlTextWriterTag.Div);
+                        writer.WriteLine(string.Empty);
                             for(int i = 0; i < Categories.Count; i++)
                             {
                                 writer.AddAttribute(HtmlTextWriterAttribute.Href, Categories[i].MainPageURL);
@@ -63,13 +70,14 @@ namespace PushPost.ClientSide.HtmlGenerators
                                 writer.RenderBeginTag(HtmlTextWriterTag.A);
                                     writer.Write(Categories[i].Category.ToUpper());
                                 writer.RenderEndTag();
-
+                                writer.WriteLine(string.Empty);
                                 if(i < (Categories.Count - 1)) // there's still another category to be added
                                 {
                                     writer.AddAttribute(HtmlTextWriterAttribute.Class, "spacer");
                                     writer.RenderBeginTag(HtmlTextWriterTag.A);
                                         writer.Write("+");
                                     writer.RenderEndTag();
+                                    writer.WriteLine(string.Empty);
                                 }
                             }
                         writer.RenderEndTag();
@@ -78,6 +86,36 @@ namespace PushPost.ClientSide.HtmlGenerators
 
                 return buffer.ToString();
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Navigation))
+                return false;
+
+            Navigation b = (Navigation)obj;
+
+            return
+            (
+                (this.Categories.Except(b.Categories).Count() == 0) &&
+                 this.CurrentCategory.Equals(b.CurrentCategory)
+            );
+        }
+
+        public static string TestHarness()
+        {
+            StringBuilder build = new StringBuilder();
+
+            Navigation n1 = new Navigation();
+            Navigation n2 = new Navigation(NavCategory.Photography);
+
+            build.AppendLine("Default constructor: ");
+            build.AppendLine(n1.Create());
+            build.AppendLine(string.Empty);
+            build.AppendLine("Set category to photography: ");
+            build.AppendLine(n2.Create());
+
+            return build.ToString();
         }
     }
 }

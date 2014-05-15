@@ -178,80 +178,19 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         public Post()
         {
-            Title = string.Empty;
-            Timestamp = DateTime.MinValue;
-            Author = string.Empty;
-            Category = PostTypes.NavCategory.None;
-            MainText = string.Empty;
+            Title       = string.Empty;
+            Author      = string.Empty;
+            MainText    = string.Empty;
+            Timestamp   = DateTime.MinValue;
+            Category    = PostTypes.NavCategory.None;
 
-            Footers = new List<Embedded.Footer>();
-            Resources = new List<Embedded.IResource>();
-            Tags = new List<Embedded.Tag>();
+            Footers     = new List<Embedded.Footer>();
+            Resources   = new List<Embedded.IResource>();
+            Tags        = new List<Embedded.Tag>();
 
             HeaderClass = "post-title";
             FooterClass = "footer";
             PreviewLength = 250;
         }
-
-        #region Deprecated shorthand-parsing
-        /*
-        protected virtual string ParseText(string text)
-        {
-            return ParseText(text, true);
-        }
-
-        protected virtual string RemoveResources(string text)
-        {
-            return ParseText(text, false);
-        }
-
-        protected virtual string ParseText(string text, bool insert)
-        {
-            string parsed = text;
-
-            // replace occurrences of +@(ResourceName) with HTML markup for the resource
-            for (int i = 0; i < parsed.Length; i++)
-            {
-                if (parsed[i].Equals('+') && i < parsed.Length - 2)
-                {
-                    int replaceIndex = i;
-                    if (parsed[++i].Equals('@') && parsed[++i].Equals('('))
-                    {
-                        string resource = string.Empty;
-                        while (!parsed[++i].Equals(')'))
-                            resource += parsed[i];
-
-                        parsed = parsed.Remove(replaceIndex, i - replaceIndex + 1); // get rid of the shorthand
-                        if(insert)
-                            parsed = parsed.Insert(replaceIndex, GetResource(resource).CreateHTML()); // insert the full HTML
-                    }
-                }
-            }
-
-            return parsed;
-        }
-
-        protected virtual int NextResourceIndex(string text)
-        {
-
-        }
-
-        protected virtual List<string> ResourceNames(string text)
-        {
-
-        }
-
-        private IResource GetResource(string resourceName)
-        {
-            foreach(IResource r in this.Resources)
-            {
-                if (r.Name.Equals(resourceName))
-                    return r;
-            }
-
-            return null;
-        }
-        */
-        #endregion
     }
 }

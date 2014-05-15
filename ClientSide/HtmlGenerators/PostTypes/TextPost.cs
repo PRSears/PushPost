@@ -111,6 +111,8 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 
         protected override void RenderBody(HtmlTextWriter w)
         {
+            // TODO FIX first letter of over posts' body getting ignored
+
             using(StringReader reader = new StringReader(this.ParsedMainText))
             {
                 string line;
@@ -139,38 +141,12 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
                 w.WriteLine(string.Empty);
                 w.WriteLine(footer);
             }
-            /*
-            foreach(string footer in this.ParsedFooters)
-            {
-                w.AddAttribute(HtmlTextWriterAttribute.Class, FooterClass);
-                w.RenderBeginTag(HtmlTextWriterTag.P);
-                w.Write(footer);
-                w.RenderEndTag();
-            }
-            */
         }
 
         protected override void RenderComments(HtmlTextWriter w)
         {
             w.WriteComment(" ********* End of post: " + Title + " ********* ");
         }
-
-        //public override Post Concrete()
-        //{
-        //    Post con = base();
-
-        //    con.Title = this.Title;
-        //    con.Author = this.Author;
-        //    con.MainText = this.MainText;
-        //    con.Timestamp = this.Timestamp;
-        //    con.Category = this.Category;
-
-        //    con.Footers = this.Footers;
-        //    con.Resources = this.Resources;
-        //    con.Tags = this.Tags;
-
-        //    return con;
-        //}
 
         public static string TestHarness()
         {

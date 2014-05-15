@@ -28,7 +28,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
         public static NavCategory Blog { get { return new NavCategory("blog"); } }
         public static NavCategory None { get { return new NavCategory("none"); } }
 
-        public static NavCategory[] AllCategories = { Photography, Code, Contact, Blog, None };
+        public static NavCategory[] AllCategories = { Photography, Code, Contact, Blog };
 
         private NavCategory(string category)
         {
