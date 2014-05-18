@@ -37,6 +37,15 @@ namespace PushPost.ClientSide.HtmlGenerators
             get;
             set;
         }
+        
+        /// <summary>
+        /// Optional additional text to be rendered below the navigation links.
+        /// </summary>
+        public string Copyright
+        {
+            get;
+            set;
+        }
                 
         /// <summary>
         /// Constructs a new Breadcrumbs generator object.
@@ -44,19 +53,19 @@ namespace PushPost.ClientSide.HtmlGenerators
         /// <param name="links">List of URLS pointing to the pages to be included in the breadcrumb traversal links.</param>
         /// <param name="currentIndex">One based index representing the place in the "Links" list the current page occupies.
         /// This is the same as the page number.</param>
-        public Breadcrumbs(List<string> links, int currentIndex)
+        public Breadcrumbs(List<string> links, int currentIndex, string copyright = "")
         {
-            Links = links;
-            CurrentPageIndex = currentIndex;
-            DisplayLinksNum = 9; // default to showing links to 9 pages
-
+            Links               = links;
+            CurrentPageIndex    = currentIndex;
+            DisplayLinksNum     = 9;            // default to showing links to 9 pages
+            Copyright           = copyright;
         }
 
         /// <summary>
         /// Constructs a new Breadcrumbs generator object with no links, and therefor no navigation
         /// will be generated until the Links list is populated.
         /// </summary>
-        public Breadcrumbs() : this(new List<string>(), 1) { }
+        public Breadcrumbs(string copyright = "") : this(new List<string>(), 1, copyright) { }
                 
         /// <returns>
         /// Returns a string containing the rendered HTML for Breadcrumbs generated from 
@@ -91,35 +100,45 @@ namespace PushPost.ClientSide.HtmlGenerators
             using (StringWriter buffer = new StringWriter())
             using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-bar-bottom");
+                writer.AddAttribute(HtmlTextWriterAttribute.Id, "primary-column");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                    writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-links");
+                    if(this.Copyright != "")
+                    {
+                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "copyright");
+                        writer.RenderBeginTag(HtmlTextWriterTag.Div);
+                            writer.Write(this.Copyright);
+                        writer.RenderEndTag();
+                    }
+                    writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-bar-bottom");
                     writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                    if (CurrentPageIndex > 1)
-                    {
-                        writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[CurrentPageIndex - 1]);
-                        writer.RenderBeginTag(HtmlTextWriterTag.A);
-                            writer.Write(" < Prev > ");
-                        writer.RenderEndTag();
-                        writer.WriteLine(string.Empty);
-                    }
-                    for (int i = firstIndex; i <= finalIndex; i++)
-                    {
-                        writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[i]);
-                        if (i == CurrentPageIndex) writer.AddAttribute(HtmlTextWriterAttribute.Style, "font-weight:bold"); // bold the current page
-                        writer.RenderBeginTag(HtmlTextWriterTag.A);
-                            writer.Write(i);
-                        writer.RenderEndTag();
-                        writer.WriteLine(string.Empty);
-                    }
-                    if(CurrentPageIndex < Links.Count)
-                    {
-                        writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[CurrentPageIndex + 1]);
-                        writer.RenderBeginTag(HtmlTextWriterTag.A);
-                            writer.Write(" < Next > ");
+                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-links");
+                        writer.RenderBeginTag(HtmlTextWriterTag.Div);
+                        if (CurrentPageIndex > 1)
+                        {
+                            writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[CurrentPageIndex - 1]);
+                            writer.RenderBeginTag(HtmlTextWriterTag.A);
+                                writer.Write(" < Prev > ");
                             writer.RenderEndTag();
                             writer.WriteLine(string.Empty);
-                    }
+                        }
+                        for (int i = firstIndex; i <= finalIndex; i++)
+                        {
+                            writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[i]);
+                            if (i == CurrentPageIndex) writer.AddAttribute(HtmlTextWriterAttribute.Style, "font-weight:bold"); // bold the current page
+                            writer.RenderBeginTag(HtmlTextWriterTag.A);
+                                writer.Write(i);
+                            writer.RenderEndTag();
+                            writer.WriteLine(string.Empty);
+                        }
+                        if(CurrentPageIndex < Links.Count)
+                        {
+                            writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[CurrentPageIndex + 1]);
+                            writer.RenderBeginTag(HtmlTextWriterTag.A);
+                                writer.Write(" < Next > ");
+                                writer.RenderEndTag();
+                                writer.WriteLine(string.Empty);
+                        }
+                        writer.RenderEndTag();
                     writer.RenderEndTag();
                 writer.RenderEndTag();
 

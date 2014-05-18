@@ -12,9 +12,6 @@ namespace PushPost.ClientSide.HtmlGenerators
 {
     public class PageBuilder
     {
-        // Contain properties pertaining to the generation of upper/lower navs, headers
-        // and any other data needed to render a page.
-
         public List<Post> Posts
         {
             get;
@@ -37,9 +34,9 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         public PageBuilder()
         {
-            this.Posts = new List<Post>();
-            this.PostsPerPage = 10;
-            this.Hrefs = new List<string>();
+            this.PostsPerPage   = 10;
+            this.Hrefs          = new List<string>();
+            this.Posts          = new List<Post>();
         }
         #region constructor overloads
         public PageBuilder(List<Post> posts)
@@ -102,7 +99,6 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         protected virtual List<Page> GeneratePhotographyPages(Queue<Post> posts)
         {
-
             throw new NotImplementedException();
         }
 
@@ -114,10 +110,38 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         protected virtual List<Page> GenerateBlogPages(Queue<Post> posts)
         {
+            Int16 requiredPages = (Int16)Math.Ceiling((double)(posts.Count() / this.PostsPerPage));
+            List<Page> generatedPages = new List<Page>();
 
-            throw new NotImplementedException();
+            for (int pageI = 0; pageI < requiredPages; pageI++)
+            {
+                List<Post> p = new List<Post>();
+                while(p.Count < this.PostsPerPage)
+                {
+                    p.Add(posts.Dequeue());
+                }
+
+                generatedPages.Add(
+                    new Page
+                    (
+                        new Head("Blog (p" + pageI + ")", this.Hrefs),
+                        new Navigation(NavCategory.Blog),
+                        new Breadcrumbs(null, pageI), // TODO replace null with the neccessary links
+                        p
+                    ));
+            }
+
+            return generatedPages;
         }
 
+        // THOUGHT maybe page generation should be something like GeneratePages(NavCategory cat) { ... }
+        //         More code could be reused
+
+        /// <summary>
+        /// Generates the appropriate html files for the given posts. 
+        /// Override this method to add support for more categories.
+        /// </summary>
+        /// <returns>List<Page> generated pages.</returns>
         protected virtual List<Page> GenerateGenericPages(Queue<Post> posts)
         {
 

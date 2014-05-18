@@ -55,7 +55,7 @@ namespace PushPost.ClientSide.HtmlGenerators
 
             return
             (
-                this.Title.Equals(b.Title)                            &&
+                this.Title.Equals(b.Title) &&
                (this.HypertextReferences.Except(b.HypertextReferences).Count() == 0 )       
             );
         }

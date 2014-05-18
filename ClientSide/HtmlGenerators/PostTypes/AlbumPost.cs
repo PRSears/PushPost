@@ -14,6 +14,8 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
     {
         protected string AlbumClass;
 
+        // TODO_ Inherit from TextPost? Would reduce code duplication in headers and footers
+
         public AlbumPost(string title, string author)
         {
             Title = title;
@@ -62,7 +64,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
                     w.Write(ResourceManager.RemoveReferences(line));
                     w.RenderEndTag();
 
-                    if(nextResource is Image)
+                    if(nextResource is InlineImage)
                         w.Write(nextResource.CreateHTML());
 
                     w.RenderEndTag();
@@ -97,8 +99,8 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             testAlbum.MainText = "picture description #1 +@(img1)\n" + 
                                  "picture description #2 +@(img2)\n";
 
-            testAlbum.Resources.Add(new Image("img1", @"c:\img1.jpg"));
-            testAlbum.Resources.Add(new Image("img2", @"c:\img2.jpg"));
+            testAlbum.Resources.Add(new InlineImage("img1", @"c:\img1.jpg"));
+            testAlbum.Resources.Add(new InlineImage("img2", @"c:\img2.jpg"));
 
             return testAlbum.Create();
         }

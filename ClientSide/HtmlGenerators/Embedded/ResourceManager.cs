@@ -36,9 +36,10 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             return resource;
         }
 
+        // TODO_ Implement ResourceManager.NextResource()
         public static IResource NextResource(string text, List<IResource> resources)
         {
-            return GetResourceByName(NextResourceName(text), resources);
+            throw new NotImplementedException();
         }
 
         public static List<string> GetResourceNames(string text)
@@ -76,18 +77,18 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             while ((n = NextIndex(remainingText)) > 0) // skip to next reference
             {                
                 reference = string.Empty;
-                int i = n;
-                while(!remainingText[++i].Equals(')')) // walk through each character after n until we reach the close bracket
-                    reference += remainingText[i];
+                int i = n + 1;
+                while(!remainingText[i].Equals(')')) // walk through each character after n until we reach the close bracket
+                    reference += remainingText[i++];
 
                 parsed += remainingText.Substring(0, n - 2);
-                if (expand)
+                if (expand && resources.Count > 0)
                     parsed += GetResourceByName(reference, resources).CreateHTML();
 
-                remainingText = remainingText.Substring(i++);
+                remainingText = remainingText.Substring(i + 1); // chop off everything BEFORE the final ')'
             }
 
-            return parsed + remainingText.Substring(1); // append any leftover text, starting after the last ')'
+            return parsed + remainingText;
         }
 
         public static IResource GetResourceByName(string resourceName, List<IResource> resources)

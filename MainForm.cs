@@ -5,9 +5,13 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PushPost.ClientSide.HtmlGenerators.PostTypes;
+using PushPost.ClientSide.HtmlGenerators.Embedded;
+using TidyManaged;
+using System.IO;
 
 namespace PushPost
 {
@@ -25,7 +29,10 @@ namespace PushPost
 
             //ClientSide.Database.DatabaseTestHarness.TestRead();
 
-            this.TestHarnessBox.Text = PushPost.ClientSide.HtmlGenerators.Page.TestHarness();
+            using(StreamWriter buffer = File.CreateText("generated_page.html"))
+            {
+                buffer.Write(ClientSide.HtmlGenerators.Page.TestHarness());
+            }
         }
     }
 }

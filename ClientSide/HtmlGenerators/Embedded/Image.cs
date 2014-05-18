@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
-    public class Image : IResource
+    public class InlineImage : IResource
     {
-        public Image(string name, string imagePath)
+        public InlineImage(string name, string imagePath)
         {
             Name = name;
             Value = imagePath;

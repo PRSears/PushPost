@@ -1,0 +1,118 @@
+body {
+   background: #003a58
+}
+
+h1 {
+  font-size: 1.7em;
+  font-style: italic;
+  border-bottom: 1px dotted black;
+  padding-left: 10px;
+}
+
+img {
+   position: center;
+   border: 2px dotted #999999;
+   width: 400px;
+   height: auto;
+   display: block;
+   margin: .5em auto .4em auto;
+}
+
+
+#logo {
+  background: #fbfad6 url(../images/logo.jpg) no-repeat;
+  width: 244px;
+  height: 78px;
+  position: relative;
+  top: -204px;
+  left: -55px;
+}
+
+#mainColBackground {
+  background: #f2f2f2 url(../images/bg_tile.jpg);
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 15%;
+  right: 15%;
+}
+
+#mainCol {
+  position: absolute;
+  font-size: 1.05em;
+  top: 0px;
+  left: 15%;
+  right: 15%;
+  padding: 204px 55px 25px 55px;
+}
+
+#shout {
+  background-color: #2b88c2;
+  color: white;
+  opacity: 0.66;
+  font-size: 1.6em;
+  position: absolute;
+  top: 79px;
+  left: 13%;
+  right: 13%;
+  height: 140px;
+  padding: 3% 5% 0px;
+}
+
+#shout a {
+  color: white;
+  text-decoration: none;
+}
+
+#shout a:hover {
+  text-decoration: underline;
+}
+
+.nav{
+list-style-type: none;
+margin: 5px 0;
+padding: 0;
+width: 141px;
+position: fixed;
+top: 275px;
+right: 80%;
+text-align: right;
+}
+
+.nav li a{
+background: white url(../images/nav_grad_light.jpg) repeat-y;
+color: grey;
+display: block;
+width: auto;
+padding: 5px 15px 5px 0px;
+padding-left: 10px;
+text-decoration: none;
+}
+
+.nav li a:visited, .nav li a:active{
+color: grey;
+}
+
+.nav li a:hover{
+color: white;
+background: url(../images/nav_grad_dark.jpg) repeat-y;
+}
+
+#shadowLeft {
+  position: fixed;
+  top: 0px;
+  right: 85%;
+  width: 20px;
+  height: 100%;
+  background: url(../images/shadow_left.jpg) repeat-y;
+}
+
+#shadowRight {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 85%;
+  width: 20px;
+  height: 100%;
+  background: url(../images/shadow_right.jpg) repeat-y;
+}

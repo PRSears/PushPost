@@ -250,7 +250,7 @@ namespace PushPost.ClientSide.Database
             build.AppendLine(this.Author);
             build.AppendLine(this.PostCategory);
             build.AppendLine(this.MainText);
-			// TODO include footers & tags & cleanup formatting
+			// TODO_ include footers & tags & cleanup formatting
             build.AppendLine("-/- PostTableLayer -/-");
 
             return build.ToString();

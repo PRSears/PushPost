@@ -34,8 +34,11 @@ namespace PushPost.ClientSide.HtmlGenerators
         public List<Tag> Tags;      
         public PostTypes.NavCategory Category;
 
+        public bool IncludePostEndComments;
+
         protected string HeaderClass;
         protected string FooterClass;
+        // Add properties for the rest of the required css classes 
 
         protected int PreviewLength;
 
@@ -48,20 +51,9 @@ namespace PushPost.ClientSide.HtmlGenerators
             using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
                 RenderHeader(writer);
-
-                writer.Write(writer.NewLine); // single line spacing
-
                 RenderBody(writer);
-
-                writer.Write(writer.NewLine); // single line spacing
-
                 RenderFooter(writer);
-
-                writer.Write(writer.NewLine + writer.NewLine); // double line spacing
-
                 RenderComments(writer);
-
-                writer.Write(writer.NewLine + writer.NewLine + writer.NewLine + writer.NewLine); // quad line spacing
 
                 return buffer.ToString();
             }
@@ -86,7 +78,7 @@ namespace PushPost.ClientSide.HtmlGenerators
                 // Throw an image at the top from the Resources list (if present)
                 foreach(IResource resource in Resources)
                 {
-                    if(resource is Image)
+                    if(resource is InlineImage)
                     {
                         writer.Write(resource.CreateHTML());
                         break;
@@ -154,7 +146,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             build.AppendLine(this.Author);
             build.AppendLine(this.Category.ToString());
             build.AppendLine(this.MainText);
-            // TODO include footers & tags & cleanup formatting
+            // TODO_ include footers & tags & cleanup formatting
             build.AppendLine("-/- Post -/-");
 
             return build.ToString();
@@ -188,9 +180,10 @@ namespace PushPost.ClientSide.HtmlGenerators
             Resources   = new List<Embedded.IResource>();
             Tags        = new List<Embedded.Tag>();
 
-            HeaderClass = "post-title";
-            FooterClass = "footer";
-            PreviewLength = 250;
+            HeaderClass             = "post-title";
+            FooterClass             = "footer";
+            PreviewLength           = 250;
+            IncludePostEndComments  = true;
         }
     }
 }

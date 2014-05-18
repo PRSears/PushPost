@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.UI;
+using TidyManaged;
 using System.Text;
 using System.Linq;
 using System.IO;
@@ -32,6 +33,18 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
+        public string DoctypeString
+        {
+            get;
+            set;
+        }
+
+        public string FinalComment
+        {
+            get;
+            set;
+        }
+        
         public Head Header
         {
             get;
@@ -56,12 +69,25 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
-        public Page(string title)
+        public string PrimaryColumnID
         {
+            get;
+            set;
+        }
+
+        public Page
+            (
+                string title, 
+                string doctypeString = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"
+            )
+        {
+            DoctypeString   = doctypeString;
             Header          = new Head(title);
             UpperNavigation = new Navigation();
             LowerNavigation = new Breadcrumbs();
             Posts           = new List<Post>();
+            PrimaryColumnID = "primary-column"; // TODO remove hard-coded string
+            FinalComment    = "This page was generated automatically by PushPost.";
         }
         #region Constructor overloads
         public Page(Head header):this(header.Title)
@@ -98,11 +124,13 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         #endregion
 
-        public virtual string Create() // TODO FIX tabbing on pre-generated html when it's entered into the body/head in the Page
+        public virtual string Create()
         {
-            using(StringWriter buffer = new StringWriter())
-            using(HtmlTextWriter w = new HtmlTextWriter(buffer))
+            using (StringWriter buffer = new StringWriter())
+            using (HtmlTextWriter w = new HtmlTextWriter(buffer))
             {
+                w.WriteLine(DoctypeString);
+
                 // <html>
                 w.RenderBeginTag(HtmlTextWriterTag.Html);
 
@@ -112,15 +140,32 @@ namespace PushPost.ClientSide.HtmlGenerators
                 // <body>
                 w.RenderBeginTag(HtmlTextWriterTag.Body);
                     w.WriteLine(this.UpperNavigation.Create());
-                    foreach (Post post in this.Posts) w.WriteLine(post.Create());
+                    w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
+                    w.RenderBeginTag(HtmlTextWriterTag.Div);
+                        foreach (Post post in this.Posts) w.WriteLine(post.Create());
+                    w.RenderEndTag();
                     w.WriteLine(this.LowerNavigation.Create());
-                w.RenderEndTag(); 
+                w.RenderEndTag();
                 // </body>
 
                 w.RenderEndTag();
                 // </html>
 
-                return buffer.ToString();
+                w.WriteComment(FinalComment);
+
+                using (Document formatter = Document.FromString(buffer.ToString()))
+                {
+                    formatter.ShowWarnings = false;
+                    formatter.Quiet = true;
+                    formatter.OutputHtml = true;
+                    formatter.IndentSpaces = 4;
+                    formatter.WrapAt = 116;
+                    formatter.AddVerticalSpace = true;
+                    formatter.IndentBlockElements = AutoBool.Yes;
+                    formatter.CleanAndRepair();
+
+                    return formatter.Save();
+                }
             }
         }
 
@@ -154,11 +199,11 @@ namespace PushPost.ClientSide.HtmlGenerators
 
             Head t1_Head = new Head("Test Page 01", hypertextReferences);
             Navigation upNav = new Navigation(PostTypes.NavCategory.Blog);
-            Breadcrumbs loNav = new Breadcrumbs(links, 1);
+            Breadcrumbs loNav = new Breadcrumbs(links, 1, "(C) Patrick Sears 2014");
 
             List<Post> testPosts = new List<Post>();
             for (int i = 0; i < 11; i++)
-                testPosts.Add(new PostTypes.TextPost(t1_Head.Title, DateTime.Now.AddDays(i), "Patrick Sears", "Post #" + i.ToString("D2") + "\nBlog post!\nAnother paragraph!\n\nHoly shit!!"));
+                testPosts.Add(new PostTypes.TextPost(i.ToString("D2") + " Post", DateTime.Now.AddDays(i), "Patrick Sears", "Post #" + i.ToString("D2") + "\nBlog post!\nAnother paragraph!\n\nHoly shit!!+@(Test)"));
 
             Page tp = new Page(t1_Head, upNav, loNav, testPosts);
 

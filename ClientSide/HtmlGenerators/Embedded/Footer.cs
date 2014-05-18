@@ -59,7 +59,7 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
         public string CreateHTML(List<IResource> resources)
         {
             // TODO Double check that this is expanding correctly
-            return "<p class=\"" + this.Class + "\">" + ResourceManager.ExpandReferences(Value, resources) + @"</p>"; 
+            return "<p class=\"" + this.Class + "\">" + ResourceManager.ExpandReferences(Value, resources) + "</p>"; 
         }
 
         public Footer()

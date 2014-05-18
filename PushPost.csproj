@@ -50,6 +50,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TidyManaged">
+      <HintPath>..\..\TidyManaged\bin\Release\TidyManaged.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Database\Archiver.cs" />
@@ -112,6 +115,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="S3\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClientSide\_TestHTML\css\styles.css" />
+    <Content Include="ClientSide\_TestHTML\todo.html" />
+    <Content Include="libtidy.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
