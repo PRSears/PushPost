@@ -8,6 +8,10 @@ using System;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <summary>
+    /// Abstract class representing a single post, which will become part
+    /// of a Page.
+    /// </summary>
     abstract public class Post
     {
         protected Guid _PostID;
@@ -15,8 +19,9 @@ namespace PushPost.ClientSide.HtmlGenerators
         {
             get
             {
+                // HACK forces an ID to get created if it doesn't exist.
                 if (_PostID == null || _PostID.Equals(Guid.Empty))
-                    _PostID = new Guid(GetHashData());
+                    _PostID = new Guid(GetHashData()); 
                 return _PostID;
             }
             protected set
@@ -38,8 +43,12 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         protected string HeaderClass;
         protected string FooterClass;
-        // Add properties for the rest of the required css classes 
+        // TODO Add properties for the rest of the required css classes 
 
+        /// <summary>
+        /// Number of character from the MainText to include in the posts' 
+        /// preview.
+        /// </summary>
         protected int PreviewLength;
 
         /// <summary>

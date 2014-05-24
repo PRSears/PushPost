@@ -56,7 +56,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
                 string line;
                 while((line = reader.ReadLine()) != null)
                 {
-                    IResource nextResource = ResourceManager.GetResourceByName(ResourceManager.NextResourceName(line), Resources);
+                    IResource nextResource = ResourceManager.GetResourceByName(ResourceManager.FirstResourceName(line), Resources);
 
                     w.RenderBeginTag(HtmlTextWriterTag.Li);
                     w.RenderBeginTag(HtmlTextWriterTag.P);

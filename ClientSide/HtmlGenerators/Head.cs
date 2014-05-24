@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <summary>
+    /// Stores data pertaining to the generation of HTML for the Head
+    /// section of a page.
+    /// </summary>
     public class Head
     {
         public string Title
@@ -30,6 +34,11 @@ namespace PushPost.ClientSide.HtmlGenerators
             this.HypertextReferences = hypertextReferences;
         }
 
+        /// <summary>
+        /// Generates full HTML for the Head section of a webpage with data
+        /// contained in this object. 
+        /// </summary>
+        /// <returns>Full HTML representation of this object.</returns>
         public string Create()
         {
             // HACK should use HtmlTextWriter instead of this abomination

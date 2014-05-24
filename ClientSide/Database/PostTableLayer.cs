@@ -8,6 +8,13 @@ using System;
 
 namespace PushPost.ClientSide.Database
 {
+    /// <summary>
+    /// This class acts as an intermediary between any implementations of
+    /// the abstract Post class and Linq to SQL functions.  
+    /// 
+    /// Handles converting between objects that LINQ can use to manipulate the 
+    /// database, and the concrete implementations of Post.
+    /// </summary>
     [Table(Name = "Posts")]
     public class PostTableLayer : IStorable
     {
