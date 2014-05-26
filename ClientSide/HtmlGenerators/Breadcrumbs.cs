@@ -8,6 +8,10 @@ using System.Text;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <remarks>
+    /// Class used for storing data relevent to lower navigational links ("breadcrumbs"),
+    /// and functions to render them to HTML.
+    /// </remarks>
     public class Breadcrumbs
     {
         /// <summary>

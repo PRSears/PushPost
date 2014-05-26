@@ -10,6 +10,11 @@ using PushPost.ClientSide.HtmlGenerators.PostTypes;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <remarks>
+    /// Class containing functions for rendering and saving one or more
+    /// HTML files (pages) - automatically deciding on where the posts
+    /// should be split up.
+    /// </remarks>
     public class PageBuilder
     {
         public List<Post> Posts
@@ -24,6 +29,14 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
+        /// <summary>
+        /// List of hypertext references to include in the Page's header.
+        /// Any stylesheets, fonts, or other resources should be added to this list.
+        /// 
+        /// Each string in this list need only include the actual ref.
+        /// <example>If you want the HTML to render as <code><link href='stylesheet.css' rel='stylesheet' type='text/css' /></code>
+        /// you should only include stylesheet.css</example>.
+        /// </summary>
         public List<string> Hrefs
         {
             get;
@@ -148,18 +161,6 @@ namespace PushPost.ClientSide.HtmlGenerators
             throw new NotImplementedException();
         }
 
-        [Obsolete]
-        protected int CategoryInList(List<Queue<Post>> postLists, NavCategory category)
-        {
-            for(int i = 0; i < postLists.Count; i++)
-            {
-                if (postLists[i].Peek().Category.Equals(category))
-                    return i;
-            }
-
-            return -1;
-        }
-
         /// <summary>
         /// Saves the most recently generated Pages (generated when this.CreatePages() is called)
         /// out to an HTML file.
@@ -193,7 +194,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             catch(Exception e)
             {
                 Console.WriteLine("Failed to save pages to " + outDirectoryPath);
-                Console.WriteLine(Extender.Exceptions.Debug.Create(e, true));
+                Console.WriteLine(Extender.Exceptions.Debug.CreateExceptionText(e, true));
 
                 return false;
             }

@@ -69,6 +69,10 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
+        /// <summary>
+        /// Html div ID to apply to the primary column of this page. (Where all page content
+        /// will appear).
+        /// </summary>
         public string PrimaryColumnID
         {
             get;
@@ -86,7 +90,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             UpperNavigation = new Navigation();
             LowerNavigation = new Breadcrumbs();
             Posts           = new List<Post>();
-            PrimaryColumnID = "primary-column"; // TODO remove hard-coded string
+            PrimaryColumnID = "primary-column"; // TODO remove hard-coded string(s)
             FinalComment    = "This page was generated automatically by PushPost.";
         }
         #region Constructor overloads
@@ -124,6 +128,10 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         #endregion
 
+        /// <summary>
+        /// Uses HtmlTextWriter to render this page with the content supplied by the it's properties.
+        /// </summary>
+        /// <returns>String containing all of this page's HTML.</returns>
         public virtual string Create()
         {
             using (StringWriter buffer = new StringWriter())

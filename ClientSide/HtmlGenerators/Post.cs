@@ -15,6 +15,9 @@ namespace PushPost.ClientSide.HtmlGenerators
     abstract public class Post
     {
         protected Guid _PostID;
+        /// <summary>
+        /// Guid generated from the hash of this Post's properties.
+        /// </summary>
         public Guid UniqueID 
         {
             get
@@ -29,16 +32,44 @@ namespace PushPost.ClientSide.HtmlGenerators
                 _PostID = value;
             }
         }
-
+        /// <summary>
+        /// Title of the post.
+        /// </summary>
         public string Title;
+        /// <summary>
+        /// Post's author/
+        /// </summary>
         public string Author;
+        /// <summary>
+        /// The main (body) text contained within the post.
+        /// </summary>
         public string MainText;
+        /// <summary>
+        /// List of any footnotes contained within the post.
+        /// </summary>
         public List<Footer> Footers; 
+        /// <summary>
+        /// DateTime object representing the Post's creation time.
+        /// </summary>
         public DateTime Timestamp;
+        /// <summary>
+        /// List of any embedded IResource objects referenced by markup 
+        /// for the post. 
+        /// </summary>
         public List<IResource> Resources; 
+        /// <summary>
+        /// List of tags (categories/topics/etc) associated with this Post.
+        /// </summary>
         public List<Tag> Tags;      
+        /// <summary>
+        /// Which site-category this Post is posted under.
+        /// </summary>
         public PostTypes.NavCategory Category;
 
+        /// <summary>
+        /// Boolean switch to include/disclude HTML comments below the post
+        /// as a separator.
+        /// </summary>
         public bool IncludePostEndComments;
 
         protected string HeaderClass;

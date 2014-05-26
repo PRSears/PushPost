@@ -195,8 +195,8 @@ img {
 	/*
 	border-top: 1px solid #757575;	
 	color: white;
-    display: inline-block;
-    display: -moz-inline-box;
+	display: inline-block;
+	display: -moz-inline-box;
 	*/
 }
 
@@ -232,7 +232,7 @@ a.current:hover {
 
 
 .prettyprint {
-    margin-top: 15px;
+	margin-top: 15px;
 	margin-left: 50px;
 	margin-right: 50px;
 	font-size: 75%;

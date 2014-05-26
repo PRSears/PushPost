@@ -8,6 +8,10 @@ using System.Web.UI;
 
 namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 {
+    /// <remarks>
+    /// Concrete implementation of Post containing methods to generate HTML
+    /// for a single text post.
+    /// </remarks>
     public partial class TextPost : Post
     {
         public TextPost()
@@ -21,14 +25,6 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             Title = title;
             Timestamp = timestamp;
             Author = author;
-
-            //Footers = new List<Embedded.Footer>();
-            //Resources = new List<Embedded.IResource>();
-            //Tags = new List<Embedded.Tag>();
-
-            //HeaderClass = "post-title";
-            //FooterClass = "footer";
-            //PreviewLength = 250;
         }
 
         public TextPost(string title, DateTime timestamp, string author, string body)
@@ -36,72 +32,6 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
         {
             MainText = body;
         }
-
-        #region deprecated Create override
-        /*
-        public override string Create()
-        {
-            if (!this.MainText.Equals(string.Empty))
-                this.ParseMainText();
-        
-            StringWriter buffer = new StringWriter();
-
-            using(HtmlTextWriter w = new HtmlTextWriter(buffer))
-            {
-                // --- Header ---
-                w.AddAttribute(HtmlTextWriterAttribute.Headers, HeaderClass);
-                w.RenderBeginTag(HtmlTextWriterTag.H1);
-
-                w.Write(this.Title);
-
-                w.RenderEndTag();
-
-                // --- Post body ---
-                using(StringReader reader = new StringReader(this.MainText))
-                {
-                    string line;
-                    while((line = reader.ReadLine()) != null)
-                    {
-                        w.Write(w.NewLine);
-
-                        // Prepend line with '\' to include tag as written (embed as code)
-                        if(line.StartsWith("<img"))
-                        {
-                            w.Write(line);
-                            continue;
-                        }
-
-                        w.RenderBeginTag(HtmlTextWriterTag.P);
-                        w.Write(line);
-                        w.RenderEndTag();
-                    }
-                }
-
-                // --- Footers --- 
-                foreach(string footer in this.Footers)
-                {
-                    using(StringReader reader = new StringReader(footer))
-                    {
-                        w.Write(w.NewLine);
-                        w.AddAttribute(HtmlTextWriterAttribute.Class, "footer");
-                        w.RenderBeginTag(HtmlTextWriterTag.P);
-
-                        w.Write(footer);
-
-                        w.RenderEndTag();
-                    }
-                }
-
-                // --- Post End ---
-                w.Write(w.NewLine + w.NewLine);
-                w.WriteComment(" ********* End of post: " + Title + " ********* ");
-                w.Write(w.NewLine + w.NewLine + w.NewLine + w.NewLine);
-            }
-
-            return buffer.ToString();
-        }
-         */
-        #endregion
 
         // TODO Move all hard-coded class strings into properties of the Post class
         protected override void RenderHeader(HtmlTextWriter w)

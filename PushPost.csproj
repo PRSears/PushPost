@@ -21,8 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\PushPost.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,7 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientSide\Database\Archiver.cs" />
+    <Compile Include="ClientSide\Database\Archives.cs" />
     <Compile Include="ClientSide\Database\DatabaseTestHarness.cs" />
     <Compile Include="ClientSide\Database\IStorable.cs" />
     <Compile Include="ClientSide\Database\PostsDataContext.cs" />

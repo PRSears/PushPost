@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
-    /// <summary>
+    /// <remarks>
     /// A helper class made up of static methods to handle expanding the markup
     /// from a post into HTML for any IResource implemntation. 
     /// 
     /// A reference to an IResource object should be of the form: 
     /// +@(resource_name).
-    /// </summary>
+    /// </remarks>
     public static class ResourceManager
     {
         /// <summary>
@@ -139,14 +139,15 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             {                
                 reference = string.Empty;
                 int i = n + 1;
-                while(!remainingText[i].Equals(')')) // walk through each character after n until we reach the close bracket
+                // walk through each character after n until we reach the close bracket
+                while(!remainingText[i].Equals(')')) 
                     reference += remainingText[i++];
 
                 parsed += remainingText.Substring(0, n - 2);
                 if (expand && resources.Count > 0)
                     parsed += GetResourceByName(reference, resources).CreateHTML();
-
-                remainingText = remainingText.Substring(i + 1); // chop off everything BEFORE the final ')'
+                // chop off everything BEFORE the final ')'
+                remainingText = remainingText.Substring(i + 1); 
             }
 
             return parsed + remainingText;

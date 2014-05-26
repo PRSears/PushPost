@@ -7,10 +7,16 @@ using System.Data.Linq.Mapping;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
+    /// <remarks>
+    /// IResource implementation for creating HTML of a footer embedded in a post.
+    /// </remarks>
     [Table(Name = "Footnotes")]
     public class Footer : IResource, Database.IStorable
     {
         private Guid _UID;
+        /// <summary>
+        /// Gets a Guid based on the hashed properties of this Footer.
+        /// </summary>
         [Column(IsPrimaryKey=true, Storage="_UID")]
         public Guid UniqueID
         {
@@ -23,6 +29,9 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             }
         }
 
+        /// <summary>
+        /// Parent Post's Guid.
+        /// </summary>
         [Column]
         public Guid PostID
         {
@@ -30,12 +39,18 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             set;
         }
 
+        /// <summary>
+        /// Name of the reference for markup.
+        /// </summary>
         public string Name
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Full text (including any HTML) contained in this footer.
+        /// </summary>
         [Column]
         public string Value
         {
@@ -43,6 +58,9 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             set;
         }
 
+        /// <summary>
+        /// The class name for the div this footer is enclosed in.
+        /// </summary>
         public string Class
         {
             get;
@@ -51,11 +69,21 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
 
         private DateTime CreationTime;
 
+        /// <summary>
+        /// Renders the HTML for a footer that does NOT contain any IResource references.
+        /// </summary>
+        /// <returns>The generated HTML as a string.</returns>
         public string CreateHTML()
         {
             return this.CreateHTML(null);
         }
 
+        /// <summary>
+        /// Generates the HTML for this footnote.
+        /// </summary>
+        /// <param name="resources">List of any IResource objects that may be embedded in 
+        /// this footer through a reference.</param>
+        /// <returns>The rendered HTML for this footnote, in one string.</returns>
         public string CreateHTML(List<IResource> resources)
         {
             // TODO Double check that this is expanding correctly
@@ -105,7 +133,10 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             return md5.Hash;
         }
 
-
+        /// <summary>
+        /// Generates a byte array from an MD5 hash of this footer's properties.
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetHashData()
         {
             List<byte[]> blocks = new List<byte[]>();

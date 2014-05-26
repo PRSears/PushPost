@@ -7,14 +7,25 @@ using PushPost.ClientSide.HtmlGenerators.PostTypes;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <remarks>
+    /// Class to contain data pertaining to upper navigational links,
+    /// and functions to render them to HTML.
+    /// </remarks>
     public class Navigation
     {
+        /// <summary>
+        /// List of Categories to include in the navigation links.
+        /// </summary>
         public List<PostTypes.NavCategory> Categories
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// The category link to highlight in order to indicate the parent Page's 
+        /// Navigation Category.
+        /// </summary>
         public PostTypes.NavCategory CurrentCategory
         {
             get;
@@ -27,16 +38,30 @@ namespace PushPost.ClientSide.HtmlGenerators
             CurrentCategory = PostTypes.NavCategory.Contact; 
         }
 
+        /// <param name="currentCategory">
+        /// The category link to highlight in order to indicate the parent Page's 
+        /// Navigation Category.
+        /// </param>
         public Navigation(NavCategory currentCategory):this()
         {
             CurrentCategory = currentCategory;
         }
 
+        /// <param name="categories">
+        /// List of Categories to include in the navigation links.
+        /// </param>
         public Navigation(List<PostTypes.NavCategory> categories):this()
         {
             this.Categories = categories;
         }
 
+        /// <param name="categories">
+        /// List of Categories to include in the navigation links.
+        /// </param>
+        /// <param name="currentCategory">
+        /// The category link to highlight in order to indicate the parent Page's 
+        /// Navigation Category.
+        /// </param>
         public Navigation(List<NavCategory> categories, NavCategory currentCategory):this(currentCategory)
         {
             this.Categories = categories;
