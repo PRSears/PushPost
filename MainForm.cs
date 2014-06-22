@@ -24,11 +24,24 @@ namespace PushPost
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //ClientSide.Database.DatabaseTestHarness.TestWrites();
-            //System.Threading.Thread.Sleep(2000);
+            TestPageBuilder();
+        }
 
-            //ClientSide.Database.DatabaseTestHarness.TestRead();
+        private void TestPageBuilder()
+        {
+            ClientSide.HtmlGenerators.PageBuilder.TestHarness();
+        }
 
+        private void TestDB()
+        {
+            ClientSide.Database.DatabaseTestHarness.TestWrites();
+            System.Threading.Thread.Sleep(2000);
+
+            ClientSide.Database.DatabaseTestHarness.TestRead();
+        }
+
+        private void TestPage()
+        {
             using(StreamWriter buffer = File.CreateText("generated_page.html"))
             {
                 buffer.Write(ClientSide.HtmlGenerators.Page.TestHarness());

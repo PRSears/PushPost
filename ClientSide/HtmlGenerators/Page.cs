@@ -8,29 +8,23 @@ using System;
 
 namespace PushPost.ClientSide.HtmlGenerators
 {
+    /// <remarks>
+    /// Class to store data relating to a single page for the website. 
+    /// Contains methods to generate a page's HTML, and static methods to 
+    /// determine page titles and filenames.
+    /// </remarks>
     public class Page
-    {        
-        // TODO make a "Page" class that will hold the actual HTML (like my post class) --
-        //      and use an interface for classes to generate sets of pages. A "PageGenerator" should
-        //      be able to sort and group a set of posts and generate appropriate page(s') HTML.
-        //
-        // Perhaps instead of an IPageGenerator interface, there should just be a fully implemented 
-        // PageGenerator class that takes a list of Post objects - and determines the correct category
-        // from the Posts - then generates the appropriate list of pages for those posts.
-        //
-        // This has the problem that if I later want to add more categories the PageGenerator class 
-        // would need to be modified, instead of simply creating a new implementation of the interface.
-        //      - or just extend +/ override relevent members? Although all the PageGenerator would do
-        //        is generate the pages with a Generate() function, so overriding that would essentially 
-        //        be re-writing the entire object.
-        //
-        // PageGenerator should do a Ceiling(Posts.Count / 10) to get neccessary number of pages 
-        // and generate lower breadcrumbs based on that.
-
+    {
         public int PageNumber
         {
-            get;
-            set;
+            get
+            {
+                return this.LowerNavigation.CurrentPageIndex;
+            }
+            set
+            {
+                this.LowerNavigation.CurrentPageIndex = value;
+            }
         }
 
         public string Title
@@ -61,7 +55,7 @@ namespace PushPost.ClientSide.HtmlGenerators
         /// <returns>Returns a filename of the format: <example>blog_0001.html</example></returns>
         public static string GenerateFilename(PostTypes.NavCategory category, int pageNumber)
         {
-            return string.Format("{0}_{1}.html", category.ToString(), pageNumber.ToString("D4"));
+            return string.Format("{0}_p{1}.html", category.ToString(), pageNumber.ToString("D4"));
         }
 
         /// <summary>
@@ -72,7 +66,7 @@ namespace PushPost.ClientSide.HtmlGenerators
         /// <returns>Return a title of the format: <example>Blog (page 1)</example></returns>
         public static string GenerateTitle(PostTypes.NavCategory category, int pageNumber)
         {
-            return string.Format("{0} (page {1})", category.ToTitleString(), pageNumber);
+            return string.Format("{0} - page {1}", category.ToTitleString(), pageNumber);
         }
 
         public PostTypes.NavCategory PageCategory

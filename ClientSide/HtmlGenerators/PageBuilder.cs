@@ -120,7 +120,7 @@ namespace PushPost.ClientSide.HtmlGenerators
                     newPosts.Add(posts.Dequeue());
                 }
 
-                generatedPages[pageI] = new Page
+                generatedPages[pageI - 1] = new Page
                     (
                         new Head(Page.GenerateTitle(category, pageI), this.Hrefs),
                         new Navigation(category),
@@ -180,6 +180,22 @@ namespace PushPost.ClientSide.HtmlGenerators
             }
 
             return true;
+        }
+
+        public static void TestHarness()
+        {
+            List<Post> posts = new List<Post>();
+            for(int i = 0; i < 30; i++)
+            {
+                posts.Add(TextPost.Dummy());
+            }
+
+            string[] refs = { "css/styles.css", "css/gallery.css", "http://fonts.googleapis.com/css?family=Open+Sans:300" };
+
+            PageBuilder build = new PageBuilder(posts, refs.ToList(), 10);
+
+            build.CreatePages();
+            build.SavePages(@"E:\code\GitHub\PushPost\bin\Debug\testhtml");
         }
     }
 }

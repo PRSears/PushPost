@@ -21,6 +21,8 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
 
         public void Convert(System.Drawing.Imaging.ImageFormat newFormat)
         {
+            // TODO implement ClientSide.Images to handle conversion, resizing, 
+            //      collage creation, etc.
             throw new NotImplementedException();
         }
 

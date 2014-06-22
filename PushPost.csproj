@@ -114,9 +114,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ClientSide\Images\" />
     <Folder Include="S3\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ClientSide\_TestHTML\css\gallery.css" />
     <Content Include="ClientSide\_TestHTML\css\styles.css" />
     <Content Include="ClientSide\_TestHTML\todo.html" />
     <Content Include="libtidy.dll">

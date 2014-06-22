@@ -61,7 +61,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             w.RenderBeginTag(HtmlTextWriterTag.Div);
             using (StringReader reader = new StringReader(this.ParsedMainText))
             {
-                string line;
+                string line = string.Empty;
                 while ((line = reader.ReadLine()) != null)
                 {
                     w.RenderBeginTag(HtmlTextWriterTag.P);
@@ -117,7 +117,10 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             dumb.Author = "Patrick Sears";
             dumb.Category = NavCategory.Blog;
             dumb.Title = "Dummy Post";
-            dumb.MainText = "";
+            dumb.Timestamp = DateTime.Now;
+            dumb.MainText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ornare, mauris eu consequat placerat, augue lectus tempus tellus, ut posuere turpis nunc auctor mi. Morbi vitae dapibus dui. In eget metus pellentesque, venenatis ipsum vitae, pellentesque nulla. Integer in tellus id quam luctus vehicula id vel tortor. Nam condimentum posuere tellus sed eleifend. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi dignissim placerat diam quis laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vitae dignissim tortor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi semper eu orci a fermentum. Proin dignissim quam vitae tempor consectetur. Mauris sodales eros sit amet eros laoreet, ac tempor odio molestie. Etiam rutrum nunc quis nunc varius iaculis."+
+                            "\nAliquam orci diam, aliquam faucibus eleifend vitae, lacinia ac tortor. Donec non venenatis arcu, in gravida lacus. In eu sem id massa egestas tristique eget vel ipsum. Sed sit amet cursus eros, fermentum semper diam. Pellentesque vulputate congue eros nec ornare. Mauris facilisis felis elementum, placerat leo ultricies, posuere dui. Mauris arcu ante, sodales non nulla ac, viverra tincidunt dolor. Nulla semper vestibulum urna non mollis. Integer scelerisque tellus vel mauris scelerisque, nec posuere lorem tincidunt. Integer euismod nisl risus, non feugiat velit elementum dapibus. Vivamus sit amet dictum est, ac ultricies ante."+
+                            "\nInteger tincidunt sem mi. Ut sodales augue feugiat lobortis imperdiet. Aliquam erat volutpat. Fusce volutpat elit sed eros eleifend, vel hendrerit mauris egestas. Nam accumsan nulla eget diam congue fermentum. Integer auctor dui a magna dictum, a semper nisi aliquet. Duis sit amet mollis libero. Aenean vitae metus magna. ";
             dumb.Footers = new List<Embedded.Footer>();
             dumb.Footers.Add(new Embedded.Footer("ft1", "footnote +@(link_nextPage)", dumb.UniqueID));
 

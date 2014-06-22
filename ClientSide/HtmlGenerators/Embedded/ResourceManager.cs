@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Extender.Debugging;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
@@ -133,18 +134,19 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             string parsed = string.Empty;
 
             int n;
-            string reference;
             string remainingText = text;
             while ((n = FirstIndex(remainingText)) > 0) // skip to next reference
             {                
-                reference = string.Empty;
+                string reference = string.Empty;
                 int i = n + 1;
                 // walk through each character after n until we reach the close bracket
                 while(!remainingText[i].Equals(')')) 
                     reference += remainingText[i++];
 
                 parsed += remainingText.Substring(0, n - 2);
-                if (expand && resources.Count > 0)
+                if (resources == null)
+                    Debug.WriteMessage("resources is null, no references can be expanded.", "warn");
+                else if (expand && resources.Count > 0)
                     parsed += GetResourceByName(reference, resources).CreateHTML();
                 // chop off everything BEFORE the final ')'
                 remainingText = remainingText.Substring(i + 1); 
