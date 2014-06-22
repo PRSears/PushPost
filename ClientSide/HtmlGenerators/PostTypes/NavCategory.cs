@@ -1,4 +1,5 @@
 ﻿using System;
+using Extender.Strings;
 
 namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 {
@@ -62,6 +63,11 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
         public override string ToString()
         {
             return Category;
+        }
+
+        public string ToTitleString()
+        {
+            return Category.ToPropercase();
         }
 
         public static NavCategory Parse(string category)

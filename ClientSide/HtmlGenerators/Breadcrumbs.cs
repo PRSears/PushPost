@@ -54,8 +54,10 @@ namespace PushPost.ClientSide.HtmlGenerators
         /// <summary>
         /// Constructs a new Breadcrumbs generator object.
         /// </summary>
-        /// <param name="links">List of URLS pointing to the pages to be included in the breadcrumb traversal links.</param>
-        /// <param name="currentIndex">One based index representing the place in the "Links" list the current page occupies.
+        /// <param name="links">List of URLS pointing to the pages to be included in the breadcrumb 
+        /// traversal links.</param>
+        /// <param name="currentIndex">One based index representing the place in the "Links" list 
+        /// the current page occupies.
         /// This is the same as the page number.</param>
         public Breadcrumbs(List<string> links, int currentIndex, string copyright = "")
         {

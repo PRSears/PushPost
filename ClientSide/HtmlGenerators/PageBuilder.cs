@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.UI;
 using Extender.Exceptions;
+using Extender.Debugging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using PushPost.ClientSide.HtmlGenerators.PostTypes;
@@ -97,68 +98,51 @@ namespace PushPost.ClientSide.HtmlGenerators
 
                 NavCategory peek = category_group.Peek().Category;
 
-                if      (peek == NavCategory.Photography)
-                    Pages.AddRange(GeneratePhotographyPages(category_group));
-                else if (peek == NavCategory.Code)
-                    Pages.AddRange(GenerateCodePages(category_group));
-                else if (peek == NavCategory.Blog)
-                    Pages.AddRange(GenerateBlogPages(category_group));
-                else
-                    Pages.AddRange(GenerateGenericPages(category_group));
+                Pages.AddRange(GeneratePages(category_group, peek));
             }
 
             return Pages;
         }
 
-        protected virtual List<Page> GeneratePhotographyPages(Queue<Post> posts)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO Load posts from database and include in the queue to generate pages from
 
-        protected virtual List<Page> GenerateCodePages(Queue<Post> posts)
-        {
 
-            throw new NotImplementedException();
-        }
-
-        protected virtual List<Page> GenerateBlogPages(Queue<Post> posts)
+        protected virtual List<Page> GeneratePages(Queue<Post> posts, NavCategory category)
         {
             Int16 requiredPages = (Int16)Math.Ceiling((double)(posts.Count() / this.PostsPerPage));
-            List<Page> generatedPages = new List<Page>();
+            Page[] generatedPages = new Page[requiredPages];
 
-            for (int pageI = 0; pageI < requiredPages; pageI++)
+            for (int pageI = 1; pageI <= requiredPages; pageI++)
             {
-                List<Post> p = new List<Post>();
-                while(p.Count < this.PostsPerPage)
+                List<Post> newPosts = new List<Post>();
+                while(newPosts.Count < this.PostsPerPage)
                 {
-                    p.Add(posts.Dequeue());
+                    newPosts.Add(posts.Dequeue());
                 }
 
-                generatedPages.Add(
-                    new Page
+                generatedPages[pageI] = new Page
                     (
-                        new Head("Blog (p" + pageI + ")", this.Hrefs),
-                        new Navigation(NavCategory.Blog),
-                        new Breadcrumbs(null, pageI), // TODO replace null with the neccessary links
-                        p
-                    ));
+                        new Head(Page.GenerateTitle(category, pageI), this.Hrefs),
+                        new Navigation(category),
+                        new Breadcrumbs
+                            (
+                                MakeLinks(requiredPages, category), 
+                                pageI
+                            ),
+                        newPosts
+                    );
             }
 
-            return generatedPages;
+            return new List<Page>(generatedPages);
         }
-
-        // THOUGHT maybe page generation should be something like GeneratePages(NavCategory cat) { ... }
-        //         More code could be reused
-
-        /// <summary>
-        /// Generates the appropriate html files for the given posts. 
-        /// Override this method to add support for more categories.
-        /// </summary>
-        /// <returns>List<Page> generated pages.</returns>
-        protected virtual List<Page> GenerateGenericPages(Queue<Post> posts)
+        
+        protected List<string> MakeLinks(int numPages, NavCategory category)
         {
+            string[] links = new string[numPages];
+            for (int i = 1; i <= numPages; i++)
+                links[i - 1] = Page.GenerateFilename(category, i);
 
-            throw new NotImplementedException();
+            return new List<string>(links);
         }
 
         /// <summary>
@@ -176,14 +160,10 @@ namespace PushPost.ClientSide.HtmlGenerators
             {
                 foreach (Page page in this.Pages)
                 {
-                    using (StreamWriter stream = File.CreateText
-                        (
-                            Path.Combine
-                            (
+                    using (StreamWriter stream = File.CreateText(
+                            Path.Combine(
                                 outDirectoryPath,
-                                String.Format("{1}_{0}.html", page.PageNumber.ToString("D4"), page.Header.Title)
-                            )
-                        ))
+                                page.FileName)))
                     {
                         StringReader buffer = new StringReader(page.Create());
                         while (buffer.Peek() != -1)
@@ -194,7 +174,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             catch(Exception e)
             {
                 Console.WriteLine("Failed to save pages to " + outDirectoryPath);
-                Console.WriteLine(Extender.Exceptions.Debug.CreateExceptionText(e, true));
+                Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
 
                 return false;
             }

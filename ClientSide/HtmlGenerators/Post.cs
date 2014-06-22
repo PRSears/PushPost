@@ -74,7 +74,10 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         protected string HeaderClass;
         protected string FooterClass;
-        // TODO Add properties for the rest of the required css classes 
+        protected string SubHeaderID;
+        protected string AuthorClass;
+        protected string   DateClass;
+        protected string  PostBodyID;
 
         /// <summary>
         /// Number of character from the MainText to include in the posts' 
@@ -222,6 +225,11 @@ namespace PushPost.ClientSide.HtmlGenerators
 
             HeaderClass             = "post-title";
             FooterClass             = "footer";
+            SubHeaderID             = "sub-header";
+            AuthorClass             = "author";
+            DateClass               = "date";
+            PostBodyID              = "post-body";
+
             PreviewLength           = 250;
             IncludePostEndComments  = true;
         }

@@ -33,7 +33,6 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             MainText = body;
         }
 
-        // TODO Move all hard-coded class strings into properties of the Post class
         protected override void RenderHeader(HtmlTextWriter w)
         {
             w.AddAttribute(HtmlTextWriterAttribute.Id, base.HeaderClass);
@@ -41,15 +40,15 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             w.Write(this.Title);
             w.RenderEndTag();
 
-            w.AddAttribute(HtmlTextWriterAttribute.Id, "sub-header");
+            w.AddAttribute(HtmlTextWriterAttribute.Id, base.SubHeaderID);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
                 w.Write("by ");
-                w.AddAttribute(HtmlTextWriterAttribute.Class, "author");
+                w.AddAttribute(HtmlTextWriterAttribute.Class, base.AuthorClass);
                 w.RenderBeginTag(HtmlTextWriterTag.Span);
                     w.Write(this.Author);
                 w.RenderEndTag();
                 w.Write(" on ");
-                w.AddAttribute(HtmlTextWriterAttribute.Class, "date");
+                w.AddAttribute(HtmlTextWriterAttribute.Class, base.DateClass);
                 w.RenderBeginTag(HtmlTextWriterTag.Span);
                     w.Write(this.Timestamp);
                 w.RenderEndTag();
@@ -58,7 +57,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 
         protected override void RenderBody(HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, "post-body");
+            w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
             using (StringReader reader = new StringReader(this.ParsedMainText))
             {

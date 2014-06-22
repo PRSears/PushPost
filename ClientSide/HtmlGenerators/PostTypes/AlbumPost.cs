@@ -23,7 +23,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 
             HeaderClass = "album-name";
             FooterClass = "footer";
-            AlbumClass = "photo-container";
+            AlbumClass  = "photo-container";
         }
 
         public AlbumPost(string title, string author, string body) : this(title, author)
@@ -33,7 +33,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 
         public void AddImage(string name, string url)
         {
-            // TODO generate markup for a new image added to the album
+            // TODO_ generate markup for a new image added to the album
         }
 
         protected override void RenderHeader(System.Web.UI.HtmlTextWriter w)
@@ -42,7 +42,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             w.RenderBeginTag(HtmlTextWriterTag.H1);
             w.Write(this.Title);
             w.RenderEndTag();
-            // TODO include author in the header somewhere
+            // TODO_ include author in the header somewhere
         }
 
         protected override void RenderBody(System.Web.UI.HtmlTextWriter w)
@@ -89,7 +89,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 
         public override string CreatePreview()
         {
-            // TODO make a collage or something to represent the album before it's opened
+            // TODO_ make a collage or something to represent the album before it's opened
             throw new NotImplementedException();
         }
 

@@ -33,6 +33,60 @@ namespace PushPost.ClientSide.HtmlGenerators
             set;
         }
 
+        public string Title
+        {
+            get
+            {
+                return this.Header.Title;
+            }
+            set
+            {
+                this.Header.Title = value;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return Page.GenerateFilename(this.PageCategory, this.PageNumber);
+            }
+        }
+
+        /// <summary>
+        /// Builds a Page's filename.
+        /// </summary>
+        /// <param name="category">The category the Page resides in.</param>
+        /// <param name="pageNumber">The page number of the Page.</param>
+        /// <returns>Returns a filename of the format: <example>blog_0001.html</example></returns>
+        public static string GenerateFilename(PostTypes.NavCategory category, int pageNumber)
+        {
+            return string.Format("{0}_{1}.html", category.ToString(), pageNumber.ToString("D4"));
+        }
+
+        /// <summary>
+        /// Builds a title for a Page.
+        /// </summary>
+        /// <param name="category">The category the Page resides in.</param>
+        /// <param name="pageNumber">The page number of the Page.</param>
+        /// <returns>Return a title of the format: <example>Blog (page 1)</example></returns>
+        public static string GenerateTitle(PostTypes.NavCategory category, int pageNumber)
+        {
+            return string.Format("{0} (page {1})", category.ToTitleString(), pageNumber);
+        }
+
+        public PostTypes.NavCategory PageCategory
+        {
+            get
+            {
+                return this.UpperNavigation.CurrentCategory;
+            }
+            set
+            {
+                this.UpperNavigation.CurrentCategory = value;
+            }
+        }
+
         public string DoctypeString
         {
             get;
