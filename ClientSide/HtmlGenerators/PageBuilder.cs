@@ -76,11 +76,19 @@ namespace PushPost.ClientSide.HtmlGenerators
         }
         #endregion
 
+        // TODO Load posts from database and include in the queue to generate pages from
+        // 
+        // Steps:
+        //  - Push each post from a List<NewPosts> into the database.
+        //  - Pull all posts from each category used in List<NewPosts>
+        //  - add pulled posts to this.Posts
+        //  - call CreatePages()
+
         /// <summary>
         /// Generates a single, or multiple, HTML files based on the Post objects
-        /// in this.Posts.
+        /// in this.Posts. Stores generated Pages in this.Pages, then returns this.Pages.
         /// </summary>
-        /// <returns>The newly generated Page list.</returns>
+        /// <returns>Newly generated Page list.</returns>
         public virtual List<Page> CreatePages()
         {
             Pages = new List<Page>();
@@ -103,9 +111,6 @@ namespace PushPost.ClientSide.HtmlGenerators
 
             return Pages;
         }
-
-        // TODO Load posts from database and include in the queue to generate pages from
-
 
         protected virtual List<Page> GeneratePages(Queue<Post> posts, NavCategory category)
         {

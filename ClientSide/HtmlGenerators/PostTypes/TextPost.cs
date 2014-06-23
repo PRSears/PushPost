@@ -50,7 +50,12 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
                 w.Write(" on ");
                 w.AddAttribute(HtmlTextWriterAttribute.Class, base.DateClass);
                 w.RenderBeginTag(HtmlTextWriterTag.Span);
-                    w.Write(this.Timestamp);
+                    w.Write(this.Timestamp.ToString(@"MMMM dd, yyyy"));
+                w.RenderEndTag();
+                w.Write(" at ");
+                w.AddAttribute(HtmlTextWriterAttribute.Class, base.DateClass);
+                w.RenderBeginTag(HtmlTextWriterTag.Span);
+                    w.Write(this.Timestamp.ToString(@"HH:m"));
                 w.RenderEndTag();
             w.RenderEndTag();
         }

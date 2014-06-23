@@ -2,11 +2,12 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
+using Extender.Databases;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
     [Table(Name="Tags")]
-    public class Tag : Database.IStorable
+    public class Tag : IStorable
     {
         private Guid _TagID;
         [Column(IsPrimaryKey=true, Storage="_TagID")]
@@ -46,7 +47,7 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             }
             set
             {
-                _Text = value;
+                _Text  = value;
                 _TagID = new Guid(this.GetHashData()); //rehash if Text changes
             }
         }

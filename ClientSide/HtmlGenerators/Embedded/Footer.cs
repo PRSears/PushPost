@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Linq.Mapping;
+using Extender.Databases;
 
 namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
@@ -11,7 +12,7 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
     /// IResource implementation for creating HTML of a footer embedded in a post.
     /// </remarks>
     [Table(Name = "Footnotes")]
-    public class Footer : IResource, Database.IStorable
+    public class Footer : IResource, IStorable
     {
         private Guid _UID;
         /// <summary>

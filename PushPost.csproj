@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Extender, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Extender, Version=1.0.5273.30395, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Extender\bin\Release\Extender.dll</HintPath>
     </Reference>
@@ -50,14 +50,14 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TidyManaged">
+    <Reference Include="TidyManaged, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\TidyManaged\bin\Release\TidyManaged.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Database\Archives.cs" />
     <Compile Include="ClientSide\Database\DatabaseTestHarness.cs" />
-    <Compile Include="ClientSide\Database\IStorable.cs" />
     <Compile Include="ClientSide\Database\PostsDataContext.cs" />
     <Compile Include="ClientSide\HtmlGenerators\Breadcrumbs.cs" />
     <Compile Include="ClientSide\HtmlGenerators\Embedded\Code.cs" />
@@ -79,11 +79,9 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ClientSide\HtmlGenerators\Page.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PageTypes\GalleryPage.cs" />
     <Compile Include="ClientSide\HtmlGenerators\PostTypes\AlbumPost.cs" />
     <Compile Include="ClientSide\HtmlGenerators\PostTypes\TextPost.cs" />
     <Compile Include="ClientSide\HtmlGenerators\Post.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PageTypes\CodePage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
