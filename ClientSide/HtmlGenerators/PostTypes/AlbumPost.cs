@@ -31,6 +31,11 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             MainText = body;
         }
 
+        public AlbumPost()
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddImage(string name, string url)
         {
             // TODO_ generate markup for a new image added to the album

@@ -1,4 +1,5 @@
 ﻿using PushPost.ClientSide.HtmlGenerators;
+using PushPost.ClientSide.HtmlGenerators.PostTypes;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using Extender.ObjectUtils;
@@ -193,6 +194,34 @@ namespace PushPost.ClientSide.Database
 			post.ForceRefreshUniqueID();
 		}
 
+		/// <summary>
+		/// Attempts to create a new Post object from this PostTableLayer by 
+		/// checking the category and calling the appropriate Post implementation's
+		/// constructor.
+		/// </summary>
+		/// <returns>If successful, a Post object based on this PostTableLayer is
+		/// returned. Returns null if the Post implementation could not be determined.</returns>
+		public Post TryCreatePost()
+		{
+			NavCategory thisCat = NavCategory.TryParse(this.PostCategory);
+			Post newPost;
+
+			if (thisCat == NavCategory.Blog)
+				newPost = new TextPost();
+			else if (thisCat == NavCategory.Code)
+				newPost = new TextPost();
+			else if (thisCat == NavCategory.Photography)
+				newPost = new AlbumPost();
+			else if (thisCat == NavCategory.Contact)
+				newPost = new TextPost();
+			else
+				return null;
+
+			ExportTo(ref newPost);
+
+			return newPost;
+		}
+
 		public static void ConvertToPost(PostTableLayer layer, ref Post post)
 		{
 			post.Title = layer.Title;
@@ -252,14 +281,11 @@ namespace PushPost.ClientSide.Database
 		{
 			StringBuilder build = new StringBuilder();
 
-			build.AppendLine("--- PostTableLayer ---");
-			build.AppendLine(this.Title);
-			build.AppendLine(this.Timestamp.ToShortDateString());
-			build.AppendLine(this.Author);
-			build.AppendLine(this.PostCategory);
-			build.AppendLine(this.MainText);
-			// TODO_ include footers & tags & cleanup formatting
-			build.AppendLine("-/- PostTableLayer -/-");
+			build.AppendLine("PostTableLayer " + this.Title);
+			build.AppendLine(" " + this.Timestamp.ToShortDateString());
+			build.AppendLine(" " + this.Author);
+			build.AppendLine(" " + this.PostCategory);
+			build.AppendLine(" " + this.MainText);
 
 			return build.ToString();
 		}

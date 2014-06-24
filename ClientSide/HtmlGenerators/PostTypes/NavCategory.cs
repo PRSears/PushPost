@@ -79,6 +79,23 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
             throw new ArgumentException("category provided is not a valid NavCategory.");
         }
 
+        /// <summary>
+        /// Tries to parse the category, and returns NavCategory.None if the parse fails.
+        /// </summary>
+        public static NavCategory TryParse(string category)
+        {
+            try
+            {
+                return Parse(category);
+            }
+            catch(ArgumentException e)
+            {
+                Extender.Debugging.Debug.WriteMessage(string.Format
+                    ("Parsing {0} failed.", category));
+                return NavCategory.None;
+            }
+        }
+
         public static Boolean operator ==(NavCategory a, NavCategory b)
         {
             return a.Equals(b);

@@ -56,7 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientSide\Database\Archives.cs" />
+    <Compile Include="ClientSide\Database\Archive.cs" />
     <Compile Include="ClientSide\Database\DatabaseTestHarness.cs" />
     <Compile Include="ClientSide\Database\PostsDataContext.cs" />
     <Compile Include="ClientSide\HtmlGenerators\Breadcrumbs.cs" />

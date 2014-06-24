@@ -7,6 +7,8 @@ using System.IO;
 using System.Data.Linq;
 using PushPost.ClientSide.HtmlGenerators;
 using PushPost.ClientSide.HtmlGenerators.Embedded;
+using Extender.Date;
+using Extender.Exceptions;
 
 namespace PushPost.ClientSide.Database
 {
@@ -27,20 +29,20 @@ namespace PushPost.ClientSide.Database
             protected get;
             protected set;
         }
-        protected string _PostDB_ConnectionString;
+        protected string _PostDBConnectionString;
 
-        public string PostDB_ConnectionString
+        public string PostDBConnectionString
         {
             get
             {
-                return this._PostDB_ConnectionString;
+                return this._PostDBConnectionString;
             }
             set
             {
                 if (value.Contains(@"|DataDirectory|"))
-                    this._PostDB_ConnectionString = value.Replace(@"|DataDirectory|", Directory.GetCurrentDirectory());
+                    this._PostDBConnectionString = value.Replace(@"|DataDirectory|", Directory.GetCurrentDirectory());
                 else
-                    this._PostDB_ConnectionString = value;
+                    this._PostDBConnectionString = value;
             }
         }
         public Table<PostTableLayer> PostTable
@@ -74,17 +76,29 @@ namespace PushPost.ClientSide.Database
             }
         }
 
+        /// <summary>
+        /// Initializes the Archive object for the database at the provided (relative) path.
+        /// </summary>
+        /// <param name="databaseRelativePath">Relative path (including filename and extension) 
+        /// to the database Archive will handle.</param>
         public Archive(string databaseRelativePath)
         {
             this.RelativeFilename = databaseRelativePath;
 
-            this._PostDB_ConnectionString = Archive.GenerateConnectionString(this.RelativeFilename);
-            db = new PostsDataContext(this.PostDB_ConnectionString);
+            this._PostDBConnectionString = Archive.GenerateConnectionString(this.RelativeFilename);
+            db = new PostsDataContext(this.PostDBConnectionString);
 
             if (!db.DatabaseExists())
                 db.CreateDatabase();
         }
 
+        /// <summary>
+        /// Creates a connection string for connecting to a database inside the current
+        /// working directory.
+        /// </summary>
+        /// <param name="relativeFilename">Relative path (including filename and extension) 
+        /// to the database you're generating the connection string for.</param>
+        /// <returns></returns>
         public static string GenerateConnectionString(string relativeFilename)
         {
             return string.Format(
@@ -93,6 +107,9 @@ namespace PushPost.ClientSide.Database
                 relativeFilename);
         }
 
+        /// <summary>
+        /// Executes pending operations on the database.
+        /// </summary>
         public void SubmitChanges()
         {
             // TODO surround in trycatch and display a warning popup on errors
@@ -167,6 +184,9 @@ namespace PushPost.ClientSide.Database
             }
         }
 
+        /// <summary>
+        /// Backs up the post to a secondary trash database (at 'normaldb.mdf_trash.mdf')
+        /// </summary>
         protected void AddToTrash(PostTableLayer post)
         {
             string trashConnectionString = Archive.GenerateConnectionString(this.RelativeFilename + "_trash.mdf");
@@ -180,47 +200,60 @@ namespace PushPost.ClientSide.Database
             }
         }
 
+        /// <summary>
+        /// Searches for and retrieves the first post with matching UniqueID to the 'postID' provided.
+        /// </summary>
+        /// <param name="postID">UniqueID of the Post to retrieve.</param>
         public Post PullPost(Guid postID)
         {
-            // TODO search for, and retrieve post with matching postID from the database
-            throw new NotImplementedException();
+            var queried = db.Posts.Where(p => p.UniqueID == postID);
+            Post pulled = queried.First().TryCreatePost();
+
+            if (pulled == null)
+                throw new DatabasePullException(postID.ToString());
+
+            return pulled;
         }
 
-        public List<Post> PullPosts(HtmlGenerators.PostTypes.NavCategory category)
+        /// <summary>
+        /// Retrieves all posts from the database that satisfy the query.
+        /// </summary>
+        /// <param name="query">
+        /// The function to test each post in the database with.
+        /// </param>
+        /// <returns>List of Posts with a matching category. If any posts could not
+        /// be parsed from the PostTableLayer they will appear in the list as null.</returns>
+        public List<Post> PullPostsWhere(Func<PostTableLayer, bool> query)
         {
-            // TODO retrieve all posts from the database matching category.  
-            throw new NotImplementedException();
-        }
+            var queried = db.Posts.Where(query);
 
-        public List<Post> PullPosts(DateTime rangeStart, DateTime rangeEnd)
-        {
-            // TODO retrieve all posts falling between start and end dates
-            throw new NotImplementedException();
-        }
+            if (queried.Count() < 1)
+                throw new DatabasePullException(query.ToString());
 
-        public List<Post> PullPosts(
-            DateTime rangeStart, 
-            DateTime rangeEnd, 
-            HtmlGenerators.PostTypes.NavCategory category)
-        {
-            // TODO retrieve all posts falling inside the date range and matching category
-            throw new NotImplementedException();
-        }
+            List<Post> pulled = new List<Post>();
+            foreach (PostTableLayer layer in queried)
+                pulled.Add(layer.TryCreatePost());
 
-        public List<Post> PullPosts(string title)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Post> PullPosts(DateTime date)
-        {
-            throw new NotImplementedException();
+            return pulled;
         }
         
         public void Dump(string dumpFilename)
         {
-            // TODO Dump all posts from the database into a txt file
-            throw new NotImplementedException();
+            using(StreamWriter dumpStream = File.CreateText(
+                    Path.Combine(Directory.GetCurrentDirectory(), dumpFilename)))
+            {
+                try
+                {
+                    foreach (PostTableLayer p in this.PostTable)
+                    {
+                        dumpStream.WriteLine(p.ToString() + "\n");
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                }
+            }
         }
 
         public void Dispose()
@@ -240,5 +273,18 @@ namespace PushPost.ClientSide.Database
                 _disposed = true;
             }
         }
+    } 
+
+    public class DatabasePullException : System.Configuration.ConfigurationException
+    {
+        public DatabasePullException(string criteria) :
+            base
+             (
+                 string.Format
+                     (
+                         "Post(s) with criteria [{0}] could not be found in the database, or its category could not be determined",
+                         criteria
+                     )
+             ) { }
     }
 }
