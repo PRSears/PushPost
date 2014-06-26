@@ -55,7 +55,7 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
                 w.Write(" at ");
                 w.AddAttribute(HtmlTextWriterAttribute.Class, base.DateClass);
                 w.RenderBeginTag(HtmlTextWriterTag.Span);
-                    w.Write(this.Timestamp.ToString(@"HH:m"));
+                    w.Write(this.Timestamp.ToString(@"HH:mm"));
                 w.RenderEndTag();
             w.RenderEndTag();
         }
@@ -117,12 +117,17 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
         /// </summary>
         public static Post Dummy()
         {
+            System.Threading.Thread.Sleep(50);
+            Random r = new Random();
+            int pad = r.Next(1000, 99999);
+            DateTime ctime = DateTime.Now;
+
             Post dumb = new TextPost();
 
             dumb.Author = "Patrick Sears";
             dumb.Category = NavCategory.Blog;
             dumb.Title = "Dummy Post";
-            dumb.Timestamp = DateTime.Now;
+            dumb.Timestamp = ctime.AddSeconds(pad);
             dumb.MainText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ornare, mauris eu consequat placerat, augue lectus tempus tellus, ut posuere turpis nunc auctor mi. Morbi vitae dapibus dui. In eget metus pellentesque, venenatis ipsum vitae, pellentesque nulla. Integer in tellus id quam luctus vehicula id vel tortor. Nam condimentum posuere tellus sed eleifend. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi dignissim placerat diam quis laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vitae dignissim tortor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi semper eu orci a fermentum. Proin dignissim quam vitae tempor consectetur. Mauris sodales eros sit amet eros laoreet, ac tempor odio molestie. Etiam rutrum nunc quis nunc varius iaculis."+
                             "\nAliquam orci diam, aliquam faucibus eleifend vitae, lacinia ac tortor. Donec non venenatis arcu, in gravida lacus. In eu sem id massa egestas tristique eget vel ipsum. Sed sit amet cursus eros, fermentum semper diam. Pellentesque vulputate congue eros nec ornare. Mauris facilisis felis elementum, placerat leo ultricies, posuere dui. Mauris arcu ante, sodales non nulla ac, viverra tincidunt dolor. Nulla semper vestibulum urna non mollis. Integer scelerisque tellus vel mauris scelerisque, nec posuere lorem tincidunt. Integer euismod nisl risus, non feugiat velit elementum dapibus. Vivamus sit amet dictum est, ac ultricies ante."+
                             "\nInteger tincidunt sem mi. Ut sodales augue feugiat lobortis imperdiet. Aliquam erat volutpat. Fusce volutpat elit sed eros eleifend, vel hendrerit mauris egestas. Nam accumsan nulla eget diam congue fermentum. Integer auctor dui a magna dictum, a semper nisi aliquet. Duis sit amet mollis libero. Aenean vitae metus magna. ";

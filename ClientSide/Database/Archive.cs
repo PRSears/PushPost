@@ -26,8 +26,8 @@ namespace PushPost.ClientSide.Database
         protected PostsDataContext db;
         protected string RelativeFilename
         {
-            protected get;
-            protected set;
+            get;
+            set;
         }
         protected string _PostDBConnectionString;
 
@@ -221,7 +221,7 @@ namespace PushPost.ClientSide.Database
         /// <param name="query">
         /// The function to test each post in the database with.
         /// </param>
-        /// <returns>List of Posts with a matching category. If any posts could not
+        /// <returns>List of Posts where the 'query' function returned true. If any posts could not
         /// be parsed from the PostTableLayer they will appear in the list as null.</returns>
         public List<Post> PullPostsWhere(Func<PostTableLayer, bool> query)
         {
@@ -237,6 +237,9 @@ namespace PushPost.ClientSide.Database
             return pulled;
         }
         
+        /// <summary>
+        /// Dumps all retrievable posts from the database into text file at specified location.
+        /// </summary>
         public void Dump(string dumpFilename)
         {
             using(StreamWriter dumpStream = File.CreateText(
@@ -256,6 +259,23 @@ namespace PushPost.ClientSide.Database
             }
         }
 
+        /// <summary>
+        /// Dumps all retrievable posts from the database into an (unsorted) array of Post objects.
+        /// </summary>
+        public Post[] Dump()
+        {
+            Post[] dumped = new Post[this.PostTable.Count()];
+            int i = 0;
+
+            foreach(PostTableLayer layer in this.PostTable)
+            {
+                dumped[i] = layer.TryCreatePost();
+                i++;
+            }
+
+            return dumped;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -272,6 +292,21 @@ namespace PushPost.ClientSide.Database
                 }
                 _disposed = true;
             }
+        }
+
+        public static void TestHarness()
+        {
+            List<Post> test_posts = new List<Post>();
+            for (int i = 0; i < 12; i++)
+            {
+                test_posts.Add(HtmlGenerators.PostTypes.TextPost.Dummy());
+                Console.WriteLine(test_posts[i].ToString());
+            }
+
+            Archive db = new Archive(@"Post_TestDB_2014-29-04_003.mdf");
+            db.CommitPosts(test_posts);
+            db.SubmitChanges();
+            db.Dump(@"2014-29-04_003.dump.txt");
         }
     } 
 

@@ -76,14 +76,6 @@ namespace PushPost.ClientSide.HtmlGenerators
         }
         #endregion
 
-        // TODO Load posts from database and include in the queue to generate pages from
-        // 
-        // Steps:
-        //  - Push each post from a List<NewPosts> into the database.
-        //  - Pull all posts from each category used in List<NewPosts>
-        //  - add pulled posts to this.Posts
-        //  - call CreatePages()
-
         /// <summary>
         /// Generates a single, or multiple, HTML files based on the Post objects
         /// in this.Posts. Stores generated Pages in this.Pages, then returns this.Pages.
@@ -114,16 +106,14 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         protected virtual List<Page> GeneratePages(Queue<Post> posts, NavCategory category)
         {
-            Int16 requiredPages = (Int16)Math.Ceiling((double)(posts.Count() / this.PostsPerPage));
+            Int16 requiredPages = (Int16)Math.Ceiling((double)posts.Count() / (double)this.PostsPerPage);
             Page[] generatedPages = new Page[requiredPages];
 
             for (int pageI = 1; pageI <= requiredPages; pageI++)
             {
                 List<Post> newPosts = new List<Post>();
-                while(newPosts.Count < this.PostsPerPage)
-                {
+                for (int spaceRemaining = this.PostsPerPage; (spaceRemaining > 0) && (posts.Count() > 0); spaceRemaining--)
                     newPosts.Add(posts.Dequeue());
-                }
 
                 generatedPages[pageI - 1] = new Page
                     (
@@ -189,18 +179,19 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         public static void TestHarness()
         {
-            List<Post> posts = new List<Post>();
-            for(int i = 0; i < 30; i++)
+            using (Database.Archive db = new Database.Archive(@"Post_TestDB_2014-29-04_003.mdf"))
             {
-                posts.Add(TextPost.Dummy());
+                List<Post> posts = db.Dump().ToList();
+
+                Console.WriteLine(posts.Count().ToString());
+
+                string[] refs = { "css/styles.css", "css/gallery.css", "http://fonts.googleapis.com/css?family=Open+Sans:300" };
+
+                PageBuilder build = new PageBuilder(posts, refs.ToList(), 10);
+
+                build.CreatePages();
+                build.SavePages(@"E:\code\GitHub\PushPost\bin\Debug\testhtml");
             }
-
-            string[] refs = { "css/styles.css", "css/gallery.css", "http://fonts.googleapis.com/css?family=Open+Sans:300" };
-
-            PageBuilder build = new PageBuilder(posts, refs.ToList(), 10);
-
-            build.CreatePages();
-            build.SavePages(@"E:\code\GitHub\PushPost\bin\Debug\testhtml");
         }
     }
 }

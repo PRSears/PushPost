@@ -138,8 +138,12 @@ namespace PushPost.ClientSide.HtmlGenerators
             UpperNavigation = new Navigation();
             LowerNavigation = new Breadcrumbs();
             Posts           = new List<Post>();
-            PrimaryColumnID = "primary-column"; // TODO remove hard-coded string(s)
+            PrimaryColumnID = "primary-column"; 
             FinalComment    = "This page was generated automatically by PushPost.";
+
+            //
+            // TODO Implement loading from cfg file
+            //      Remove hard-coded class ID string(s)
         }
         #region Constructor overloads
         public Page(Head header):this(header.Title)

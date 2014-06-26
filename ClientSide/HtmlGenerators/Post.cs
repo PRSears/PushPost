@@ -174,6 +174,7 @@ namespace PushPost.ClientSide.HtmlGenerators
             blocks.Add(Encoding.Default.GetBytes(this.Title));
             blocks.Add(Encoding.Default.GetBytes(this.Author));
             blocks.Add(Encoding.Default.GetBytes(this.MainText));
+            blocks.Add(Encoding.Default.GetBytes(Category.ToString()));
             blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
 
             return Hashing.GenerateHashCode(blocks);
@@ -181,16 +182,15 @@ namespace PushPost.ClientSide.HtmlGenerators
 
         public override string ToString()
         {
+
             StringBuilder build = new StringBuilder();
 
-            build.AppendLine("--- Post ---");
-            build.AppendLine(this.Title);
+            build.AppendLine("\tPost [" + this.Title + "]");
+            build.AppendLine(this.UniqueID.ToString());
             build.AppendLine(this.Timestamp.ToShortDateString());
             build.AppendLine(this.Author);
             build.AppendLine(this.Category.ToString());
             build.AppendLine(this.MainText);
-            // TODO_ include footers & tags & cleanup formatting
-            build.AppendLine("-/- Post -/-");
 
             return build.ToString();
         }

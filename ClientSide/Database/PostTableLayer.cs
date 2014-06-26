@@ -281,11 +281,12 @@ namespace PushPost.ClientSide.Database
 		{
 			StringBuilder build = new StringBuilder();
 
-			build.AppendLine("PostTableLayer " + this.Title);
-			build.AppendLine(" " + this.Timestamp.ToShortDateString());
-			build.AppendLine(" " + this.Author);
-			build.AppendLine(" " + this.PostCategory);
-			build.AppendLine(" " + this.MainText);
+			build.AppendLine("\tPostTableLayer [" + this.Title + "]");
+			build.AppendLine(this.UniqueID.ToString());
+			build.AppendLine(this.Timestamp.ToShortDateString());
+			build.AppendLine(this.Author);
+			build.AppendLine(this.PostCategory);
+			build.AppendLine(this.MainText);
 
 			return build.ToString();
 		}

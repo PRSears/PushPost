@@ -116,24 +116,6 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
             this.Class = className;
         }
 
-        [Obsolete]
-        public byte[] GetHashCode()
-        {
-            System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-
-            byte[] name_block = Encoding.Default.GetBytes(this.Name);
-            byte[] valu_block = Encoding.Default.GetBytes(this.Value);
-            byte[] poid_block = PostID.ToByteArray();
-            byte[] date_block = BitConverter.GetBytes(CreationTime.Ticks);
-
-            md5.TransformBlock(name_block, 0, name_block.Length, name_block, 0);
-            md5.TransformBlock(valu_block, 0, valu_block.Length, valu_block, 0);
-            md5.TransformBlock(poid_block, 0, poid_block.Length, poid_block, 0);
-            md5.TransformFinalBlock(date_block, 0, date_block.Length);
-
-            return md5.Hash;
-        }
-
         /// <summary>
         /// Generates a byte array from an MD5 hash of this footer's properties.
         /// </summary>

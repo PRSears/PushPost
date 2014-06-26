@@ -22,6 +22,14 @@ namespace PushPost
             InitializeComponent();
         }
 
+        //
+        // TODO !!
+        //      Start hacking together the UI
+        //
+        //      Should take new posts, load matching categorier from the db, then combine into one list.
+        //      Pass that list off to PageBuilder generate and save the pages.
+        //      Commit new posts to the database.
+
         private void button1_Click(object sender, EventArgs e)
         {
             TestPageBuilder();
@@ -38,6 +46,11 @@ namespace PushPost
             System.Threading.Thread.Sleep(2000);
 
             ClientSide.Database.DatabaseTestHarness.TestRead();
+        }
+
+        private void TestArchive()
+        {
+            ClientSide.Database.Archive.TestHarness();
         }
 
         private void TestPage()
