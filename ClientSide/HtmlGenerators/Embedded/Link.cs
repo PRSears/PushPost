@@ -51,7 +51,8 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
         /// <returns></returns>
         public string CreateHTML()
         {
-            return "<a href=\"" + Value + "\">" + EnclosedText + @"</a>";
+            return string.Format(@"<a href=""{0}"">{1}</a>", Value, EnclosedText);
+            //return "<a href=\"" + Value + "\">" + EnclosedText + @"</a>";
         }
     }
 }
