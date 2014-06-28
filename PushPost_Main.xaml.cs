@@ -15,14 +15,40 @@ using System.Windows.Shapes;
 
 namespace PushPost
 {
+    // TODO Autosave timer
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class PushPost_Main : Window
     {
+        public static RoutedCommand BloopCommand = new RoutedCommand();
+
         public PushPost_Main()
         {
             InitializeComponent();
+            InitializeCommandBindings();
+        }
+
+        protected void InitializeCommandBindings()
+        {
+            CommandBinding bind = new CommandBinding(BloopCommand, ExecuteBloop, BloopCanExecute);
+
+            this.CommandBindings.Add(bind);
+
+            ManageTagsButton.Command = BloopCommand;
+        }
+
+        private void ExecuteBloop(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("Test button pressed.");
+            e.Handled = true;
+        }
+
+        private void BloopCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute    = true;
+            e.Handled       = true;
         }
     }
 }
