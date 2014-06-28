@@ -28,6 +28,10 @@ namespace PushPost
         {
             InitializeComponent();
             InitializeCommandBindings();
+
+            System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(
+                typeof(System.Windows.Media.Animation.Timeline), 
+                new FrameworkPropertyMetadata { DefaultValue = 5 });
         }
 
         protected void InitializeCommandBindings()

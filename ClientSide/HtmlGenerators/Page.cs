@@ -271,8 +271,6 @@ namespace PushPost.ClientSide.HtmlGenerators
         }
     }
 
-    //TODO_ Perhaps the PageGenerationMethod class should be moved to the PageBuilder.cs file,
-    //      or given a file of its own.
     public class PageGenerationMethod
     {
         private string Method;

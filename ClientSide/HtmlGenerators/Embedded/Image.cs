@@ -8,6 +8,13 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
 {
     public class InlineImage : IResource
     {
+        //
+        // TODO implement ClientSide.Images to handle conversion, resizing, 
+        //      collage creation, etc.
+        // TODO I'll need a system to track where the resized / current image is stored 
+        //      so that the upload-to-s3 classes can check to see if the images exist on 
+        //      on the server and - if they're not - upload them.
+
         public InlineImage(string name, string imagePath)
         {
             Name = name;
@@ -21,8 +28,7 @@ namespace PushPost.ClientSide.HtmlGenerators.Embedded
 
         public void Convert(System.Drawing.Imaging.ImageFormat newFormat)
         {
-            // TODO implement ClientSide.Images to handle conversion, resizing, 
-            //      collage creation, etc.
+            
             throw new NotImplementedException();
         }
 
