@@ -5,6 +5,9 @@ namespace PushPost.ClientSide.HtmlGenerators.PostTypes
 {
     public class NavCategory
     {
+        //
+        // TODO Try to match unknown categories against a categories.cfg file with (optional) extra listings
+
         // If new properties are added, make sure to update the statics, and Equals() method.
 
         public string Category
