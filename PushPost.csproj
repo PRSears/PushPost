@@ -43,6 +43,7 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -63,7 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AddRefsWindow.xaml">
+    <Page Include="AddRefsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -71,8 +72,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AddRefsWindow.xaml.cs">
-      <DependentUpon>AddRefsWindow.xaml</DependentUpon>
+    <Compile Include="AddRefsDialog.xaml.cs">
+      <DependentUpon>AddRefsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -99,6 +100,12 @@
     <Compile Include="ClientSide\HtmlGenerators\PostTypes\AlbumPost.cs" />
     <Compile Include="ClientSide\HtmlGenerators\PostTypes\NavCategory.cs" />
     <Compile Include="ClientSide\HtmlGenerators\PostTypes\TextPost.cs" />
+    <Compile Include="NewReferenceDialogControls\HrefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewReferenceDialogControls\HrefControl.Designer.cs">
+      <DependentUpon>HrefControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="PushPost_Main.xaml.cs">
       <DependentUpon>PushPost_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
