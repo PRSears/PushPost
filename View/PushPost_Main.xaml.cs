@@ -19,61 +19,22 @@ namespace PushPost
         {
             InitializeComponent();
             DataContext = new PostViewModel();
+            Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
 
-            //InitializeCommandBindings();
-            //PostResourceReferences = new List<IResource>();
-
+            #region Framerate cap hack...
+            // HACK to reduce lag while typing
             System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(
                 typeof(System.Windows.Media.Animation.Timeline), 
                 new FrameworkPropertyMetadata { DefaultValue = 5 });
+            #endregion
         }
 
-        #region Obsolete
-        //public static RoutedCommand OpenRefsDialogCommand = new RoutedCommand();
-        //public List<IResource> PostResourceReferences;
-        //protected void InitializeCommandBindings()
-        //{
-        //    CommandBinding openRefsDialog = new CommandBinding(OpenRefsDialogCommand, ExecuteOpenRefsDialog, OpenRefsDialogCanExecute);
+        private string GetAssemblyVersion()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 
-        //    this.CommandBindings.Add(openRefsDialog);
-
-        //    this.AddHrefButton.Command = OpenRefsDialogCommand;
-        //    this.AddCodeButton.Command = OpenRefsDialogCommand;
-        //    this.AddFootButton.Command = OpenRefsDialogCommand;
-        //    this.AddImgButton.Command  = OpenRefsDialogCommand;
-        //}
-
-        //private void ExecuteOpenRefsDialog(object sender, ExecutedRoutedEventArgs e)
-        //{
-        //    string bname = (e.Source as Button).Name.ToLower();
-
-        //    if (bname.Contains("href"))
-        //        Console.WriteLine("Sender is Href button");
-        //    else if(bname.Contains("foot"))
-        //        Console.WriteLine("Sender is Footnote button");
-        //    else if(bname.Contains("code"))
-        //        Console.WriteLine("Sender is Code button");
-        //    else if(bname.Contains("img"))
-        //        Console.WriteLine("Sender is Image button");
-        //    else
-        //        Console.WriteLine("Sender is unkown");
-
-        //    var addRefsDialog = new AddRefsDialog(bname, this);
-        //    addRefsDialog.Show();
-
-        //    e.Handled = true;
-        //}
-
-        //private void OpenRefsDialogCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        //{
-        //    e.CanExecute = true;
-        //    e.Handled    = true;
-        //}
-
-        //private void SubmitPostButton_MouseUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    MessageBox.Show("SUBMIT");
-        //}
-        #endregion
+            return vi.FileVersion;
+        }
     }
 }
