@@ -60,53 +60,49 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="View\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AddRefsDialog.xaml">
+    <Page Include="View\AddRefsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PushPost_Main.xaml">
+    <Page Include="View\PushPost_Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AddRefsDialog.xaml.cs">
+    <Compile Include="Commands\PostCommands.cs" />
+    <Compile Include="ViewModels\PostViewModel.cs" />
+    <Compile Include="View\AddRefsDialog.xaml.cs">
       <DependentUpon>AddRefsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="View\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClientSide\Database\Archive.cs" />
-    <Compile Include="ClientSide\Database\DatabaseTestHarness.cs" />
-    <Compile Include="ClientSide\Database\PostsDataContext.cs" />
-    <Compile Include="ClientSide\Database\PostTableLayer.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Breadcrumbs.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\Code.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\Footer.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\Image.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\IResource.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\Link.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\ResourceManager.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Embedded\Tag.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Head.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\HtmlComment.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Navigation.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Page.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PageBuilder.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\Post.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PostTypes\AlbumPost.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PostTypes\NavCategory.cs" />
-    <Compile Include="ClientSide\HtmlGenerators\PostTypes\TextPost.cs" />
-    <Compile Include="NewReferenceDialogControls\HrefControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="NewReferenceDialogControls\HrefControl.Designer.cs">
-      <DependentUpon>HrefControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PushPost_Main.xaml.cs">
+    <Compile Include="Models\Database\Archive.cs" />
+    <Compile Include="Models\Database\DatabaseTestHarness.cs" />
+    <Compile Include="Models\Database\PostsDataContext.cs" />
+    <Compile Include="Models\Database\PostTableLayer.cs" />
+    <Compile Include="Models\HtmlGeneration\Breadcrumbs.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\Code.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\Footer.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\Image.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\IResource.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\Link.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\ResourceManager.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\Tag.cs" />
+    <Compile Include="Models\HtmlGeneration\Head.cs" />
+    <Compile Include="Models\HtmlGeneration\HtmlComment.cs" />
+    <Compile Include="Models\HtmlGeneration\Navigation.cs" />
+    <Compile Include="Models\HtmlGeneration\Page.cs" />
+    <Compile Include="Models\HtmlGeneration\PageBuilder.cs" />
+    <Compile Include="Models\HtmlGeneration\Post.cs" />
+    <Compile Include="Models\HtmlGeneration\PostTypes\AlbumPost.cs" />
+    <Compile Include="Models\HtmlGeneration\PostTypes\NavCategory.cs" />
+    <Compile Include="Models\HtmlGeneration\PostTypes\TextPost.cs" />
+    <Compile Include="View\PushPost_Main.xaml.cs">
       <DependentUpon>PushPost_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -136,41 +132,40 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="View\App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClientSide\_TestHTML\blog_p0001.html" />
-    <Content Include="ClientSide\_TestHTML\blog_p0002.html" />
-    <Content Include="ClientSide\_TestHTML\cba.patricksears.ca\download.html" />
-    <Content Include="ClientSide\_TestHTML\code.html" />
-    <Content Include="ClientSide\_TestHTML\css\gallery.css" />
-    <Content Include="ClientSide\_TestHTML\css\styles.css" />
-    <Content Include="ClientSide\_TestHTML\gallery.html" />
-    <Content Include="ClientSide\_TestHTML\gallery_2.html" />
-    <Content Include="ClientSide\_TestHTML\gallery_3.html" />
-    <Content Include="ClientSide\_TestHTML\generated_page.html" />
-    <Resource Include="ClientSide\_TestHTML\img\logo.png" />
-    <Content Include="ClientSide\_TestHTML\index.html" />
-    <Resource Include="ClientSide\_TestHTML\legacy\background.jpg" />
-    <Content Include="ClientSide\_TestHTML\legacy\cba.html" />
-    <Content Include="ClientSide\_TestHTML\legacy\css\ff.css" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\bg_tile.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\contact.png" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\logo.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\nav_grad_dark.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\nav_grad_light.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\shadow_left.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\shadow_right.jpg" />
-    <Resource Include="ClientSide\_TestHTML\legacy\images\test.jpg" />
-    <Content Include="ClientSide\_TestHTML\legacy\index.html" />
-    <Resource Include="ClientSide\_TestHTML\legacy\nf-images\Freewebhosting.gif" />
-    <Resource Include="ClientSide\_TestHTML\legacy\nf-images\nf_back.gif" />
-    <Content Include="ClientSide\_TestHTML\todo.html" />
+    <Content Include="Models\_TestHTML\blog_p0001.html" />
+    <Content Include="Models\_TestHTML\blog_p0002.html" />
+    <Content Include="Models\_TestHTML\cba.patricksears.ca\download.html" />
+    <Content Include="Models\_TestHTML\code.html" />
+    <Content Include="Models\_TestHTML\css\gallery.css" />
+    <Content Include="Models\_TestHTML\css\styles.css" />
+    <Content Include="Models\_TestHTML\gallery.html" />
+    <Content Include="Models\_TestHTML\gallery_2.html" />
+    <Content Include="Models\_TestHTML\gallery_3.html" />
+    <Content Include="Models\_TestHTML\generated_page.html" />
+    <Resource Include="Models\_TestHTML\img\logo.png" />
+    <Content Include="Models\_TestHTML\index.html" />
+    <Resource Include="Models\_TestHTML\legacy\background.jpg" />
+    <Content Include="Models\_TestHTML\legacy\cba.html" />
+    <Content Include="Models\_TestHTML\legacy\css\ff.css" />
+    <Resource Include="Models\_TestHTML\legacy\images\bg_tile.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\contact.png" />
+    <Resource Include="Models\_TestHTML\legacy\images\logo.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\nav_grad_dark.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\nav_grad_light.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\shadow_left.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\shadow_right.jpg" />
+    <Resource Include="Models\_TestHTML\legacy\images\test.jpg" />
+    <Content Include="Models\_TestHTML\legacy\index.html" />
+    <Resource Include="Models\_TestHTML\legacy\nf-images\Freewebhosting.gif" />
+    <Resource Include="Models\_TestHTML\legacy\nf-images\nf_back.gif" />
+    <Content Include="Models\_TestHTML\todo.html" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AddRefControls\" />
-    <Folder Include="ClientSide\Images\" />
-    <Folder Include="S3\" />
+    <Folder Include="Models\ImageHandling\" />
+    <Folder Include="Models\S3\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
