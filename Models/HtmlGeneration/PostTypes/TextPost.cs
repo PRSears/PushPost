@@ -100,6 +100,8 @@ namespace PushPost.Models.HtmlGeneration.PostTypes
             return newPost;
         }
 
+        
+
         #region Debugging
         public static string TestHarness()
         {

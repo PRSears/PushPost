@@ -9,41 +9,34 @@ namespace PushPost.Models.HtmlGeneration.Embedded
     /// <remarks>
     /// IResource implementation for creating hypertext links.
     /// </remarks>
-    public class Link : IResource
+    public class Link : NotifyingResource
     {
-        /// <summary>
-        /// Name of the reference for markup.
-        /// </summary>
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// URL being linked to.
-        /// </summary>
-        public string Value
-        {
-            get;
-            set;
-        }
-
+        private string _EnclosedText;
         /// <summary>
         /// Text enclosed in the <code><a></code> tag.
         /// </summary>
-        public string EnclosedText
+        public string EnclosedText 
         {
-            get;
-            set;
+            get
+            {
+                return _EnclosedText;
+            }
+            set
+            {
+                _EnclosedText = value;
+                OnPropertyChanged("EnclosedText");
+            }
+        }
+        public Link()
+        {}
+
+        public Link(string resourceName, string url, string enclosedText):this()
+        {
+            _Name = resourceName;
+            _Value = url;
+            _EnclosedText = enclosedText;
         }
 
-        public Link(string resourceName, string url, string enclosedText)
-        {
-            Name = resourceName;
-            Value = url;
-            EnclosedText = enclosedText;
-        }
 
         /// <summary>
         /// Generates the HTML for this link.
@@ -54,5 +47,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return string.Format(@"<a href=""{0}"">{1}</a>", Value, EnclosedText);
             //return "<a href=\"" + Value + "\">" + EnclosedText + @"</a>";
         }
+
     }
 }

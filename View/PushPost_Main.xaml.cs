@@ -20,7 +20,7 @@ namespace PushPost
             InitializeComponent();
             DataContext = new PostViewModel();
             Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
-
+            
             #region Framerate cap hack...
             // HACK to reduce lag while typing
             System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(

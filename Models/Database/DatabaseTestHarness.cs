@@ -8,7 +8,7 @@ using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.Models.HtmlGeneration.PostTypes;
 
-namespace PushPost.Models.ClientSide.Database
+namespace PushPost.Models.Database
 {
     public static class DatabaseTestHarness
     {

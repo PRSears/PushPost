@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
-    public class InlineImage : IResource
+    public class InlineImage : NotifyingResource
     {
         //
         // TODO implement Model.ClientSide.Images to handle conversion, resizing, 
@@ -14,25 +14,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         // TODO I'll need a system to track where the resized / current image is stored 
         //      so that the upload-to-s3 classes can check to see if the images exist on 
         //      on the server and - if they're not - upload them.
-
-        /// <summary>
-        /// Gets or sets the name of the reference.
-        /// </summary>
-        public string Name
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the value (local path to the image file) of this InlineImage 
-        /// resource reference.
-        /// </summary>
-        public string Value
-        {
-            get;
-            set;
-        }
-
+        
         /// <summary>
         /// Gets the path to the local instance of the image file referenced by this
         /// IResource.
@@ -55,10 +37,15 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
         }
 
-        public InlineImage(string name, string imagePath)
+        public InlineImage()
         {
-            Name = name;
-            Value = imagePath;
+
+        }
+
+        public InlineImage(string name, string imagePath):this()
+        {
+            _Name  = name;
+            _Value = imagePath;
         }
 
         public void Resize(System.Drawing.Size newSize)

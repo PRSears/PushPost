@@ -8,7 +8,7 @@ using System.Text;
 using System.Linq;
 using System;
 
-namespace PushPost.Models.ClientSide.Database
+namespace PushPost.Models.Database
 {
 	/// <remarks>
 	/// This class acts as an intermediary between any implementations of

@@ -73,6 +73,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Commands\PostCommands.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
+    <Compile Include="ViewModels\NewReferenceViewModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
     <Compile Include="View\AddRefsDialog.xaml.cs">
       <DependentUpon>AddRefsDialog.xaml</DependentUpon>
@@ -88,7 +90,7 @@
     <Compile Include="Models\HtmlGeneration\Breadcrumbs.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\Code.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\Footer.cs" />
-    <Compile Include="Models\HtmlGeneration\Embedded\Image.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\InlineImage.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\IResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\Link.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceManager.cs" />

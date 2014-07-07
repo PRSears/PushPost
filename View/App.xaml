@@ -1,7 +1,7 @@
 ﻿<Application x:Class="PushPost.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="PushPost_Main.xaml">
+             StartupUri="AddRefsDialog.xaml">
     <Application.Resources>
                 
         <ControlTemplate x:Key="Label">
@@ -137,18 +137,3 @@
 
     </Application.Resources>
 </Application>
-    
-<!--<ControlTemplate x:Key="FlatActionButton" TargetType="{x:Type Button}">
-            <Button 
-                x:Name="ActionButton" 
-                Background="#eeeeee" 
-                BorderThickness="1" 
-                BorderBrush="#FFB8B8B8" 
-                Foreground="#FF2E2E2E" 
-                Width="120" 
-                Height="50" 
-                Margin="0,0,10,0" 
-                Content="{TemplateBinding Content}" 
-                Style="{TemplateBinding Style}"
-            />
-        </ControlTemplate>-->

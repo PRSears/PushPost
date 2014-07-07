@@ -6,53 +6,71 @@ using System.Threading.Tasks;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
-    public class Code : IResource
+    public class Code : NotifyingResource
     {
-        public Code(string name, string sampleText)
+        /// <summary>
+        /// Initializes a new instance of the Code class, with no values
+        /// for the IResource properties.
+        /// </summary>
+        public Code()
         {
-            Name = name;
-            Value = sampleText;
+            // defaults
+            _LineNum = 1; 
+            _PreformatClass = "prettyprint"; 
+        }
 
-            LineNum = 1; // defaults
-            PreformatClass = "prettyprint"; 
+        public Code(string name, string sampleText):this()
+        {
+            _Name = name;
+            _Value = sampleText;
         }
 
         public Code(string name, string sampleText, int lineNum) : this(name, sampleText)
         {
-            LineNum = lineNum;
+            _LineNum = lineNum;
         }
 
         public Code(string name, string sampleText, string preformatClass) : this(name, sampleText)
         {
-            PreformatClass = preformatClass;
+            _PreformatClass = preformatClass;
         }
 
         public Code(string name, string sampleText, int lineNum, string preformatClass) : this(name, sampleText, lineNum)
         {
-            PreformatClass = preformatClass;
+            _PreformatClass = preformatClass;
         }
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        #region Boxed properties
 
-        public string Value
-        {
-            get;
-            set;
-        }
+        private int    _LineNum;
+        private string _PreformatClass;
 
-        public int LineNum
+        #endregion
+
+        public int LineNum 
         {
-            get;
-            set;
+            get
+            {
+                return _LineNum;
+            }
+            set
+            {
+                _LineNum = value;
+                OnPropertyChanged("LineNum");
+            }
         }
 
         public string PreformatClass 
-        { 
-            get; set; 
+        {
+            get
+            {
+                return _PreformatClass;
+            }
+            set
+            {
+                _PreformatClass = value;
+                OnPropertyChanged("PreformatClass");
+            }
         }
 
         public string CreateHTML()

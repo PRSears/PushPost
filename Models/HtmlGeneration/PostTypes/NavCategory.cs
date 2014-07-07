@@ -6,9 +6,13 @@ namespace PushPost.Models.HtmlGeneration.PostTypes
     public class NavCategory
     {
         //
-        // TODO Try to match unknown categories against a categories.cfg file with (optional) extra listings
-
-        // If new properties are added, make sure to update the statics, and Equals() method.
+        // TODO_ Perhaps try to match unknown categories against a categories.cfg 
+        //       file with (optional) extra listings.
+        //  
+        // Dear Future Me,
+        //      Just use typeof(class) and pass around the Type object,
+        //      instead of this convoluted mess.
+        //      
 
         public string Category
         {
@@ -23,6 +27,7 @@ namespace PushPost.Models.HtmlGeneration.PostTypes
         }
 
         // !!
+        // If new properties are added, make sure to update the statics, and Equals() method.
         // Remember to change this.AllCategories any time a static constructor is added.
         // !!
 

@@ -175,13 +175,4 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return null;
         }
     }
-
-    public class ResourceType
-    {
-        public string Type
-        {
-            get;
-            set;
-        }
-    }
 }

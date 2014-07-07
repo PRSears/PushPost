@@ -61,14 +61,9 @@ namespace PushPost.ViewModels
         /// Initializes a new instance of the PostViewModel class, using the default 
         /// settings for a blog type post.
         /// </summary>
-        public PostViewModel():this(NavCategory.Blog){}
-
-        /// <summary>
-        /// Initializes a new isntance of the PostViewModel class.
-        /// </summary>
-        public PostViewModel(NavCategory category)
+        public PostViewModel()
         {
-            InitPost(category);
+            _Post = new TextPost();
 
             this.QueuePostCommand       = new QueuePostCommand(this);
             this.SubmitPostCommand      = new SubmitPostCommand(this);
@@ -76,17 +71,45 @@ namespace PushPost.ViewModels
             this.SubmitQueueCommand     = new SubmitQueueCommand(this);
             this.DiscardCommand         = new DiscardNewPostCommand(this);
         }
-        private void InitPost(NavCategory category)
+
+        /// <summary>
+        /// Initializes a new isntance of the PostViewModel class.
+        /// </summary>
+        /// <param name="category">Category of Post the view is to be bound with.</param>
+        public PostViewModel(NavCategory category):this()
+        {
+            InitializeByCategory(category);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the PostViewModel class.
+        /// </summary>
+        /// <param name="type">Type of Post the view is to be bound with.</param>
+        public PostViewModel(Type type):this()
+        {
+            InitializeByType(type);
+        }
+
+        private void InitializeByType(Type type)
+        {
+            if      (type == typeof(TextPost))
+                _Post = TextPost.TemplatePost();
+            else if (type == typeof(AlbumPost))
+                _Post = AlbumPost.TemplatePost();
+            else
+                Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
+                // Doesn't override the default _Post the parameterless constructor set.
+        }
+
+        private void InitializeByCategory(NavCategory category)
         {
             if (category == NavCategory.Blog || category == NavCategory.Code || category == NavCategory.Contact)
                 _Post = TextPost.TemplatePost();
             else if (category == NavCategory.Photography)
-                _Post = new AlbumPost();
+                _Post = AlbumPost.TemplatePost();
             else
-            {
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
-                _Post = new TextPost();
-            }
+                // Doesn't override the default _Post the parameterless constructor set.
         }
 
         public bool CanSubmitPost 
@@ -142,7 +165,7 @@ namespace PushPost.ViewModels
 
         public void Discard()
         {
-            InitPost(Post.Category);
+            InitializeByType(_Post.GetType());
             System.Windows.Forms.MessageBox.Show("Discarded post.");
         }
     }

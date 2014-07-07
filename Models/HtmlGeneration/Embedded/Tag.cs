@@ -3,11 +3,12 @@ using System.Text;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using Extender.Databases;
+using System.ComponentModel;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
     [Table(Name="Tags")]
-    public class Tag : IStorable
+    public class Tag : IStorable, INotifyPropertyChanged
     {
         private Guid _TagID;
         [Column(IsPrimaryKey=true, Storage="_TagID")]
@@ -34,6 +35,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             {
                 _PostID = value;
                 _TagID = new Guid(this.GetHashData()); // re-hash if PostID changes
+                OnPropertyChanged("PostID");
             }
         }
 
@@ -49,6 +51,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             {
                 _Text  = value;
                 _TagID = new Guid(this.GetHashData()); //rehash if Text changes
+                OnPropertyChanged("Text");
             }
         }
 
@@ -66,7 +69,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         public Tag()
         {
             _PostID = Guid.Empty;
-            _Text = string.Empty;
+            _Text   = string.Empty;
         }
 
         [Obsolete]
@@ -93,5 +96,21 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             return Extender.ObjectUtils.Hashing.GenerateHashCode(blocks);
         }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
     }
 }

@@ -12,7 +12,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
     /// IResource implementation for creating HTML of a footer embedded in a post.
     /// </remarks>
     [Table(Name = "Footnotes")]
-    public class Footer : IResource, IStorable
+    public class Footer : NotifyingResource, IStorable
     {
         private Guid _UID;
         /// <summary>
@@ -30,33 +30,45 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
         }
 
+        #region Boxed properties
+
+        private string _Class;
+        private Guid   _PostID;
+        
+        #endregion
+
         /// <summary>
         /// Parent Post's Guid.
         /// </summary>
         [Column]
-        public Guid PostID
+        public Guid PostID 
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Name of the reference for markup.
-        /// </summary>
-        public string Name
-        {
-            get;
-            set;
+            get
+            {
+                return _PostID;
+            }
+            set
+            {
+                _PostID = value;
+                OnPropertyChanged("PostID");
+            }
         }
 
         /// <summary>
         /// Full text (including any HTML) contained in this footer.
         /// </summary>
-        [Column]
+        [Column(Storage="_Value")]
         public string Value
         {
-            get;
-            set;
+            get
+            {
+                return _Value;
+            }
+            set
+            {
+                _Value = value;
+                OnPropertyChanged("Value");
+            }
         }
 
         /// <summary>
@@ -64,8 +76,15 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// </summary>
         public string Class
         {
-            get;
-            set;
+            get
+            {
+                return _Class;
+            }
+            set
+            {
+                _Class = value;
+                OnPropertyChanged("Class");
+            }
         }
 
         private DateTime CreationTime;
@@ -93,27 +112,27 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
         public Footer()
         {
-            Name = string.Empty;
-            Value = string.Empty;
-            PostID = Guid.Empty;
-            CreationTime = DateTime.MinValue;
+            _Name           = string.Empty;
+            _Value          = string.Empty;
+            _PostID         = Guid.Empty;
+            CreationTime    = DateTime.MinValue;
 
-            this.Class = "footer";
+            _Class = "footer";
         }
 
         public Footer(string name, string text, Guid postID) : this()
         {
-            Name = name;
-            Value = text;
-            PostID = postID;
-            CreationTime = DateTime.Now;
+            _Name           = name;
+            _Value          = text;
+            _PostID         = postID;
+            CreationTime    = DateTime.Now;
 
             _UID = new Guid(this.GetHashData());
         }
 
         public Footer(string name, string text, Guid postID, string className):this(name, text, postID)
         {
-            this.Class = className;
+            _Class = className;
         }
 
         /// <summary>

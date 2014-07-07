@@ -179,7 +179,7 @@ namespace PushPost.Models.HtmlGeneration
 
         public static void TestHarness()
         {
-            using (PushPost.Models.ClientSide.Database.Archive db = new PushPost.Models.ClientSide.Database.Archive(@"Post_TestDB_2014-29-04_003.mdf"))
+            using (PushPost.Models.Database.Archive db = new PushPost.Models.Database.Archive(@"Post_TestDB_2014-29-04_003.mdf"))
             {
                 List<Post> posts = db.Dump().ToList();
 
@@ -195,3 +195,5 @@ namespace PushPost.Models.HtmlGeneration
         }
     }
 }
+
+// TODO Get optional css class/id names from a .cfg file.

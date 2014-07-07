@@ -98,6 +98,11 @@ namespace PushPost.Models.HtmlGeneration.PostTypes
             throw new NotImplementedException();
         }
 
+        public static Post TemplatePost()
+        {
+            return new AlbumPost("Enter Title", "Enter Author", "Enter album description.");
+        }
+
         public static string TestHarness()
         {
             AlbumPost testAlbum = new AlbumPost("test album", "patrick");

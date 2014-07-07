@@ -113,7 +113,7 @@ namespace PushPost.Commands
         } 
     }
 
-    internal class SubmitQueueCommand :ICommand
+    internal class SubmitQueueCommand : ICommand
     {
         private PostViewModel _ViewModel;
 
@@ -136,6 +136,6 @@ namespace PushPost.Commands
         public void Execute(object parameter)
         {
             _ViewModel.SubmitQueue();
-        } 
+        }
     }
 }

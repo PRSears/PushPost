@@ -1,4 +1,5 @@
-﻿using PushPost.Models.HtmlGeneration.Embedded;
+﻿using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration.Embedded;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Extender.ObjectUtils;
@@ -217,7 +218,7 @@ namespace PushPost.Models.HtmlGeneration
         abstract protected void RenderBody(HtmlTextWriter w);
         abstract protected void RenderFooter(HtmlTextWriter w);
         abstract protected void RenderComments(HtmlTextWriter w);
-
+        
         public virtual string ParsedMainText
         {
             get

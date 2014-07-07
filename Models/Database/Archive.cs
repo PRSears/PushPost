@@ -10,7 +10,7 @@ using PushPost.Models.HtmlGeneration.Embedded;
 using Extender.Date;
 using Extender.Exceptions;
 
-namespace PushPost.Models.ClientSide.Database
+namespace PushPost.Models.Database
 {
     // TODO load connection string from a config file
 
