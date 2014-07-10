@@ -137,6 +137,7 @@
     <None Include="View\App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="img\dropshadow.png" />
     <Content Include="Models\_TestHTML\blog_p0001.html" />
     <Content Include="Models\_TestHTML\blog_p0002.html" />
     <Content Include="Models\_TestHTML\cba.patricksears.ca\download.html" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <Folder Include="Models\ImageHandling\" />
     <Folder Include="Models\S3\" />
+    <Folder Include="View\AddRefsComponents\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

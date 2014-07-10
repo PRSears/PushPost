@@ -93,7 +93,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// Renders the HTML for a footer that does NOT contain any IResource references.
         /// </summary>
         /// <returns>The generated HTML as a string.</returns>
-        public string CreateHTML()
+        public override string CreateHTML()
         {
             return this.CreateHTML(null);
         }

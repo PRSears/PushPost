@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
-    internal abstract class NotifyingResource : IResource
+    public abstract class NotifyingResource : IResource
     {
         protected string _Name;
         protected string _Value;
@@ -43,6 +43,8 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 OnPropertyChanged("Value");
             }
         }
+
+        public abstract string CreateHTML();
         
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -55,5 +57,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
     }
 }

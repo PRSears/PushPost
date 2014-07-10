@@ -27,18 +27,7 @@ namespace PushPost.ViewModels
         /// </param>
         public NewReferenceViewModel(Type type)
         {
-            // HACK Doesn't seem like the best way of going about this...
-
-            if      (type == typeof(InlineImage))
-                _Resource = new InlineImage();
-            else if (type == typeof(Code))
-                _Resource = new Code();
-            else if (type == typeof(Footer))
-                _Resource = new Footer();
-            else if (type == typeof(Link))
-                _Resource = new Link();
-            else
-                throw new ArgumentException("resourceType is not an acceptable type.");
+            Initialize(type);
         }
         
         /// <summary>
@@ -56,6 +45,29 @@ namespace PushPost.ViewModels
         /// </summary>
         public NewReferenceViewModel():this(typeof(Code))
         {
+        }
+
+        protected void Initialize(Type type)
+        {
+            // HACK Doesn't seem like the best way of going about this...
+
+            if      (type == typeof(InlineImage))
+                _Resource = new InlineImage();
+            else if (type == typeof(Code))
+                _Resource = new Code();
+            else if (type == typeof(Footer))
+                _Resource = new Footer();
+            else if (type == typeof(Link))
+                _Resource = new Link();
+            else
+                throw new ArgumentException("resourceType is not a recognized type.");
+        }
+        
+
+
+        public void Discard()
+        {
+            Initialize(Resource.GetType());
         }
     }
 }

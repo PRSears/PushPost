@@ -63,7 +63,7 @@ namespace PushPost.ViewModels
         /// </summary>
         public PostViewModel()
         {
-            _Post = new TextPost();
+            _Post = TextPost.TemplatePost();
 
             this.QueuePostCommand       = new QueuePostCommand(this);
             this.SubmitPostCommand      = new SubmitPostCommand(this);

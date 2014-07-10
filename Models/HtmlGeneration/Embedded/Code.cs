@@ -73,7 +73,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
         }
 
-        public string CreateHTML()
+        public override string CreateHTML()
         {
             StringBuilder build = new StringBuilder();
             build.AppendLine("\n<pre class=\"" + this.PreformatClass + " linenums:" + this.LineNum + "\"><code>");

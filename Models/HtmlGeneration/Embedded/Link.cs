@@ -42,7 +42,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// Generates the HTML for this link.
         /// </summary>
         /// <returns></returns>
-        public string CreateHTML()
+        public override string CreateHTML()
         {
             return string.Format(@"<a href=""{0}"">{1}</a>", Value, EnclosedText);
             //return "<a href=\"" + Value + "\">" + EnclosedText + @"</a>";

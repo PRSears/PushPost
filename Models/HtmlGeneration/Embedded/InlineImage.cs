@@ -68,7 +68,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// Creates HTML markup of an image tag pointing to the local version
         /// of this Image.
         /// </summary>
-        public string CreateHTML()
+        public override string CreateHTML()
         {
             return this.CreateHTML(true);
         }
