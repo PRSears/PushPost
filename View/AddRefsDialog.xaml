@@ -1,24 +1,72 @@
 ﻿<Window x:Class="PushPost.AddRefsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:PushPost.ViewModels.CreateRefViewModels"
         Title="Create New Reference"
         Height="480" 
-        Width="640"
+        Width="500"
         MinHeight="480"
-        MinWidth="640"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        MinWidth="500">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:CreateLinkViewModel}">
+            <Grid>        
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="155"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Text="Link URL:"
+                    Grid.Row="0" Grid.Column="0"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+                <TextBox
+                    x:Name="UrlField"
+                    Grid.Row="0" Grid.Column="1"
+                    Text="{Binding Resource.Value, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{DynamicResource FlatTextFieldStyle}"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+                <TextBlock 
+                    Text="Enclosed text:"
+                    Grid.Row="1" Grid.Column="0"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+                <TextBox
+                    x:Name="EnclosedField"
+                    Grid.Row="1" Grid.Column="1"
+                    Text="{Binding Link.EnclosedText, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{DynamicResource FlatTextFieldStyle}"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:CreateCodeViewModel}">
+            <TextBlock Text="This is the Code page" />
+        </DataTemplate>
+    </Window.Resources>
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="35"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="155"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
 
         <TextBlock
@@ -31,13 +79,11 @@
         <ComboBox
             x:Name="RefTypeDropdown"
             Grid.Row="0" Grid.Column="1"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
             Margin="10,0,10,0"
-            Style="{DynamicResource Dropdown}">
-            <ComboBoxItem Content="Hypertext Reference"/>
-            <ComboBoxItem Content="Code Snippet"/>
-            <ComboBoxItem Content="Image"/>
-            <ComboBoxItem Content="Footnote"/>
+            Style="{DynamicResource Dropdown}"
+            ItemsSource="{Binding ResourceTypeList}"
+            SelectedValue="{Binding CurrentView.Resource.ResourceType}">
         </ComboBox>
 
         <TextBlock
@@ -49,11 +95,10 @@
             Margin="10,0,10,0"/>
         <TextBox
             x:Name="RefNameField"
-            TextChanged="RefNameField_OnTextChanged"
+            Text="{Binding CurrentView.Resource.Name, UpdateSourceTrigger=PropertyChanged}"
             Style="{DynamicResource FlatTextFieldStyle}"
             Grid.Row="1" Grid.Column="1"
-            HorizontalAlignment="Left"
-            Width="200"
+            HorizontalAlignment="Stretch"
             FontSize="16"
             Margin="10,0,10,0" />
 
@@ -66,7 +111,8 @@
             <Button
                 x:Name="AddButton"
                 Content="ADD"
-                Style="{DynamicResource FlatActionButtonStyle}"/>
+                Style="{DynamicResource FlatActionButtonStyle}"
+                Command="{Binding SaveRefCommand}"/>
             <Button
                 x:Name="CancelButton"
                 Content="CANCEL"
@@ -75,9 +121,8 @@
         
         <TextBlock
             x:Name="MarkupPreviewText"
-            Text="{Binding Markup}"
-            Grid.Row="4" Grid.Column="2"
-            Grid.ColumnSpan="2"
+            Text="{Binding CurrentView.Resource.Markup, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Row="4" Grid.Column="1"
             Style="{DynamicResource LabelStyle}"
             FontSize="14"
             HorizontalAlignment="Right"
@@ -89,5 +134,10 @@
                 <MouseBinding Command="" MouseAction="LeftClick"/>
             </TextBlock.InputBindings>
         </TextBlock>
-    </Grid>
+        
+        <ContentControl Content="{Binding CurrentView}"
+                        Grid.Row="2" Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.RowSpan="5"/>
+    </Grid>    
 </Window>    

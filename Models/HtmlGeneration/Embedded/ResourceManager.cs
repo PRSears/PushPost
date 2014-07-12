@@ -100,6 +100,13 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return resourceNames;
         }
 
+        public static string ExpandReferences(string text)
+        { 
+            // TODO attempt to load IResources list from temp file
+            //      created by Temp.References
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Replaces all IResource references with the full HTML generated
         /// by the corresponding IResource(s).

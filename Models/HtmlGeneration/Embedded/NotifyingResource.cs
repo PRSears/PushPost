@@ -7,8 +7,10 @@ using System.ComponentModel;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
+    [Serializable()]
     public abstract class NotifyingResource : IResource
     {
+        protected string _ResourceType;
         protected string _Name;
         protected string _Value;
 
@@ -25,6 +27,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             {
                 _Name = value;
                 OnPropertyChanged("Name");
+                OnPropertyChanged("Markup");
             }
         }
 
@@ -43,6 +46,30 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 OnPropertyChanged("Value");
             }
         }
+        
+        /// <summary>
+        /// A string indicating which concrete type of resource this is.
+        /// </summary>
+        public string ResourceType
+        {
+            get
+            {
+                return _ResourceType;
+            }
+            set
+            {
+                _ResourceType = value;
+                OnPropertyChanged("ResourceType");
+            }
+        }
+
+        public string Markup
+        {
+            get
+            {
+                return string.Format(@"+@({0})", _Name);
+            }
+        }     
 
         public abstract string CreateHTML();
         
@@ -57,6 +84,5 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

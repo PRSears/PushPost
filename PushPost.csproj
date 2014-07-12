@@ -73,8 +73,13 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Commands\PostCommands.cs" />
+    <Compile Include="Commands\ResourceCommands.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
-    <Compile Include="ViewModels\NewReferenceViewModel.cs" />
+    <Compile Include="Models\Temp\References.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\CreateCodeViewModel.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\CreateLinkViewModel.cs" />
+    <Compile Include="ViewModels\IRefViewModel.cs" />
+    <Compile Include="ViewModels\CreateRefViewModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
     <Compile Include="View\AddRefsDialog.xaml.cs">
       <DependentUpon>AddRefsDialog.xaml</DependentUpon>
@@ -127,6 +132,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -169,7 +175,6 @@
   <ItemGroup>
     <Folder Include="Models\ImageHandling\" />
     <Folder Include="Models\S3\" />
-    <Folder Include="View\AddRefsComponents\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,11 +7,11 @@ using System.Windows.Input;
 
 namespace PushPost.Commands
 {
-    internal class SubmitPostCommand : ICommand
+    internal class ViewCreateLinkCommand : ICommand
     {
-        private PostViewModel _ViewModel;
+        private CreateRefViewModel _ViewModel;
 
-        public SubmitPostCommand(PostViewModel viewModel)
+        public ViewCreateLinkCommand(CreateRefViewModel viewModel)
         {
             _ViewModel = viewModel;
         }
@@ -24,20 +24,20 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _ViewModel.CanSubmitPost;
+            return _ViewModel.CanSwitchViews;
         }
 
         public void Execute(object parameter)
         {
-            _ViewModel.SubmitNow();
-        } 
+            _ViewModel.SwitchToLinkView();
+        }
     }
 
-    internal class QueuePostCommand : ICommand
+    internal class ViewCreateCodeCommand : ICommand
     {
-        private PostViewModel _ViewModel;
+        private CreateRefViewModel _ViewModel;
 
-        public QueuePostCommand(PostViewModel viewModel)
+        public ViewCreateCodeCommand(CreateRefViewModel viewModel)
         {
             _ViewModel = viewModel;
         }
@@ -50,20 +50,20 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _ViewModel.CanSubmitPost;
+            return _ViewModel.CanSwitchViews;
         }
 
         public void Execute(object parameter)
         {
-            _ViewModel.QueuePostForSubmit();
-        } 
+            _ViewModel.SwitchToCodeView();
+        }
     }
 
-    internal class RemovePostCommand : ICommand
+    internal class ViewCreateImageCommand : ICommand
     {
-        private PostViewModel _ViewModel;
+        private CreateRefViewModel _ViewModel;
 
-        public RemovePostCommand(PostViewModel viewModel)
+        public ViewCreateImageCommand(CreateRefViewModel viewModel)
         {
             _ViewModel = viewModel;
         }
@@ -76,20 +76,20 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _ViewModel.CanRemovePost;
+            return _ViewModel.CanSwitchViews;
         }
 
         public void Execute(object parameter)
         {
-            _ViewModel.QueueForRemoval();
-        } 
+            _ViewModel.SwitchToImageView();
+        }
     }
 
-    internal class DiscardNewPostCommand : ICommand
+    internal class ViewCreateFootCommand : ICommand
     {
-        private PostViewModel _ViewModel;
+        private CreateRefViewModel _ViewModel;
 
-        public DiscardNewPostCommand(PostViewModel viewModel)
+        public ViewCreateFootCommand(CreateRefViewModel viewModel)
         {
             _ViewModel = viewModel;
         }
@@ -102,22 +102,20 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return true; // THOUGHT Not sure always returning true is a good idea, 
-                         //         but I can't think of any situation where a simple
-                         //         dicard operation shouldn't be allowed to happen.
+            return _ViewModel.CanSwitchViews;
         }
 
         public void Execute(object parameter)
         {
-            _ViewModel.Discard();
-        } 
+            _ViewModel.SwitchToFooterView();
+        }
     }
 
-    internal class SubmitQueueCommand : ICommand
+    internal class SaveRefCommand : ICommand
     {
-        private PostViewModel _ViewModel;
+        private CreateRefViewModel _ViewModel;
 
-        public SubmitQueueCommand(PostViewModel viewModel)
+        public SaveRefCommand(CreateRefViewModel viewModel)
         {
             _ViewModel = viewModel;
         }
@@ -130,13 +128,38 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _ViewModel.CanSubmitPost;
+            return _ViewModel.CanSave;
         }
 
         public void Execute(object parameter)
         {
-            _ViewModel.SubmitQueue();
+            _ViewModel.Save();
         }
     }
 
+    internal class CancelRefCommand : ICommand
+    {
+        private CreateRefViewModel _ViewModel;
+
+        public CancelRefCommand(CreateRefViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            _ViewModel.Cancel();
+        }
+    }
 }

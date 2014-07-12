@@ -37,7 +37,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             _EnclosedText = enclosedText;
         }
 
-
         /// <summary>
         /// Generates the HTML for this link.
         /// </summary>
