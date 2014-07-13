@@ -5,5 +5,8 @@
     <Setting Name="TempReferenceFilename" Type="System.String" Scope="User">
       <Value Profile="(Default)">refs.temp.xml</Value>
     </Setting>
+    <Setting Name="DEBUG" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

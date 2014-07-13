@@ -34,7 +34,14 @@ namespace PushPost.ViewModels.CreateRefViewModels
 
         public void Save(string filename)
         {
-            Models.Temp.References.Save(Resource, filename);
+            ResourceSerializer serializer = new ResourceSerializer();
+
+            this.Save(serializer);
+        }
+
+        public void Save(ResourceSerializer serializer)
+        {
+            serializer.Save(Resource);
         }
 
         public CreateFootViewModel()

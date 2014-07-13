@@ -7,7 +7,6 @@ using System.ComponentModel;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
-    [Serializable()]
     public abstract class NotifyingResource : IResource
     {
         protected string _ResourceType;

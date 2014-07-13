@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using PushPost.Models.HtmlGeneration.Embedded;
 
 namespace PushPost.ViewModels
 {

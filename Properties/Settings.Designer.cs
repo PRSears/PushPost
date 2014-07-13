@@ -34,5 +34,17 @@ namespace PushPost.Properties {
                 this["TempReferenceFilename"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DEBUG {
+            get {
+                return ((bool)(this["DEBUG"]));
+            }
+            set {
+                this["DEBUG"] = value;
+            }
+        }
     }
 }

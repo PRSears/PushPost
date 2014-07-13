@@ -75,6 +75,7 @@
     <Compile Include="Commands\PostCommands.cs" />
     <Compile Include="Commands\ResourceCommands.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
     <Compile Include="Models\Temp\References.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />
