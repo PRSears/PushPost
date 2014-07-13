@@ -27,8 +27,6 @@ namespace PushPost.ViewModels
             }
         }
 
-        #region ICommands 
-
         public ICommand SubmitPostCommand
         {
             get;
@@ -55,7 +53,7 @@ namespace PushPost.ViewModels
             private set;
         }
 
-        #endregion
+        public Action CloseAction { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the PostViewModel class, using the default 

@@ -28,12 +28,22 @@ namespace PushPost
         {
             InitializeComponent();
             DataContext = new CreateRefViewModel(2);
+            RegisterCloseAction();
         }
 
         public AddRefsDialog(int initialTypeIndex)
         {
             InitializeComponent();
             DataContext = new CreateRefViewModel(initialTypeIndex);
+            RegisterCloseAction();
+        }
+
+        protected void RegisterCloseAction()
+        {
+            CreateRefViewModel vm = (DataContext as CreateRefViewModel);
+
+            if (vm.CloseAction == null)
+                vm.CloseAction = new Action(() => this.Close());
         }
 
         private void MarkupPreviewText_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

@@ -19,14 +19,17 @@ namespace PushPost
         {
             InitializeComponent();
             DataContext = new PostViewModel();
+            RegisterCloseAction();
+
             Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
-            
-            #region Framerate cap hack...
-            // HACK to reduce lag while typing
-            System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(
-                typeof(System.Windows.Media.Animation.Timeline), 
-                new FrameworkPropertyMetadata { DefaultValue = 5 });
-            #endregion
+        }
+
+        protected void RegisterCloseAction()
+        {
+            PostViewModel vm = (DataContext as PostViewModel);
+
+            if (vm.CloseAction == null)
+                vm.CloseAction = new Action(() => this.Close());
         }
 
         private string GetAssemblyVersion()

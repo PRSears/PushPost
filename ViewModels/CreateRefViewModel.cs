@@ -1,5 +1,7 @@
 ﻿using PushPost.Commands;
 using PushPost.ViewModels.CreateRefViewModels;
+using Extender.Debugging;
+using Extender.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +39,8 @@ namespace PushPost.ViewModels
 
         public ICommand SaveRefCommand { get; private set; }
         public ICommand CancelRefCommand { get; private set; }
+
+        public Action CloseAction { get; set; }
 
         public CreateRefViewModel() : this(0) { }
 
@@ -110,6 +114,16 @@ namespace PushPost.ViewModels
 
         public void Cancel()
         {
+            System.Windows.Forms.DialogResult r = System.Windows.Forms.MessageBox.Show(
+                "Are you sure?\nAny unsaved changes will be lost.",
+                "Confirm close",
+                System.Windows.Forms.MessageBoxButtons.YesNo
+                );
+
+            if (r == System.Windows.Forms.DialogResult.Yes)
+                CloseAction();
+            else
+                return; // I know this is redundant, but the intended result is a bit more clear.
         }
 
         public bool CanSave
@@ -124,14 +138,24 @@ namespace PushPost.ViewModels
 
         public void Save()
         {
-            CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
+            try
+            {
+                CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                return;
+            }
+
+            CloseAction();
         }
 
         public bool CanSwitchViews
         {
             get
-            {
-                return true; // TODO add logic to enable/disable view switching
+            {   // TODO add logic to enable/disable view switching
+                return string.IsNullOrEmpty(CurrentView.Resource.ResourceType); 
             }
         }
 
