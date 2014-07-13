@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PushPost.ViewModels;
+﻿using PushPost.ViewModels;
+using System;
 using System.Windows.Input;
 
 namespace PushPost.Commands
@@ -160,6 +157,33 @@ namespace PushPost.Commands
         public void Execute(object parameter)
         {
             _ViewModel.Cancel();
+        }
+    }
+
+    internal class BrowseForImageCommand : ICommand
+    {
+        private ViewModels.CreateRefViewModels.CreateImageViewModel _ViewModel;
+
+        public BrowseForImageCommand(
+            ViewModels.CreateRefViewModels.CreateImageViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _ViewModel.CanOpenFileBrowser;
+        }
+
+        public void Execute(object parameter)
+        {
+            _ViewModel.OpenFileBrowser();
         }
     }
 }

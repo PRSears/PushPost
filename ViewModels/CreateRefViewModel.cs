@@ -1,17 +1,27 @@
-﻿using System;
-using PushPost.Commands;
-using Extender.Debugging;
-using System.Windows.Input;
-using System.Collections.Generic;
-using PushPost.Models.HtmlGeneration.Embedded;
-using PushPost.Models.HtmlGeneration.PostTypes;
+﻿using PushPost.Commands;
 using PushPost.ViewModels.CreateRefViewModels;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
-    internal class CreateRefViewModel
+    internal class CreateRefViewModel : INotifyPropertyChanged
     {
-        public IRefViewModel CurrentView { get; set; }
+        public IRefViewModel _CurrentView;
+        public IRefViewModel CurrentView 
+        {
+            get
+            {
+                return _CurrentView;
+            }
+            set
+            {
+                _CurrentView = value;
+                OnPropertyChanged("CurrentView");
+            }
+        }
         protected List<IRefViewModel> ViewHistory { get; set; }
 
         public string[] ResourceTypeList
@@ -37,11 +47,12 @@ namespace PushPost.ViewModels
                 "Hypertext Reference", 
                 "Code Snippet",
                 "Image",
-                "Footnote"
             };
+
+            ViewHistory = new List<IRefViewModel>();
             
             Initialize(ResourceTypeList[resourceType_selectedIndex]);
-            CurrentView.Resource.PropertyChanged += Resource_PropertyChanged;
+            Subscribe();
 
             SaveRefCommand      = new SaveRefCommand(this);
             CancelRefCommand    = new CancelRefCommand(this);
@@ -55,20 +66,40 @@ namespace PushPost.ViewModels
         public void Initialize(string resourceType)
         {
             if      (resourceType.ToLower().Contains("hypertext"))
-                CurrentView = new CreateLinkViewModel();
+                _CurrentView = new CreateLinkViewModel();
             else if (resourceType.ToLower().Contains("code"))
-                CurrentView = new CreateCodeViewModel();
+                _CurrentView = new CreateCodeViewModel();
+            else if (resourceType.ToLower().Contains("image"))
+                _CurrentView = new CreateImageViewModel();
             else
                 throw new ArgumentException("Provided resourceType is not supported.");
 
             CurrentView.Resource.ResourceType = resourceType;
         }
 
+        protected void Subscribe()
+        {
+            CurrentView.Resource.PropertyChanged += Resource_PropertyChanged;
+        }
+
         void Resource_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == "ResourceType")
             {
-                // TODO handle resource type changing
+                Console.WriteLine("Attempting to switch ViewModels.");
+
+                string newType = CurrentView.Resource.ResourceType;
+
+                if (newType.ToLower().Contains("hypertext"))
+                    SwitchToLinkView();
+                else if (newType.ToLower().Contains("code"))
+                    SwitchToCodeView();
+                else if (newType.ToLower().Contains("image"))
+                    SwitchToImageView();
+                else
+                    System.Windows.Forms.MessageBox.Show("Unkown ResourceType. Cannot switch views.");
+
+                CurrentView.Resource.QuietSetResourceType(newType);
             }
         }
 
@@ -84,8 +115,10 @@ namespace PushPost.ViewModels
         public bool CanSave
         {
             get
-            { 
-                return true; // TODO Add CanSave logic
+            {
+                return
+                    (!string.IsNullOrEmpty(CurrentView.Resource.Name)) &&
+                    (!string.IsNullOrEmpty(CurrentView.Resource.Value));
             }
         }
 
@@ -111,6 +144,7 @@ namespace PushPost.ViewModels
                 nextVM = new CreateLinkViewModel();
 
             CurrentView = nextVM;
+            Subscribe();
         }
 
         public void SwitchToCodeView()
@@ -122,16 +156,24 @@ namespace PushPost.ViewModels
                 nextVM = new CreateCodeViewModel();
 
             CurrentView = nextVM;
-        }
-
-        public void SwitchToFooterView()
-        {
-            System.Windows.Forms.MessageBox.Show("Switching to footer vm not implemented.");
+            Subscribe();
         }
 
         public void SwitchToImageView()
         {
-            System.Windows.Forms.MessageBox.Show("Switching to image vm not implemented.");
+            AddToHistory(CurrentView);
+            IRefViewModel nextVM = RetrieveFromHistory(typeof(CreateImageViewModel));
+
+            if (nextVM == null)
+                nextVM = new CreateImageViewModel();
+
+            CurrentView = nextVM;
+            Subscribe();
+        }
+
+        public void SwitchToFooterView()
+        {
+            throw new NotImplementedException();
         }
 
         protected IRefViewModel RetrieveFromHistory(Type type)
@@ -160,6 +202,20 @@ namespace PushPost.ViewModels
             ViewHistory.Add(current);
         }
 
+        #region INotifyPropertyChanged Members
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
     }
 }

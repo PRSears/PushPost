@@ -34,7 +34,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <summary>
         /// Value to be inserted into this Resources HTML tag.
         /// </summary>
-        public string Value 
+        public virtual string Value 
         {
             get
             {
@@ -61,6 +61,11 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 _ResourceType = value;
                 OnPropertyChanged("ResourceType");
             }
+        }
+
+        public virtual void QuietSetResourceType(string newType)
+        {
+            _ResourceType = newType;
         }
 
         public string Markup

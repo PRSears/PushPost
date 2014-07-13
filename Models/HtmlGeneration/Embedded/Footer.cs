@@ -58,7 +58,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// Full text (including any HTML) contained in this footer.
         /// </summary>
         [Column(Storage="_Value")]
-        public string Value
+        public override string Value
         {
             get
             {

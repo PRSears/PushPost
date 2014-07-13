@@ -76,6 +76,8 @@
     <Compile Include="Commands\ResourceCommands.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\Temp\References.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateCodeViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateLinkViewModel.cs" />
     <Compile Include="ViewModels\IRefViewModel.cs" />

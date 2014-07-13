@@ -27,7 +27,7 @@ namespace PushPost
         public AddRefsDialog()
         {
             InitializeComponent();
-            DataContext = new CreateRefViewModel();
+            DataContext = new CreateRefViewModel(2);
         }
 
         public AddRefsDialog(int initialTypeIndex)

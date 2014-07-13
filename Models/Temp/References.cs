@@ -16,11 +16,15 @@ namespace PushPost.Models.Temp
             System.Xml.Serialization.XmlSerializer w =
                 new System.Xml.Serialization.XmlSerializer(resource.GetType());
 
-            StreamWriter file = File.AppendText(Path.Combine(
+            using (StreamWriter file = File.AppendText(Path.Combine(
                 Directory.GetCurrentDirectory(),
-                filename));
+                filename)))
+            {
 
-            w.Serialize(file, resource);
+                w.Serialize(file, resource);
+
+                file.WriteLine("\n----");                
+            }
         }
 
         public static List<IResource> Load(string filename)

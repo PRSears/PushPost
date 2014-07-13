@@ -4,6 +4,7 @@
     {
         string Name { get; set; }
         string Value { get; set; }
+        string ResourceType { get; set; }
 
         string CreateHTML();
     }
