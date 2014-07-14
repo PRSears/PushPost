@@ -3,7 +3,7 @@ using System.Text;
 using System.Linq;
 using System.Web.UI;
 using System.Collections.Generic;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 
 namespace PushPost.Models.HtmlGeneration
 {
@@ -16,7 +16,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <summary>
         /// List of Categories to include in the navigation links.
         /// </summary>
-        public List<PostTypes.NavCategory> Categories
+        public List<NavCategory> Categories
         {
             get;
             set;
@@ -26,7 +26,7 @@ namespace PushPost.Models.HtmlGeneration
         /// The category link to highlight in order to indicate the parent Page's 
         /// Navigation Category.
         /// </summary>
-        public PostTypes.NavCategory CurrentCategory
+        public NavCategory CurrentCategory
         {
             get;
             set;
@@ -34,8 +34,8 @@ namespace PushPost.Models.HtmlGeneration
 
         public Navigation()
         {
-            Categories = new List<PostTypes.NavCategory>(PostTypes.NavCategory.AllCategories);
-            CurrentCategory = PostTypes.NavCategory.Contact; 
+            Categories = new List<NavCategory>(NavCategory.AllCategories);
+            CurrentCategory = NavCategory.Contact; 
         }
 
         /// <param name="currentCategory">
@@ -50,7 +50,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <param name="categories">
         /// List of Categories to include in the navigation links.
         /// </param>
-        public Navigation(List<PostTypes.NavCategory> categories):this()
+        public Navigation(List<NavCategory> categories):this()
         {
             this.Categories = categories;
         }

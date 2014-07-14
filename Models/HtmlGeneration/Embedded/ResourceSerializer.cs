@@ -11,6 +11,18 @@ using Extender.Strings;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
+    //
+    // TODO_  (ResourceSerializer re-write)
+    //
+    //      I should really just save each new reference's xml to a separate file, creating
+    //      filenames at runtime by checking for collisions and incrementing --
+    //      OR better yet, just check to see how many files are in the Subfolder and then 
+    //      check / inc as neccessary.
+    //
+    //      This could make loading easier, since I could put IResource.Name in the filename.
+    //      That way instead of loading (potentially) hundreds of XML files, I'd just need to 
+    //      iterate through a List<string> of filenames in the Subfolder.
+
     /// <remarks>
     /// Class containing functions for serialization and deserialization of 
     /// IResource objects.
@@ -92,7 +104,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             this.UseProgramFolder   = true;
         }
 
-        protected string GetSplitFilename(byte fileNum)
+        protected string GetSplitFilename(Int16 fileNum)
         {
             return AggregateFilename.InsertBeforeExtension("_" + fileNum.ToString("D3"));
         }
@@ -175,7 +187,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             using (StreamReader buffer = new StreamReader(AbsoluteFilename))
             {
-                byte fileNum = 1;
+                Int16 fileNum = 1;
                 string cl;
 
                 if (buffer.Peek() != -1) cl = buffer.ReadLine();
@@ -228,7 +240,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
         /*
          * 
-         * Debugging members
+         * debug members
          * 
          */
 

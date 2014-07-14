@@ -8,7 +8,7 @@ using System.Web.UI;
 using PushPost.Models.HtmlGeneration.Embedded;
 using Debug = System.Diagnostics.Debug;
 
-namespace PushPost.Models.HtmlGeneration.PostTypes
+namespace PushPost.Models.HtmlGeneration
 {
     public class AlbumPost : Post
     {

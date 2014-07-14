@@ -76,7 +76,6 @@
     <Compile Include="Commands\ResourceCommands.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
-    <Compile Include="Models\Temp\References.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateCodeViewModel.cs" />
@@ -109,9 +108,9 @@
     <Compile Include="Models\HtmlGeneration\Page.cs" />
     <Compile Include="Models\HtmlGeneration\PageBuilder.cs" />
     <Compile Include="Models\HtmlGeneration\Post.cs" />
-    <Compile Include="Models\HtmlGeneration\PostTypes\AlbumPost.cs" />
-    <Compile Include="Models\HtmlGeneration\PostTypes\NavCategory.cs" />
-    <Compile Include="Models\HtmlGeneration\PostTypes\TextPost.cs" />
+    <Compile Include="Models\HtmlGeneration\AlbumPost.cs" />
+    <Compile Include="Models\HtmlGeneration\NavCategory.cs" />
+    <Compile Include="Models\HtmlGeneration\TextPost.cs" />
     <Compile Include="View\PushPost_Main.xaml.cs">
       <DependentUpon>PushPost_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -147,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\dropshadow.png" />
+    <Resource Include="img\noimg.png" />
     <Content Include="Models\_TestHTML\blog_p0001.html" />
     <Content Include="Models\_TestHTML\blog_p0002.html" />
     <Content Include="Models\_TestHTML\cba.patricksears.ca\download.html" />

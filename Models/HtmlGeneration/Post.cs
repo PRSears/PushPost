@@ -1,4 +1,4 @@
-﻿using PushPost.Models.HtmlGeneration.PostTypes;
+﻿using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +21,7 @@ namespace PushPost.Models.HtmlGeneration
         private string                  _Author;
         private string                  _MainText;
         private DateTime                _Timestamp;
-        private PostTypes.NavCategory   _Category;
+        private NavCategory   _Category;
         #endregion
 
         protected Guid _PostID;
@@ -118,7 +118,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <summary>
         /// Which site-category this Post is posted under.
         /// </summary>
-        public PostTypes.NavCategory Category 
+        public NavCategory Category 
         {
             get
             {
@@ -140,7 +140,7 @@ namespace PushPost.Models.HtmlGeneration
             }
             set
             {
-                this.Category = PostTypes.NavCategory.TryParse(value);
+                this.Category = NavCategory.TryParse(value);
             }
         }
 
@@ -295,7 +295,7 @@ namespace PushPost.Models.HtmlGeneration
             Author      = string.Empty;
             MainText    = string.Empty;
             Timestamp   = DateTime.MinValue;
-            Category    = PostTypes.NavCategory.None;
+            Category    = NavCategory.None;
 
             Footers     = new List<Embedded.Footer>();
             Resources   = new List<Embedded.IResource>();

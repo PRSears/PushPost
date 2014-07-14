@@ -53,7 +53,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <param name="category">The category the Page resides in.</param>
         /// <param name="pageNumber">The page number of the Page.</param>
         /// <returns>Returns a filename of the format: <example>blog_0001.html</example></returns>
-        public static string GenerateFilename(PostTypes.NavCategory category, int pageNumber)
+        public static string GenerateFilename(NavCategory category, int pageNumber)
         {
             return string.Format("{0}_p{1}.html", category.ToString(), pageNumber.ToString("D4"));
         }
@@ -64,12 +64,12 @@ namespace PushPost.Models.HtmlGeneration
         /// <param name="category">The category the Page resides in.</param>
         /// <param name="pageNumber">The page number of the Page.</param>
         /// <returns>Return a title of the format: <example>Blog (page 1)</example></returns>
-        public static string GenerateTitle(PostTypes.NavCategory category, int pageNumber)
+        public static string GenerateTitle(NavCategory category, int pageNumber)
         {
             return string.Format("{0} - page {1}", category.ToTitleString(), pageNumber);
         }
 
-        public PostTypes.NavCategory PageCategory
+        public NavCategory PageCategory
         {
             get
             {
@@ -258,12 +258,12 @@ namespace PushPost.Models.HtmlGeneration
             links.Add("blog_p3");
 
             Head t1_Head = new Head("Test Page 01", hypertextReferences);
-            Navigation upNav = new Navigation(PostTypes.NavCategory.Blog);
+            Navigation upNav = new Navigation(NavCategory.Blog);
             Breadcrumbs loNav = new Breadcrumbs(links, 1, "(C) Patrick Sears 2014");
 
             List<Post> testPosts = new List<Post>();
             for (int i = 0; i < 11; i++)
-                testPosts.Add(new PostTypes.TextPost(i.ToString("D2") + " Post", DateTime.Now.AddDays(i), "Patrick Sears", "Post #" + i.ToString("D2") + "\nBlog post!\nAnother paragraph!\n\nHoly shit!!+@(Test)"));
+                testPosts.Add(new TextPost(i.ToString("D2") + " Post", DateTime.Now.AddDays(i), "Patrick Sears", "Post #" + i.ToString("D2") + "\nBlog post!\nAnother paragraph!\n\nHoly shit!!+@(Test)"));
 
             Page tp = new Page(t1_Head, upNav, loNav, testPosts);
 

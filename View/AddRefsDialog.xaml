@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:PushPost.ViewModels.CreateRefViewModels"
         Title="Create New Reference"
-        Height="480" 
+        Height="490" 
         Width="500"
-        MinHeight="480"
+        MinHeight="490"
         MinWidth="500">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:CreateLinkViewModel}">
@@ -176,7 +176,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Stretch="Uniform"
-                    Source="{Binding Image.Value}"/>                    
+                    Source="{Binding Image.Value}"/>         
             </Grid>
         </DataTemplate>
     </Window.Resources>

@@ -1,5 +1,5 @@
 ﻿using PushPost.Models.HtmlGeneration;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using Extender.ObjectUtils;
@@ -118,7 +118,7 @@ namespace PushPost.Models.Database
 			Title = string.Empty;
 			Timestamp = DateTime.MinValue;
 			Author = string.Empty;
-			PostCategory = PushPost.Models.HtmlGeneration.PostTypes.NavCategory.None.ToString();
+			PostCategory = PushPost.Models.HtmlGeneration.NavCategory.None.ToString();
 			MainText = string.Empty;
 
 			Footers = new List<PushPost.Models.HtmlGeneration.Embedded.Footer>();
@@ -185,7 +185,7 @@ namespace PushPost.Models.Database
 			post.Title = this.Title;
 			post.Timestamp = this.Timestamp;
 			post.Author = this.Author;
-			post.Category = PushPost.Models.HtmlGeneration.PostTypes.NavCategory.Parse(this.PostCategory);
+			post.Category = PushPost.Models.HtmlGeneration.NavCategory.Parse(this.PostCategory);
 			post.MainText = this.MainText;
 
 			post.Footers = this.Footers;
@@ -227,7 +227,7 @@ namespace PushPost.Models.Database
 			post.Title = layer.Title;
 			post.Timestamp = layer.Timestamp;
 			post.Author = layer.Author;
-			post.Category = PushPost.Models.HtmlGeneration.PostTypes.NavCategory.Parse(layer.PostCategory);
+			post.Category = PushPost.Models.HtmlGeneration.NavCategory.Parse(layer.PostCategory);
 			post.MainText = layer.MainText;
 
 			post.Footers = layer.Footers;

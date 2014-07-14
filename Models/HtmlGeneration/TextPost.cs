@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Web.UI;
 
-namespace PushPost.Models.HtmlGeneration.PostTypes
+namespace PushPost.Models.HtmlGeneration
 {
     /// <remarks>
     /// Concrete implementation of Post containing methods to generate HTML

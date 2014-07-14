@@ -31,7 +31,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         }
 
         /// <summary>
-        /// Value to be inserted into this Resources HTML tag.
+        /// Value to be inserted into this Resource's HTML tag.
         /// </summary>
         public virtual string Value 
         {

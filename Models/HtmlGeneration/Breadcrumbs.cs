@@ -3,7 +3,7 @@ using System.IO;
 using System.Web.UI;
 using System.Linq;
 using System.Collections.Generic;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 using System.Text;
 
 namespace PushPost.Models.HtmlGeneration

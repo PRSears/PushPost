@@ -17,7 +17,8 @@ namespace PushPost
         {
             base.OnStartup(e);
 
-            // HACK to reduce lag while typing
+            // "Workaround" to reduce lag while typing
+            // Caps framerate at 5fps.
             System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(
                 typeof(System.Windows.Media.Animation.Timeline),
                 new FrameworkPropertyMetadata { DefaultValue = 5 });

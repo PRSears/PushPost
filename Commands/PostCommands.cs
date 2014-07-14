@@ -139,4 +139,39 @@ namespace PushPost.Commands
         }
     }
 
+    internal class AddIResourceCommand : ICommand
+    {
+        private PostViewModel _ViewModel;
+
+        public AddIResourceCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _ViewModel.CanAddResource;
+        }
+
+        public void Execute(object parameter)
+        {
+            int startIndex = -1;
+
+            if      (parameter is int)
+                startIndex = (int)parameter;
+            else if (parameter is string)
+                int.TryParse((string)parameter, out startIndex);
+
+            if (startIndex < 0)
+                startIndex = 0;
+
+            _ViewModel.OpenAddRefsDialog(startIndex);
+        }
+    }
 }

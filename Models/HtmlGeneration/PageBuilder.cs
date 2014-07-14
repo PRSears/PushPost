@@ -7,7 +7,7 @@ using Extender.Exceptions;
 using Extender.Debugging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 
 namespace PushPost.Models.HtmlGeneration
 {

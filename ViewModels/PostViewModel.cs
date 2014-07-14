@@ -4,7 +4,7 @@ using Extender.Debugging;
 using System.Windows.Input;
 using System.Collections.Generic;
 using PushPost.Models.HtmlGeneration;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 
 namespace PushPost.ViewModels
 {
@@ -52,6 +52,11 @@ namespace PushPost.ViewModels
             get;
             private set;
         }
+        public ICommand AddIResourceCommand
+        {
+            get;
+            private set;
+        }
 
         public Action CloseAction { get; set; }
 
@@ -68,6 +73,7 @@ namespace PushPost.ViewModels
             this.RemovePostCommand      = new RemovePostCommand(this);
             this.SubmitQueueCommand     = new SubmitQueueCommand(this);
             this.DiscardCommand         = new DiscardNewPostCommand(this);
+            this.AddIResourceCommand    = new AddIResourceCommand(this);
         }
 
         /// <summary>
@@ -138,6 +144,14 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool CanAddResource
+        {
+            get
+            {
+                // TODO implement CanAddResource logic
+                return true;
+            }
+        }
 
         public void QueuePostForSubmit()
         {
@@ -152,6 +166,12 @@ namespace PushPost.ViewModels
         public void SubmitQueue()
         {
             System.Windows.Forms.MessageBox.Show("Submitted queue");
+        }
+
+        public void OpenAddRefsDialog(int startIndex)
+        {
+            AddRefsDialog dialog = new AddRefsDialog(startIndex);
+            dialog.Show();
         }
 
         public void SubmitNow()

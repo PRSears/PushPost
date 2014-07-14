@@ -299,7 +299,7 @@ namespace PushPost.Models.Database
             List<Post> test_posts = new List<Post>();
             for (int i = 0; i < 12; i++)
             {
-                test_posts.Add(HtmlGeneration.PostTypes.TextPost.Dummy());
+                test_posts.Add(HtmlGeneration.TextPost.Dummy());
                 Console.WriteLine(test_posts[i].ToString());
             }
 

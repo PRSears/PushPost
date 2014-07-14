@@ -84,7 +84,8 @@
         <ComboBox 
             x:Name="CategoryDropdown"
             Grid.Row="0" Grid.Column="1" 
-            HorizontalAlignment="Right" 
+            HorizontalAlignment="Right"
+            Width="200"
             Margin="0,0,20,0" 
             Style="{DynamicResource Dropdown}"
             ItemsSource="{Binding CategoriesList}"
@@ -148,8 +149,10 @@
             Orientation="Horizontal" 
             Margin="10,0">
             <Button 
-                x:Name="AddImgButton"
-                Content="add image reference" 
+                x:Name="AddHrefButton"
+                Content="add href"
+                Command="{Binding AddIResourceCommand}"
+                CommandParameter="0"
                 Width="122" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -160,6 +163,8 @@
             <Button 
                 x:Name="AddCodeButton"
                 Content="add code reference" 
+                Command="{Binding AddIResourceCommand}"
+                CommandParameter="1"
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -169,8 +174,10 @@
                 Margin="8,0,0,0"
                 Style="{DynamicResource RefButtonStyle}" />
             <Button 
-                x:Name="AddFootButton"
-                Content="add footnote" 
+                x:Name="AddImgButton"
+                Content="add image reference" 
+                Command="{Binding AddIResourceCommand}"
+                CommandParameter="2"
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -180,8 +187,8 @@
                 Margin="10,0,0,0"
                 Style="{DynamicResource RefButtonStyle}" />
             <Button 
-                x:Name="AddHrefButton"
-                Content="add href"
+                x:Name="AddFootButton"
+                Content="add footnote" 
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 

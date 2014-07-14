@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 
 namespace PushPost.Models.Database
 {

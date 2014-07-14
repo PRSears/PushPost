@@ -4,7 +4,7 @@ using Extender.Debugging;
 using System.Windows.Input;
 using System.Collections.Generic;
 using PushPost.Models.HtmlGeneration.Embedded;
-using PushPost.Models.HtmlGeneration.PostTypes;
+using PushPost.Models.HtmlGeneration;
 using PushPost.ViewModels.CreateRefViewModels;
 
 namespace PushPost.ViewModels.CreateRefViewModels
@@ -15,6 +15,14 @@ namespace PushPost.ViewModels.CreateRefViewModels
         {
             get;
             set;
+        }
+
+        protected Uri DefaultImage
+        {
+            get
+            {
+                return new Uri("/img/noimg.png", UriKind.Relative);
+            }
         }
 
         public InlineImage Image
@@ -53,6 +61,7 @@ namespace PushPost.ViewModels.CreateRefViewModels
         public void Initialize()
         {
             Resource = new InlineImage();
+            Resource.Value = DefaultImage.ToString();
         }
 
         public void Save(string filename)

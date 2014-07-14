@@ -1,7 +1,7 @@
 ﻿using System;
 using Extender.Strings;
 
-namespace PushPost.Models.HtmlGeneration.PostTypes
+namespace PushPost.Models.HtmlGeneration
 {
     public class NavCategory
     {
