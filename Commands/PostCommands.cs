@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PushPost.ViewModels;
+﻿using PushPost.ViewModels;
+using System;
 using System.Windows.Input;
 
 namespace PushPost.Commands
 {
+    internal abstract class PostCommands : ICommand
+    {
+        protected PostViewModel _ViewModel;
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+    }
+
     internal class SubmitPostCommand : ICommand
     {
         private PostViewModel _ViewModel;
@@ -172,6 +180,32 @@ namespace PushPost.Commands
                 startIndex = 0;
 
             _ViewModel.OpenAddRefsDialog(startIndex);
+        }
+    }
+
+    internal class AddFootnoteCommand : ICommand
+    {
+        private PostViewModel _ViewModel;
+
+        public AddFootnoteCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _ViewModel.CanAddResource;
+        }
+
+        public void Execute(object parameter)
+        {
+            _ViewModel.OpenAddFootnoteDialog();
         }
     }
 }

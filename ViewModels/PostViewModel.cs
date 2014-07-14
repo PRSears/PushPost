@@ -57,6 +57,11 @@ namespace PushPost.ViewModels
             get;
             private set;
         }
+        public ICommand AddFootnoteCommand
+        {
+            get;
+            private set;
+        }
 
         public Action CloseAction { get; set; }
 
@@ -74,6 +79,7 @@ namespace PushPost.ViewModels
             this.SubmitQueueCommand     = new SubmitQueueCommand(this);
             this.DiscardCommand         = new DiscardNewPostCommand(this);
             this.AddIResourceCommand    = new AddIResourceCommand(this);
+            this.AddFootnoteCommand     = new AddFootnoteCommand(this);
         }
 
         /// <summary>
@@ -172,6 +178,11 @@ namespace PushPost.ViewModels
         {
             AddRefsDialog dialog = new AddRefsDialog(startIndex);
             dialog.Show();
+        }
+
+        public void OpenAddFootnoteDialog()
+        {
+            System.Windows.Forms.MessageBox.Show("Footnotes not implemented.");
         }
 
         public void SubmitNow()

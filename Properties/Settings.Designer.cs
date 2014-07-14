@@ -46,5 +46,17 @@ namespace PushPost.Properties {
                 this["DEBUG"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CloseConfirmations {
+            get {
+                return ((bool)(this["CloseConfirmations"]));
+            }
+            set {
+                this["CloseConfirmations"] = value;
+            }
+        }
     }
 }

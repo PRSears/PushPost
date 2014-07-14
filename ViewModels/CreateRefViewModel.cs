@@ -33,6 +33,12 @@ namespace PushPost.ViewModels
             private set;
         }
 
+        public bool ConfirmClose
+        {
+            get;
+            set;
+        }
+
         public ICommand ViewCreateLinkCommand   { get; private set; }
         public ICommand ViewCreateCodeCommand   { get; private set; }
         public ICommand ViewCreateFootCommand   { get; private set; }
@@ -54,7 +60,21 @@ namespace PushPost.ViewModels
                 "Image",
             };
 
-            ViewHistory = new List<IRefViewModel>();
+            // TODO Use actual Type objects instead
+            //      Use ResourceTypes[i].ToString() in the combobox...
+
+            Type[] ResourceTypes = new Type[] 
+            {
+                typeof(Link),
+                typeof(Code),
+                typeof(InlineImage)
+            };
+
+            // Then use Type.ToString() to decide how to init _CurrentView
+            // Then 
+
+            ViewHistory     = new List<IRefViewModel>();
+            ConfirmClose    = Properties.Settings.Default.CloseConfirmations;
             
             Initialize(ResourceTypeList[resourceType_selectedIndex]);
             Subscribe();
@@ -115,16 +135,7 @@ namespace PushPost.ViewModels
 
         public void Cancel()
         {
-            System.Windows.Forms.DialogResult r = System.Windows.Forms.MessageBox.Show(
-                "Are you sure?\nAny unsaved changes will be lost.",
-                "Confirm close",
-                System.Windows.Forms.MessageBoxButtons.YesNo
-                );
-
-            if (r == System.Windows.Forms.DialogResult.Yes)
-                CloseAction();
-            else
-                return; // I know this is redundant, but the intended result is a bit more clear.
+            CloseAction();
         }
 
         public bool CanSave

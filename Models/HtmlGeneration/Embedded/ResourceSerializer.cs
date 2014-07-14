@@ -233,7 +233,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         protected string GetResourceFullTypeName(string typeName)
         {
             return string.Format("{0}.{1}",
-                typeof(NotifyingResource).Namespace,
+                typeof(IResource).Namespace,
                 typeName.Trim(new char[] { ' ', '.' }));
         }
 
