@@ -28,11 +28,11 @@
             VerticalAlignment="Top"
             Height="22" >
             <MenuItem Header="File">
-                <MenuItem Header="Import from file..."/>
-                <MenuItem Header="Preview in browser..."/>
-                <MenuItem Header="Sumbit to archive"/>
+                <MenuItem Header="Import from file..." Command="{Binding ImportFromFileCommand}"/>
+                <MenuItem Header="Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
+                <MenuItem Header="Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
                 <Separator/>
-                <MenuItem Header="Exit"/>
+                <MenuItem Header="Exit" Command="{}"/>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Post creator" IsCheckable="True" IsChecked="True"/>

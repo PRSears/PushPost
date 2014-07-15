@@ -8,9 +8,16 @@ using System.ComponentModel;
 using System.Windows.Input;
 using PushPost.Models.HtmlGeneration.Embedded;
 
+//
+// TODO Overhaul reference adding
+//
+//      Stop being a fucking idiot, pass the Post object to the ViewModel
+//      and call Post.Resources.Add() on the ViewModel's Resource object @
+//      window close event
+
 namespace PushPost.ViewModels
 {
-    internal class CreateRefViewModel : INotifyPropertyChanged
+    internal class CreateRefViewModel : Extender.WPF.ViewModel
     {
         public IRefViewModel _CurrentView;
         public IRefViewModel CurrentView 
@@ -33,12 +40,6 @@ namespace PushPost.ViewModels
             private set;
         }
 
-        public bool ConfirmClose
-        {
-            get;
-            set;
-        }
-
         public ICommand ViewCreateLinkCommand   { get; private set; }
         public ICommand ViewCreateCodeCommand   { get; private set; }
         public ICommand ViewCreateFootCommand   { get; private set; }
@@ -46,9 +47,7 @@ namespace PushPost.ViewModels
 
         public ICommand SaveRefCommand { get; private set; }
         public ICommand CancelRefCommand { get; private set; }
-
-        public Action CloseAction { get; set; }
-
+        
         public CreateRefViewModel() : this(0) { }
 
         public CreateRefViewModel(int resourceType_selectedIndex)
@@ -237,21 +236,5 @@ namespace PushPost.ViewModels
 
             ViewHistory.Add(current);
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
     }
 }

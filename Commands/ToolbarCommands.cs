@@ -11,14 +11,104 @@ namespace PushPost.Commands
             _ViewModel = viewModel;
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            return false;
+            return _ViewModel.MenuToolbarCanExecute;
         }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
-
+            _ViewModel.ImportFromFile();
         }        
-    }    
+    }
+
+    internal class PreviewInBrowserCommand : PostCommands
+    {
+        public PreviewInBrowserCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.MenuToolbarCanExecute;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.PreviewInBrowser();
+        }
+    }
+
+    internal class OpenArchiveManagerCommand : PostCommands
+    {
+        public OpenArchiveManagerCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.MenuToolbarCanExecute;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.OpenArchiveManager();
+        }
+    }
+
+    internal class OpenPageGeneratorCommand : PostCommands
+    {
+        public OpenPageGeneratorCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.MenuToolbarCanExecute;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.OpenPageGenerator();
+        }
+    }
+
+    internal class ViewReferencesCommand : PostCommands
+    {
+        public ViewReferencesCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.HasReferences;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.ViewReferences();
+        }
+    }
+
+    internal class ViewFootnotesCommand : PostCommands
+    {
+        public ViewFootnotesCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.HasFootnotes;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.ViewFootnotes();
+        }
+    }
 }

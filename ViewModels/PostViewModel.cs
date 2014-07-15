@@ -4,11 +4,10 @@ using Extender.Debugging;
 using System.Windows.Input;
 using System.Collections.Generic;
 using PushPost.Models.HtmlGeneration;
-using PushPost.Models.HtmlGeneration;
 
 namespace PushPost.ViewModels
 {
-    internal class PostViewModel
+    internal class PostViewModel : Extender.WPF.ViewModel
     {
         private Post _Post;
 
@@ -27,43 +26,22 @@ namespace PushPost.ViewModels
             }
         }
 
-        public ICommand SubmitPostCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand SubmitQueueCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand QueuePostCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand RemovePostCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand DiscardCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand AddIResourceCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand AddFootnoteCommand
-        {
-            get;
-            private set;
-        }
+        #region ICommands
+        public ICommand SubmitPostCommand           { get; private set; }
+        public ICommand SubmitQueueCommand          { get; private set; }
+        public ICommand QueuePostCommand            { get; private set; }
+        public ICommand RemovePostCommand           { get; private set; }
+        public ICommand DiscardCommand              { get; private set; }
+        public ICommand AddIResourceCommand         { get; private set; }
+        public ICommand AddFootnoteCommand          { get; private set; }
 
-        public Action CloseAction { get; set; }
+        public ICommand ImportFromFileCommand       { get; private set; }
+        public ICommand PreviewInBrowserCommand     { get; private set; }
+        public ICommand OpenArchiveManagerCommand   { get; private set; }
+        public ICommand OpenPageGeneratorCommand    { get; private set; }
+        public ICommand ViewReferencesCommand       { get; private set; }
+        public ICommand ViewFootnotesCommand        { get; private set; }
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the PostViewModel class, using the default 
@@ -71,8 +49,11 @@ namespace PushPost.ViewModels
         /// </summary>
         public PostViewModel()
         {
+            base.Initialize();
+
             _Post = TextPost.TemplatePost();
 
+            // Post buttons' commands
             this.QueuePostCommand       = new QueuePostCommand(this);
             this.SubmitPostCommand      = new SubmitPostCommand(this);
             this.RemovePostCommand      = new RemovePostCommand(this);
@@ -80,6 +61,14 @@ namespace PushPost.ViewModels
             this.DiscardCommand         = new DiscardNewPostCommand(this);
             this.AddIResourceCommand    = new AddIResourceCommand(this);
             this.AddFootnoteCommand     = new AddFootnoteCommand(this);
+
+            // Menu toolbar commands
+            this.ImportFromFileCommand      = new ImportFromFileCommand(this);
+            this.PreviewInBrowserCommand    = new PreviewInBrowserCommand(this);
+            this.OpenArchiveManagerCommand  = new OpenArchiveManagerCommand(this);
+            this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
+            this.ViewReferencesCommand      = new ViewReferencesCommand(this);
+            this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
         }
 
         /// <summary>
@@ -159,6 +148,32 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool HasReferences
+        {
+            get
+            {
+                return true; // TODO add HasReferences logic... Check to see if the refs temp file is present
+            }
+        }
+
+        public bool HasFootnotes
+        {
+            get
+            {
+                return true; // TODO add HasFootnotes logic... Check to see if the refs temp file is present
+            }
+        }
+
+        public bool MenuToolbarCanExecute
+        {
+            get { return true; } // TODO add MenuToolbarCanExecute logic
+        }
+
+        public void ImportFromFile()
+        {
+            System.Windows.Forms.MessageBox.Show("Import file.");
+        }
+
         public void QueuePostForSubmit()
         {
             System.Windows.Forms.MessageBox.Show("Post queued.");
@@ -196,6 +211,31 @@ namespace PushPost.ViewModels
         {
             InitializeByType(_Post.GetType());
             System.Windows.Forms.MessageBox.Show("Discarded post.");
+        }
+
+        public void PreviewInBrowser()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OpenArchiveManager()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OpenPageGenerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ViewReferences()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ViewFootnotes()
+        {
+            throw new NotImplementedException();
         }
     }
 }

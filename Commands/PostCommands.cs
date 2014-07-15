@@ -13,6 +13,16 @@ namespace PushPost.Commands
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+
+        public virtual bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public virtual void Execute(object parameter)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     internal class SubmitPostCommand : ICommand
