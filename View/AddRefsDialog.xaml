@@ -206,7 +206,7 @@
             Margin="10,0,10,0"
             Style="{DynamicResource Dropdown}"
             ItemsSource="{Binding ResourceTypeList}"
-            SelectedValue="{Binding CurrentView.Resource.ResourceType}">
+            SelectedValue="{Binding SelectedResource}">
         </ComboBox>
 
         <TextBlock

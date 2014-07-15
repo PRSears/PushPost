@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Extender.Debugging;
 using PushPost.Commands;
-using Extender.Debugging;
-using System.Windows.Input;
-using System.Collections.Generic;
 using PushPost.Models.HtmlGeneration;
+using System;
+using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
@@ -191,7 +190,7 @@ namespace PushPost.ViewModels
 
         public void OpenAddRefsDialog(int startIndex)
         {
-            AddRefsDialog dialog = new AddRefsDialog(startIndex);
+            AddRefsDialog dialog = new AddRefsDialog(this.Post, startIndex);
             dialog.Show();
         }
 
@@ -204,7 +203,19 @@ namespace PushPost.ViewModels
         {
             // QueuePostForSubmit()
             // Queue.SubmitQueue()...
-            System.Windows.Forms.MessageBox.Show("Submitted post: " + Post.ToString());
+
+            System.Text.StringBuilder post = new System.Text.StringBuilder();
+            post.AppendLine(this.Post.ToString());
+            post.AppendLine("");
+            
+            foreach(PushPost.Models.HtmlGeneration.Embedded.IResource r in Post.Resources)
+            {
+                post.AppendLine(r.ToString());
+            }
+
+            System.Windows.Forms.MessageBox.Show(post.ToString());
+
+            System.Windows.Forms.MessageBox.Show(Post.ParsedMainText);
         }
 
         public void Discard()

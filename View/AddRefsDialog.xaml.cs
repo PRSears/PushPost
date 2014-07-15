@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
+﻿using PushPost.Models.HtmlGeneration;
 using PushPost.ViewModels;
-using PushPost.Models.HtmlGeneration.Embedded;
-using System.Runtime.CompilerServices;
+using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace PushPost
 {
@@ -27,14 +15,25 @@ namespace PushPost
         public AddRefsDialog()
         {
             InitializeComponent();
-            DataContext = new CreateRefViewModel(0);
+            DataContext = new CreateRefViewModel();
             RegisterCloseAction();
         }
 
-        public AddRefsDialog(int initialTypeIndex)
+        public AddRefsDialog(int initialTypeIndex) : this(null, initialTypeIndex) { }
+
+        public AddRefsDialog(Post post, int initialTypeIndex)
         {
             InitializeComponent();
-            DataContext = new CreateRefViewModel(initialTypeIndex);
+            DataContext = new CreateRefViewModel(
+                post,
+                Models.HtmlGeneration.Embedded.NotifyingResource.Types[initialTypeIndex]);
+            RegisterCloseAction();
+        }
+
+        public AddRefsDialog(Post post, Type initialType)
+        {
+            InitializeComponent();
+            DataContext = new CreateRefViewModel(post, initialType);
             RegisterCloseAction();
         }
 

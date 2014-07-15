@@ -49,6 +49,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <summary>
         /// A string indicating which concrete type of resource this is.
         /// </summary>
+        [Obsolete]
         public string ResourceType
         {
             get
@@ -87,6 +88,26 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        /// <summary>
+        /// { Link, Code, InlineImage, Footer }
+        /// </summary>
+        public static Type[] Types = new Type[]
+        {
+            typeof(Link),
+            typeof(Code),
+            typeof(InlineImage),
+            typeof(Footer)
+        };
+
+        public static Type GetType(string typeName)
+        {
+            string fullName = string.Format("{0}.{1}",
+                typeof(NotifyingResource).Namespace,
+                typeName);
+
+            return Type.GetType(fullName, true, true);
         }
     }
 }

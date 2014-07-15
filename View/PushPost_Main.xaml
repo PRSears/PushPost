@@ -32,7 +32,7 @@
                 <MenuItem Header="Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
                 <MenuItem Header="Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
                 <Separator/>
-                <MenuItem Header="Exit" Command="{}"/>
+                <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Post creator" IsCheckable="True" IsChecked="True"/>
@@ -66,31 +66,29 @@
             FontSize="18" 
             Text="{Binding Post.Author, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
-        <RichTextBox 
+        <TextBox 
             x:Name="PostBody"
+            Text="{Binding Post.MainText, UpdateSourceTrigger=PropertyChanged}"
             ScrollViewer.VerticalScrollBarVisibility="Auto" 
             Grid.Row="3" Grid.Column="0" 
-            Grid.ColumnSpan="2" 
+            Grid.ColumnSpan="2"
+            TextWrapping="Wrap"
+            AcceptsReturn="True"
             Foreground="#FFE4E4E4" 
             FontSize="14" 
             Margin="0" 
             Padding="10" 
             BorderThickness="0" 
             BorderBrush="{x:Null}">
-            <RichTextBox.Background>
+            <TextBox.Background>
                 <ImageBrush ImageSource="/PushPost;component/img/dropshadow.png"  
                             TileMode="FlipY"
                             Stretch="Uniform"
                             AlignmentY="Top"
                             Viewport="0,0,2,4000"
                             ViewportUnits="Absolute"/>
-            </RichTextBox.Background>
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="{Binding Post.MainText, UpdateSourceTrigger=PropertyChanged}"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+            </TextBox.Background>
+        </TextBox>
         <TextBlock  
             Text="Category:" 
             Grid.Row="1" Grid.Column="1" 

@@ -1,24 +1,33 @@
-﻿using PushPost.Commands;
+﻿using Extender.Exceptions;
+using PushPost.Commands;
+using PushPost.Models.HtmlGeneration;
+using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.ViewModels.CreateRefViewModels;
-using Extender.Debugging;
-using Extender.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
-using PushPost.Models.HtmlGeneration.Embedded;
-
-//
-// TODO Overhaul reference adding
-//
-//      Stop being a fucking idiot, pass the Post object to the ViewModel
-//      and call Post.Resources.Add() on the ViewModel's Resource object @
-//      window close event
 
 namespace PushPost.ViewModels
 {
     internal class CreateRefViewModel : Extender.WPF.ViewModel
     {
+        private bool DEBUG
+        {
+            get
+            {
+                return Properties.Settings.Default.DEBUG;
+            }
+        }
+
+        private Post _Post;
+        public Post Post
+        {
+            get
+            {
+                return _Post;
+            }
+        }
+
         public IRefViewModel _CurrentView;
         public IRefViewModel CurrentView 
         {
@@ -39,6 +48,12 @@ namespace PushPost.ViewModels
             get;
             private set;
         }
+        private string _SelectedResource;
+        public string SelectedResource
+        {
+            get { return _SelectedResource; }
+            set { _SelectedResource = value; OnPropertyChanged("SelectedResource"); }
+        }
 
         public ICommand ViewCreateLinkCommand   { get; private set; }
         public ICommand ViewCreateCodeCommand   { get; private set; }
@@ -48,35 +63,30 @@ namespace PushPost.ViewModels
         public ICommand SaveRefCommand { get; private set; }
         public ICommand CancelRefCommand { get; private set; }
         
-        public CreateRefViewModel() : this(0) { }
+        public CreateRefViewModel() : this(typeof(Link)) { }
 
-        public CreateRefViewModel(int resourceType_selectedIndex)
+        public CreateRefViewModel(Type initialType)
         {
             ResourceTypeList = new string[]
             { 
-                "Hypertext Reference", 
-                "Code Snippet",
-                "Image",
+                NotifyingResource.Types[0].Name, 
+                NotifyingResource.Types[1].Name,
+                NotifyingResource.Types[2].Name,
             };
 
             // TODO Use actual Type objects instead
             //      Use ResourceTypes[i].ToString() in the combobox...
-
-            Type[] ResourceTypes = new Type[] 
-            {
-                typeof(Link),
-                typeof(Code),
-                typeof(InlineImage)
-            };
 
             // Then use Type.ToString() to decide how to init _CurrentView
             // Then 
 
             ViewHistory     = new List<IRefViewModel>();
             ConfirmClose    = Properties.Settings.Default.CloseConfirmations;
-            
-            Initialize(ResourceTypeList[resourceType_selectedIndex]);
-            Subscribe();
+
+            SwitchToView(initialType);
+            this.PropertyChanged += SelectedResource_PropertyChanged;
+            //Initialize(ResourceTypeList[resourceType_selectedIndex]);
+            //Subscribe();
 
             SaveRefCommand      = new SaveRefCommand(this);
             CancelRefCommand    = new CancelRefCommand(this);
@@ -85,6 +95,12 @@ namespace PushPost.ViewModels
             ViewCreateCodeCommand   = new ViewCreateCodeCommand(this);
             ViewCreateFootCommand   = new ViewCreateFootCommand(this);
             ViewCreateImageCommand  = new ViewCreateImageCommand(this);
+        }
+
+        public CreateRefViewModel(Post post, Type initialType)
+            : this(initialType)
+        {
+            _Post = post;
         }
 
         public void Initialize(string resourceType)
@@ -101,12 +117,31 @@ namespace PushPost.ViewModels
             CurrentView.Resource.ResourceType = resourceType;
         }
 
+        public void InitializeByType(Type type)
+        {
+            if      (type == typeof(Link))
+                _CurrentView = new CreateLinkViewModel();
+
+            else if (type == typeof(Code))
+                _CurrentView = new CreateCodeViewModel();
+
+            else if (type == typeof(InlineImage))
+                _CurrentView = new CreateImageViewModel();
+
+            else
+                throw new ArgumentException("Provided Type is not supported.");
+
+            _SelectedResource = type.Name;
+        }
+
         protected void Subscribe()
         {
             CurrentView.Resource.PropertyChanged += Resource_PropertyChanged;
         }
 
-        void Resource_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected void Resource_PropertyChanged(
+            object sender, 
+            System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == "ResourceType")
             {
@@ -124,6 +159,17 @@ namespace PushPost.ViewModels
                     System.Windows.Forms.MessageBox.Show("Unkown ResourceType. Cannot switch views.");
 
                 CurrentView.Resource.QuietSetResourceType(newType);
+            }
+        }
+
+        protected void SelectedResource_PropertyChanged(
+            object sender, 
+            System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //Console.WriteLine(SelectedResource);
+            if (e.PropertyName == "SelectedResource")
+            {
+                SwitchToView(NotifyingResource.GetType(SelectedResource));
             }
         }
 
@@ -149,14 +195,21 @@ namespace PushPost.ViewModels
 
         public void Save()
         {
-            try
+            if (this.Post == null)
             {
-                CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
+                try
+                {
+                    CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                    return;
+                }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
-                return;
+                this.Post.Resources.Add(CurrentView.Resource);
             }
 
             CloseAction();
@@ -166,8 +219,31 @@ namespace PushPost.ViewModels
         {
             get
             {   // TODO add logic to enable/disable view switching
-                return string.IsNullOrEmpty(CurrentView.Resource.ResourceType); 
+                //return string.IsNullOrEmpty(CurrentView.Resource.ResourceType); 
+                return string.IsNullOrEmpty(this.SelectedResource);
             }
+        }
+
+        public void SwitchToView(Type typeOfView)
+        {
+            if(DEBUG) Console.WriteLine("SwitchToView: " + typeOfView.Name);
+
+            if (typeOfView == typeof(Link))
+                SwitchToLinkView();
+
+            else if (typeOfView == typeof(Code))
+                SwitchToCodeView();
+
+            else if (typeOfView == typeof(InlineImage))
+                SwitchToImageView();
+
+            else if (typeOfView == typeof(Footer))
+                SwitchToFooterView();
+
+            else
+                throw new ArgumentException("Provided Type is not supported.");
+
+            _SelectedResource = typeOfView.Name;
         }
 
         public void SwitchToLinkView()
@@ -179,7 +255,7 @@ namespace PushPost.ViewModels
                 nextVM = new CreateLinkViewModel();
 
             CurrentView = nextVM;
-            Subscribe();
+            //Subscribe();
         }
 
         public void SwitchToCodeView()
@@ -191,7 +267,7 @@ namespace PushPost.ViewModels
                 nextVM = new CreateCodeViewModel();
 
             CurrentView = nextVM;
-            Subscribe();
+            //Subscribe();
         }
 
         public void SwitchToImageView()
@@ -203,7 +279,7 @@ namespace PushPost.ViewModels
                 nextVM = new CreateImageViewModel();
 
             CurrentView = nextVM;
-            Subscribe();
+            //Subscribe();
         }
 
         public void SwitchToFooterView()
@@ -224,6 +300,8 @@ namespace PushPost.ViewModels
 
         protected void AddToHistory(IRefViewModel current)
         {
+            if (current == null) return;
+
             foreach(IRefViewModel vm in ViewHistory)
             {
                 if(vm.GetType() == current.GetType())
