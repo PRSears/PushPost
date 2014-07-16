@@ -52,17 +52,8 @@ namespace PushPost
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if((DataContext as CreateRefViewModel).ConfirmClose)
-            {
-                System.Windows.Forms.DialogResult r = System.Windows.Forms.MessageBox.Show(
-                    "Are you sure?\nAny unsaved changes will be lost.",
-                    "Confirm close",
-                    System.Windows.Forms.MessageBoxButtons.YesNo
-                    );
-
-                if (r != System.Windows.Forms.DialogResult.Yes)
-                    e.Cancel = true;
-            }
+            if(Properties.Settings.Default.CloseConfirmations)
+                e.Cancel = !Extender.WPF.ConfirmationDialog.Show();
 
             base.OnClosing(e);
         }

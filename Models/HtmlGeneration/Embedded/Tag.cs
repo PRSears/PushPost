@@ -97,6 +97,11 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return Extender.ObjectUtils.Hashing.GenerateHashCode(blocks);
         }
 
+        public override string ToString()
+        {
+            return this.Text;
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

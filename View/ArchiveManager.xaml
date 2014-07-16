@@ -1,7 +1,9 @@
 ﻿<Window x:Class="PushPost.View.ArchiveManager"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ArchiveManager" Height="800" Width="700">
+        Title="ArchiveManager" 
+        Width="960" Height="1050" 
+        MinWidth="160" MinHeight="670">
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -28,10 +30,16 @@
         <ListBox ItemsSource="{Binding QueuedPosts}"
                  Grid.Row="1" Grid.Column="0"
                  Margin="10,0,0,0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Post}"/>
+                    <CheckBox IsChecked="{Binding IsChecked}"
+                              HorizontalAlignment="Stretch">
+                        <TextBlock TextWrapping="Wrap" 
+                                   Text="{Binding Post}"
+                                   HorizontalAlignment="Stretch"/>
+                    </CheckBox>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -40,11 +48,13 @@
                     Grid.ColumnSpan="2">
                 <Button Width="85" Height="22"
                         Content="Select All"
+                        Command="{Binding SelectAllCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,0,0,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
                 <Button Width="85" Height="22"
                         Content="Select None"
+                        Command="{Binding SelectNoneCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,0,0,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>            
@@ -58,21 +68,25 @@
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
                         Content="Submit selected"
+                        Command="{Binding SubmitSelectedCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Remove selected"
+                        Command="{Binding RemoveSelectedCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Selected to XML"
+                        Command="{Binding ExportSelectedCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Add from XML"
+                        Command="{Binding ImportFromXMLCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
@@ -83,11 +97,13 @@
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
                         Content="Remove a post"
+                        Command="{Binding RemoveFromDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Edit a post"
+                        Command="{Binding EditFromDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
@@ -98,11 +114,13 @@
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
                         Content="Recreate pages"
+                        Command="{Binding GeneratePagesCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Upload pages"
+                        Command="{Binding UploadPagesCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>

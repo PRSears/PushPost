@@ -1,4 +1,5 @@
 ﻿using Extender.Exceptions;
+using Extender.Debugging;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
@@ -141,7 +142,7 @@ namespace PushPost.ViewModels
         {
             if(e.PropertyName == "ResourceType")
             {
-                Console.WriteLine("Attempting to switch ViewModels.");
+                Debug.WriteMessage("Attempting to switch ViewModels.", DEBUG, "info");
 
                 string newType = CurrentView.Resource.ResourceType;
 
@@ -199,7 +200,7 @@ namespace PushPost.ViewModels
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                    ExceptionTools.WriteExceptionText(e, true);
                     return string.Empty;
                 }
             }
@@ -224,7 +225,7 @@ namespace PushPost.ViewModels
 
         public void SwitchToView(Type typeOfView)
         {
-            if(DEBUG) Console.WriteLine("SwitchToView: " + typeOfView.Name);
+            Debug.WriteMessage("SwitchToView: " + typeOfView.Name, DEBUG);
 
             if (typeOfView == typeof(Link))
                 SwitchToLinkView();

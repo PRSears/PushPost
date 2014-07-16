@@ -253,7 +253,8 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             foreach (IResource resource in s.Load())
             {
-                Console.WriteLine(string.Format(" N:{0} V:{1}", resource.Name, resource.Value));
+                Extender.Debugging.Debug.WriteMessage(
+                    string.Format(" N:{0} V:{1}", resource.Name, resource.Value));
             }
         }
     }

@@ -38,8 +38,8 @@ namespace PushPost.ViewModels
         public ICommand AddIResourceCommand         { get; private set; }
         public ICommand AddFootnoteCommand          { get; private set; }
 
-        public ICommand ImportFromFileCommand { get; private set; }
-        public ICommand ExportToFileCommand { get; private set; }
+        public ICommand ImportFromFileCommand       { get; private set; }
+        public ICommand ExportToFileCommand         { get; private set; }
         public ICommand PreviewInBrowserCommand     { get; private set; }
         public ICommand OpenArchiveManagerCommand   { get; private set; }
         public ICommand OpenPageGeneratorCommand    { get; private set; }
@@ -265,7 +265,7 @@ namespace PushPost.ViewModels
             {
                 this.Post = Post.Deserialize(dialog.FileName);
 
-                if (DEBUG) Console.WriteLine("Imported: " + this._Post.ToString());
+                if (DEBUG) Debug.WriteMessage("Imported: " + this._Post.ToString(), "info");
             }
             else return;
         }

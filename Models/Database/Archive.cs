@@ -254,7 +254,7 @@ namespace PushPost.Models.Database
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                    ExceptionTools.WriteExceptionText(e, true);
                 }
             }
         }
@@ -300,7 +300,7 @@ namespace PushPost.Models.Database
             for (int i = 0; i < 12; i++)
             {
                 test_posts.Add(HtmlGeneration.TextPost.Dummy());
-                Console.WriteLine(test_posts[i].ToString());
+                Extender.Debugging.Debug.WriteMessage(test_posts[i].ToString());
             }
 
             Archive db = new Archive(@"Post_TestDB_2014-29-04_003.mdf");

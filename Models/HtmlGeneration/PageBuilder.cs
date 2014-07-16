@@ -18,7 +18,7 @@ namespace PushPost.Models.HtmlGeneration
     /// </remarks>
     public class PageBuilder
     {
-        public List<Post> Posts
+        public Post[] Posts
         {
             get;
             set;
@@ -50,27 +50,37 @@ namespace PushPost.Models.HtmlGeneration
         {
             this.PostsPerPage   = 10;
             this.Hrefs          = new List<string>();
-            this.Posts          = new List<Post>();
+
+            Hrefs.Add("css/styles.css");
+            Hrefs.Add("css/gallery.css");
+            Hrefs.Add("http://fonts.googleapis.com/css?family=Open+Sans:300");
         }
         #region constructor overloads
-        public PageBuilder(List<Post> posts)
+        public PageBuilder(Post[] posts)
             : this()
         {
             this.Posts = posts;
         }
 
-        public PageBuilder(List<Post> posts, List<string> hrefs)
+        public PageBuilder(Post[] posts, List<string> hrefs)
             : this(posts)
         {
             this.Hrefs = hrefs;
         }
 
-        public PageBuilder(List<string> hrefs)
-            : this(new List<Post>(), hrefs)
-        { }
+        public PageBuilder(List<string> hrefs):this()
+        {
+            this.Hrefs = hrefs;
+        }
 
-        public PageBuilder(List<Post> posts, List<string> hrefs, int postsPerPage)
-            :this(posts, hrefs)
+        public PageBuilder(Post[] posts, List<string> hrefs, int postsPerPage)
+            : this(posts, hrefs)
+        {
+            this.PostsPerPage = postsPerPage;
+        }
+
+        public PageBuilder(Post[] posts, int postsPerPage)
+            : this(posts)
         {
             this.PostsPerPage = postsPerPage;
         }
@@ -85,7 +95,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             Pages = new List<Page>();
 
-            if (this.Posts.Count < 1)
+            if (this.Posts.Length < 1)
                 return Pages;
 
             // for each category of Post of the Post(s) in this.Posts
@@ -168,8 +178,8 @@ namespace PushPost.Models.HtmlGeneration
             }
             catch(Exception e)
             {
-                Console.WriteLine("Failed to save pages to " + outDirectoryPath);
-                Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
+                Debug.WriteMessage("Failed to save pages to " + outDirectoryPath, "warn");
+                ExceptionTools.WriteExceptionText(e, true);
 
                 return false;
             }
@@ -181,9 +191,9 @@ namespace PushPost.Models.HtmlGeneration
         {
             using (PushPost.Models.Database.Archive db = new PushPost.Models.Database.Archive(@"Post_TestDB_2014-29-04_003.mdf"))
             {
-                List<Post> posts = db.Dump().ToList();
+                Post[] posts = db.Dump();
 
-                Console.WriteLine(posts.Count().ToString());
+                Debug.WriteMessage(posts.Count().ToString());
 
                 string[] refs = { "css/styles.css", "css/gallery.css", "http://fonts.googleapis.com/css?family=Open+Sans:300" };
 

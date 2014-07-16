@@ -70,5 +70,29 @@ namespace PushPost.Properties {
                 this["AutoInsertMarkup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int MaxQueueSize {
+            get {
+                return ((int)(this["MaxQueueSize"]));
+            }
+            set {
+                this["MaxQueueSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ConfirmBeforeRemove {
+            get {
+                return ((bool)(this["ConfirmBeforeRemove"]));
+            }
+            set {
+                this["ConfirmBeforeRemove"] = value;
+            }
+        }
     }
 }

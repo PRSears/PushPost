@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
-using PushPost.Models.HtmlGeneration;
+using Extender.Debugging;
 
 namespace PushPost.Models.Database
 {
@@ -27,7 +27,7 @@ namespace PushPost.Models.Database
                     db.CreateDatabase();
 
                 TextPost t = TestPost();
-                Console.WriteLine(t.ToString());
+                Debug.WriteMessage(t.ToString());
 
                 db.Posts.InsertOnSubmit(PostTableLayer.FromPost(t));
 
@@ -51,19 +51,19 @@ namespace PushPost.Models.Database
             {
                 var q = db.Posts.Where(p => p.Author == "Patrick");
 
-                Console.WriteLine("As PostTableLayer: ");
+                Debug.WriteMessage("As PostTableLayer: ");
                 foreach (var result in q)
                 {
-                    Console.WriteLine(result.ToString());
+                    Debug.WriteMessage(result.ToString());
                 }
 
-                Console.WriteLine("As Post: ");
+                Debug.WriteMessage("As Post: ");
                 foreach(var result in q)
                 {
                     Post t = new TextPost();
                     result.ExportTo(ref t);
 
-                    Console.WriteLine(t.ToString());
+                    Debug.WriteMessage(t.ToString());
                 }
             }
         }
