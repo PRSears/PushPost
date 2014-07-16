@@ -36,9 +36,9 @@
                 <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Post creator" IsCheckable="True" IsChecked="True"/>
-                <MenuItem Header="Archive manager" IsCheckable="True" IsChecked="False"/>
-                <MenuItem Header="Page generator" IsCheckable="True" IsChecked="False"/>
+                <MenuItem Header="Post creator" IsCheckable="False" IsChecked="True"/>
+                <MenuItem Header="Archive manager" IsCheckable="True" IsChecked="False"
+                          Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
                 <MenuItem Header="References..."/>
                 <MenuItem Header="Footnotes..."/>
@@ -148,6 +148,7 @@
             <Button 
                 x:Name="ManageQueueButton"
                 Content="MANAGE QUEUE"
+                Command="{Binding OpenArchiveManagerCommand}"
                 Style="{DynamicResource FlatActionButtonStyle}"/>
         </StackPanel>
         <Button 

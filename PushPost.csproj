@@ -68,6 +68,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ArchiveManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PushPost_Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,6 +81,8 @@
     <Compile Include="Commands\ToolbarCommands.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
+    <Compile Include="Models\S3\Push.cs" />
+    <Compile Include="ViewModels\ArchiveViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateCodeViewModel.cs" />
@@ -112,6 +118,9 @@
     <Compile Include="Models\HtmlGeneration\AlbumPost.cs" />
     <Compile Include="Models\HtmlGeneration\NavCategory.cs" />
     <Compile Include="Models\HtmlGeneration\TextPost.cs" />
+    <Compile Include="View\ArchiveManager.xaml.cs">
+      <DependentUpon>ArchiveManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PushPost_Main.xaml.cs">
       <DependentUpon>PushPost_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -178,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ImageHandling\" />
-    <Folder Include="Models\S3\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

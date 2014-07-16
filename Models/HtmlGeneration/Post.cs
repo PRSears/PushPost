@@ -294,10 +294,15 @@ namespace PushPost.Models.HtmlGeneration
 
         public virtual void Serialize(StreamWriter outputStream)
         {
+            // Parse everything before serialization to simplify the 
+            // deserialization proccess.
+            this._MainText = this.ParsedMainText;
+
+            // Serialize Post
             System.Xml.Serialization.XmlSerializer serializer = 
                 new System.Xml.Serialization.XmlSerializer(this.GetType());
 
-            serializer.Serialize(outputStream, this);
+            serializer.Serialize(outputStream, this);            
         }
 
         public static Post Deserialize(string filePath)

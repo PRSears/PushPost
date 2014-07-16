@@ -9,7 +9,6 @@ namespace PushPost.ViewModels
     internal class PostViewModel : Extender.WPF.ViewModel
     {
         private Post _Post;
-
         public Post Post
         {
             get
@@ -233,7 +232,8 @@ namespace PushPost.ViewModels
 
         public void OpenArchiveManager()
         {
-            throw new NotImplementedException();
+            PushPost.View.ArchiveManager archive = new View.ArchiveManager();
+            archive.Show();
         }
 
         public void OpenPageGenerator()
