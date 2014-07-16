@@ -22,6 +22,24 @@ namespace PushPost.Commands
         }        
     }
 
+    internal class ExportToFileCommand : PostCommands
+    {
+        public ExportToFileCommand(PostViewModel viewModel)
+        {
+            _ViewModel = viewModel;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _ViewModel.MenuToolbarCanExecute;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _ViewModel.ExportToFile();
+        }
+    }
+
     internal class PreviewInBrowserCommand : PostCommands
     {
         public PreviewInBrowserCommand(PostViewModel viewModel)

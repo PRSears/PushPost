@@ -58,5 +58,17 @@ namespace PushPost.Properties {
                 this["CloseConfirmations"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoInsertMarkup {
+            get {
+                return ((bool)(this["AutoInsertMarkup"]));
+            }
+            set {
+                this["AutoInsertMarkup"] = value;
+            }
+        }
     }
 }

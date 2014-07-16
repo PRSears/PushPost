@@ -16,6 +16,11 @@ namespace PushPost.ViewModels
             {
                 return _Post;
             }
+            private set
+            {
+                this._Post = value;
+                OnPropertyChanged("Post");
+            }
         }
         public NavCategory[] CategoriesList
         {
@@ -34,7 +39,8 @@ namespace PushPost.ViewModels
         public ICommand AddIResourceCommand         { get; private set; }
         public ICommand AddFootnoteCommand          { get; private set; }
 
-        public ICommand ImportFromFileCommand       { get; private set; }
+        public ICommand ImportFromFileCommand { get; private set; }
+        public ICommand ExportToFileCommand { get; private set; }
         public ICommand PreviewInBrowserCommand     { get; private set; }
         public ICommand OpenArchiveManagerCommand   { get; private set; }
         public ICommand OpenPageGeneratorCommand    { get; private set; }
@@ -63,6 +69,7 @@ namespace PushPost.ViewModels
 
             // Menu toolbar commands
             this.ImportFromFileCommand      = new ImportFromFileCommand(this);
+            this.ExportToFileCommand        = new ExportToFileCommand(this);
             this.PreviewInBrowserCommand    = new PreviewInBrowserCommand(this);
             this.OpenArchiveManagerCommand  = new OpenArchiveManagerCommand(this);
             this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
@@ -168,11 +175,6 @@ namespace PushPost.ViewModels
             get { return true; } // TODO add MenuToolbarCanExecute logic
         }
 
-        public void ImportFromFile()
-        {
-            System.Windows.Forms.MessageBox.Show("Import file.");
-        }
-
         public void QueuePostForSubmit()
         {
             System.Windows.Forms.MessageBox.Show("Post queued.");
@@ -234,19 +236,66 @@ namespace PushPost.ViewModels
             throw new NotImplementedException();
         }
 
-        internal void OpenPageGenerator()
+        public void OpenPageGenerator()
         {
             throw new NotImplementedException();
         }
 
-        internal void ViewReferences()
+        public void ViewReferences()
         {
             throw new NotImplementedException();
         }
 
-        internal void ViewFootnotes()
+        public void ViewFootnotes()
         {
             throw new NotImplementedException();
+        }
+
+        public void ImportFromFile()
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = @"XML documents (*.txt, *.xml)
+                |*.txt;*.xml|All files (*.*)|*.*";
+
+            Nullable<bool> result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                this.Post = Post.Deserialize(dialog.FileName);
+
+                if (DEBUG) Console.WriteLine("Imported: " + this._Post.ToString());
+            }
+            else return;
+        }
+
+        public void ExportToFile()
+        {
+            string savePath;
+
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.Title        = "Save Post as...";
+            dialog.DefaultExt   = ".xml";
+            dialog.FileName     = string.Format("{0}.xml", this.Post.Title);
+
+            Nullable<bool> result = dialog.ShowDialog();
+
+            if  (result == true) savePath = dialog.FileName;
+            else return;
+
+            using(System.IO.StreamWriter stream = System.IO.File.CreateText(savePath))
+            {
+                this.Post.Serialize(stream);
+            }
+        }
+
+        public bool DEBUG 
+        { 
+            get
+            {
+                return Properties.Settings.Default.DEBUG;
+            }
         }
     }
 }

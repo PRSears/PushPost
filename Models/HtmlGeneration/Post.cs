@@ -17,10 +17,10 @@ namespace PushPost.Models.HtmlGeneration
     abstract public class Post : INotifyPropertyChanged
     {
         # region Boxed properties
-        private string                  _Title;
-        private string                  _Author;
-        private string                  _MainText;
-        private DateTime                _Timestamp;
+        private string        _Title;
+        private string        _Author;
+        private string        _MainText;
+        private DateTime      _Timestamp;
         private NavCategory   _Category;
         #endregion
 
@@ -28,6 +28,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <summary>
         /// Guid generated from the hash of this Post's properties.
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
         public Guid UniqueID 
         {
             get
@@ -110,6 +111,7 @@ namespace PushPost.Models.HtmlGeneration
         /// List of any embedded IResource objects referenced by markup 
         /// for the post. 
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
         public List<IResource> Resources; 
         /// <summary>
         /// List of tags (categories/topics/etc) associated with this Post.
@@ -118,6 +120,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <summary>
         /// Which site-category this Post is posted under.
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
         public NavCategory Category 
         {
             get
@@ -287,6 +290,47 @@ namespace PushPost.Models.HtmlGeneration
         public void ForceRefreshUniqueID()
         {
             _PostID = new Guid(this.GetHashData());
+        }
+
+        public virtual void Serialize(StreamWriter outputStream)
+        {
+            System.Xml.Serialization.XmlSerializer serializer = 
+                new System.Xml.Serialization.XmlSerializer(this.GetType());
+
+            serializer.Serialize(outputStream, this);
+        }
+
+        public static Post Deserialize(string filePath)
+        {
+            Type postType;
+
+            // Attempt to determine Post implementation's type.
+            using(FileStream streamedPost = new FileStream(
+                filePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite))
+            {
+                System.Xml.XmlReader r = System.Xml.XmlReader.Create(streamedPost);
+                r.MoveToContent();
+
+                postType = Type.GetType(string.Format(
+                    "{0}.{1}",
+                    typeof(Post).Namespace,
+                    r.Name));
+
+                // default to abstract Post if type could not be determined
+                if (postType == null) postType = typeof(Post);
+
+                streamedPost.Position = 0;
+
+                System.Xml.Serialization.XmlSerializer deserializer = 
+                    new System.Xml.Serialization.XmlSerializer(postType);
+
+                return (Post)deserializer.Deserialize(streamedPost);
+            }
+
+            // TODO handle attached IResource objects as well
         }
 
         public Post()

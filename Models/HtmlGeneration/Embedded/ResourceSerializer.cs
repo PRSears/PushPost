@@ -22,6 +22,9 @@ namespace PushPost.Models.HtmlGeneration.Embedded
     //      This could make loading easier, since I could put IResource.Name in the filename.
     //      That way instead of loading (potentially) hundreds of XML files, I'd just need to 
     //      iterate through a List<string> of filenames in the Subfolder.
+    //
+    //      OR None of this, because I'm a fucking idiot. Just pass the Post object around
+    //      and add to the Resources list directly.
 
     /// <remarks>
     /// Class containing functions for serialization and deserialization of 

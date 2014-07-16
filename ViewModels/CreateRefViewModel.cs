@@ -55,6 +55,8 @@ namespace PushPost.ViewModels
             set { _SelectedResource = value; OnPropertyChanged("SelectedResource"); }
         }
 
+        public bool AutoInsertMarkup { get; set; }
+
         public ICommand ViewCreateLinkCommand   { get; private set; }
         public ICommand ViewCreateCodeCommand   { get; private set; }
         public ICommand ViewCreateFootCommand   { get; private set; }
@@ -74,19 +76,12 @@ namespace PushPost.ViewModels
                 NotifyingResource.Types[2].Name,
             };
 
-            // TODO Use actual Type objects instead
-            //      Use ResourceTypes[i].ToString() in the combobox...
-
-            // Then use Type.ToString() to decide how to init _CurrentView
-            // Then 
-
-            ViewHistory     = new List<IRefViewModel>();
-            ConfirmClose    = Properties.Settings.Default.CloseConfirmations;
+            ViewHistory         = new List<IRefViewModel>();
+            ConfirmClose        = Properties.Settings.Default.CloseConfirmations;
+            AutoInsertMarkup    = Properties.Settings.Default.AutoInsertMarkup;
 
             SwitchToView(initialType);
             this.PropertyChanged += SelectedResource_PropertyChanged;
-            //Initialize(ResourceTypeList[resourceType_selectedIndex]);
-            //Subscribe();
 
             SaveRefCommand      = new SaveRefCommand(this);
             CancelRefCommand    = new CancelRefCommand(this);
@@ -134,6 +129,7 @@ namespace PushPost.ViewModels
             _SelectedResource = type.Name;
         }
 
+        [Obsolete]
         protected void Subscribe()
         {
             CurrentView.Resource.PropertyChanged += Resource_PropertyChanged;
@@ -193,7 +189,7 @@ namespace PushPost.ViewModels
             }
         }
 
-        public void Save()
+        public string Save()
         {
             if (this.Post == null)
             {
@@ -204,15 +200,17 @@ namespace PushPost.ViewModels
                 catch (Exception e)
                 {
                     Console.WriteLine(ExceptionTools.CreateExceptionText(e, true));
-                    return;
+                    return string.Empty;
                 }
             }
             else
             {
                 this.Post.Resources.Add(CurrentView.Resource);
+                if (AutoInsertMarkup) this.Post.MainText += CurrentView.Resource.Markup;
             }
 
             CloseAction();
+            return CurrentView.Resource.Markup;
         }
 
         public bool CanSwitchViews

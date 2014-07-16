@@ -29,6 +29,7 @@
             Height="22" >
             <MenuItem Header="File">
                 <MenuItem Header="Import from file..." Command="{Binding ImportFromFileCommand}"/>
+                <MenuItem Header="Export to file..." Command="{Binding ExportToFileCommand}"/>
                 <MenuItem Header="Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
                 <MenuItem Header="Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
                 <Separator/>
@@ -55,7 +56,7 @@
             HorizontalAlignment="Stretch"
             Grid.Row="1" Grid.Column="0" 
             FontSize="24" 
-            Text="{Binding Post.Title, UpdateSourceTrigger=PropertyChanged}">
+            Text="{Binding Post.Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
         </TextBox>
         <TextBox 
             x:Name="AuthorField"
@@ -64,11 +65,11 @@
             HorizontalAlignment="Stretch"
             Grid.Row="2" Grid.Column="0" 
             FontSize="18" 
-            Text="{Binding Post.Author, UpdateSourceTrigger=PropertyChanged}">
+            Text="{Binding Post.Author, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
         </TextBox>
         <TextBox 
             x:Name="PostBody"
-            Text="{Binding Post.MainText, UpdateSourceTrigger=PropertyChanged}"
+            Text="{Binding Post.MainText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             ScrollViewer.VerticalScrollBarVisibility="Auto" 
             Grid.Row="3" Grid.Column="0" 
             Grid.ColumnSpan="2"
@@ -108,11 +109,11 @@
             Margin="0,0,20,0" 
             Style="{DynamicResource Dropdown}"
             ItemsSource="{Binding CategoriesList}"
-            SelectedValue="{Binding Post.CategoryString}">
+            SelectedValue="{Binding Post.CategoryString, Mode=TwoWay}">
         </ComboBox>
         <DatePicker 
             x:Name="PostDatePicker"
-            SelectedDate="{Binding Post.Timestamp}"
+            SelectedDate="{Binding Post.Timestamp, Mode=TwoWay}"
             Grid.Row="2" Grid.Column="1" 
             Margin="0,0,20,0" Width="200" 
             HorizontalAlignment="Right" VerticalAlignment="Center" 
