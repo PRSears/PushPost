@@ -145,10 +145,26 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             blocks.Add(Encoding.Default.GetBytes(this.Name));
             blocks.Add(Encoding.Default.GetBytes(this.Value));
+            blocks.Add(Encoding.Default.GetBytes(this.Class));
             blocks.Add(PostID.ToByteArray());
             blocks.Add(BitConverter.GetBytes(CreationTime.Ticks));
 
             return Extender.ObjectUtils.Hashing.GenerateHashCode(blocks);
+        }
+
+        public override bool Equals(object obj)
+        {
+            Footer other;
+            if (obj is Footer)
+            {
+                other = (Footer)obj;
+            }
+            else return false;
+
+            return (this.Name.Equals(other.Name)) &&
+                   (this.Value.Equals(other.Value)) &&
+                   (this.Class.Equals(other.Class)) &&
+                   (this.PostID.Equals(other.PostID));
         }
 
         public override string ToString()

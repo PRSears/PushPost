@@ -109,5 +109,20 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             return Type.GetType(fullName, true, true);
         }
+
+        public virtual byte[] GetHashData()
+        {            
+            List<byte[]> blocks = new List<byte[]>();
+
+            blocks.Add(Encoding.Default.GetBytes(this.Name));
+            blocks.Add(Encoding.Default.GetBytes(this.Value));
+
+            return Extender.ObjectUtils.Hashing.GenerateHashCode(blocks);
+        }
+
+        public override int GetHashCode()
+        {
+            return BitConverter.ToInt32(this.GetHashData(), 0);
+        }
     }
 }

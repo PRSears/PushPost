@@ -2,6 +2,7 @@
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels
@@ -55,7 +56,7 @@ namespace PushPost.ViewModels
         {
             base.Initialize();
 
-            _Post = TextPost.TemplatePost();
+            this._Post = TextPost.TemplatePost();
 
             // Post buttons' commands
             this.QueuePostCommand       = new QueuePostCommand(this);

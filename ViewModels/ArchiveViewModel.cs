@@ -128,6 +128,7 @@ namespace PushPost.ViewModels
 
         public void GeneratePages()
         {
+            Models.Database.ArchiveQueue.TestHarness();
         }
 
         public void EditFromDB()
@@ -150,7 +151,7 @@ namespace PushPost.ViewModels
         {
 
             if (ConfirmBeforeRemoval)
-            if (!ConfirmationDialog.Show("Confirm removal", "Remove all selected posts?"))
+            if (!ConfirmationDialog.Show("Confirm removal", "Remove all selected posts from the queue?"))
                 return;
 
             foreach(CheckablePost entry in QueuedPosts.ToArray())

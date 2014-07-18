@@ -77,7 +77,7 @@ namespace PushPost.Models.Database
         }
 
         /// <summary>
-        /// Initializes the Archive object for the database at the provided (relative) path.
+        /// Initializes a new instance of the Archive class for the database at the provided (relative) path.
         /// </summary>
         /// <param name="databaseRelativePath">Relative path (including filename and extension) 
         /// to the database Archive will handle.</param>
@@ -91,6 +91,12 @@ namespace PushPost.Models.Database
             if (!db.DatabaseExists())
                 db.CreateDatabase();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the Archive using the default database filename 
+        /// loaded from the exe.config file.
+        /// </summary>
+        public Archive() : this(Properties.Settings.Default.DBRelativeFilename) { }
 
         /// <summary>
         /// Creates a connection string for connecting to a database inside the current
@@ -303,7 +309,7 @@ namespace PushPost.Models.Database
                 Extender.Debugging.Debug.WriteMessage(test_posts[i].ToString());
             }
 
-            Archive db = new Archive(@"Post_TestDB_2014-29-04_003.mdf");
+            Archive db = new Archive(@"Post_TestDB_2014-17-07_001.mdf");
             db.CommitPosts(test_posts);
             db.SubmitChanges();
             db.Dump(@"2014-29-04_003.dump.txt");

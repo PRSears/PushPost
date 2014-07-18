@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Extender.ObjectUtils;
 using System.Web.UI;
 using System.Text;
+using System.Linq;
 using System.IO;
 using System;
 
@@ -364,6 +365,24 @@ namespace PushPost.Models.HtmlGeneration
 
             PreviewLength           = 250;
             IncludePostEndComments  = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            Post other;
+            if (obj is Post)
+            {
+                other = (Post)obj;
+            }
+            else return false;
+
+            return (this.Title.Equals(other.Title)) &&
+                   (this.Author.Equals(other.Author)) &&
+                   (this.Category.Equals(other.Category)) &&
+                   (this.Timestamp.Equals(other.Timestamp)) &&
+                   (this.ParsedMainText.Equals(other.ParsedMainText)) &&
+                   (this.Footers.Except(other.Footers).Count() == 0) &&
+                   (this.Tags.Except(other.Tags).Count() == 0);
         }
 
         #region INotifyPropertyChanged Members

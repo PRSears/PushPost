@@ -99,7 +99,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             return resourceNames;
         }
-
+                
         public static string ExpandReferences(string text)
         { 
             // TODO attempt to load IResources list from temp file
@@ -152,7 +152,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
                 parsed += remainingText.Substring(0, n - 2);
                 if (resources == null)
-                    Debug.WriteMessage("resources is null, no references can be expanded.", "warn");
+                    Debug.WriteMessage("resources is null, no references can be expanded.", DEBUG, "warn");
                 else if (expand && resources.Count > 0)
                     parsed += GetResourceByName(reference, resources).CreateHTML();
                 // chop off everything BEFORE the final ')'
@@ -181,5 +181,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
             return null;
         }
+
+        private static bool DEBUG = false;
     }
 }

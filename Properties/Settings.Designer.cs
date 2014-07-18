@@ -94,5 +94,29 @@ namespace PushPost.Properties {
                 this["ConfirmBeforeRemove"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.1)_01.mdf")]
+        public string DBRelativeFilename {
+            get {
+                return ((string)(this["DBRelativeFilename"]));
+            }
+            set {
+                this["DBRelativeFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("queue")]
+        public string QueueFolderPath {
+            get {
+                return ((string)(this["QueueFolderPath"]));
+            }
+            set {
+                this["QueueFolderPath"] = value;
+            }
+        }
     }
 }

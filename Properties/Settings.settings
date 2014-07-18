@@ -20,5 +20,11 @@
     <Setting Name="ConfirmBeforeRemove" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="DBRelativeFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">posts_(alpha0.1)_01.mdf</Value>
+    </Setting>
+    <Setting Name="QueueFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">queue</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
