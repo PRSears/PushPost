@@ -20,10 +20,10 @@ namespace PushPost.View
     /// </summary>
     public partial class ArchiveManager : Window
     {
-        public ArchiveManager()
+        public ArchiveManager(Models.Database.ArchiveQueue archiveQueue)
         {
             InitializeComponent();
-            DataContext = new ArchiveViewModel();
+            DataContext = new ArchiveViewModel(archiveQueue);
         }
     }
 }

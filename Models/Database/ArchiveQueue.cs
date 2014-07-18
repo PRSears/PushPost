@@ -6,11 +6,16 @@ using System.IO;
 using System.Threading.Tasks;
 using PushPost.Models.HtmlGeneration;
 using Extender.Debugging;
+using System.Collections;
+using System.ComponentModel;
 
 namespace PushPost.Models.Database
 {
-    public class ArchiveQueue
+    public class ArchiveQueue : INotifyPropertyChanged
     {
+        //private FileSystemWatcher QueueWatcher;
+        public event QueueChangedEventHandler QueueChanged;
+
         /// <summary>
         /// Path to the folder containing queued Posts.
         /// </summary>
@@ -29,8 +34,7 @@ namespace PushPost.Models.Database
             get;
             set;
         }
-
-
+        
         public ArchiveQueue() : this(Properties.Settings.Default.QueueFolderPath) { }
 
         public ArchiveQueue(string storagePath)
@@ -39,12 +43,30 @@ namespace PushPost.Models.Database
             this.FilenameFormat = @"{0}//{1}_queued_post.xml";
         }
 
+        //protected void InitializeWatcher()
+        //{
+        //    this.QueueWatcher               = new FileSystemWatcher();
+        //    this.QueueWatcher.Path          = StoragePath;
+        //    this.QueueWatcher.NotifyFilter  = NotifyFilters.LastWrite;
+
+        //    this.QueueWatcher.Changed += QueueWatcher_Changed;
+        //}
+
+        protected void OnQueueChanged()
+        {
+            QueueChangedEventHandler handler = QueueChanged;
+            if (handler != null)
+                handler(this);
+        }
+
         public void Enqueue(Post post)
         {
             using(StreamWriter outStream = File.CreateText(GetFullFilename(Count())))
             {
                 post.Serialize(outStream);
             }
+
+            OnQueueChanged();
         }
 
         public Post Dequeue()
@@ -63,7 +85,38 @@ namespace PushPost.Models.Database
                 File.Move(queuedFiles[i], GetFullFilename(i));
             }
 
+            OnQueueChanged();
             return dequed;
+        }
+
+        public void Remove(Post post)
+        {
+            string[] files = GetQueuedFiles();
+            for(int i = 0; i < files.Length; i++)
+            {
+                Post t = Post.Deserialize(files[i]);
+                if (t.Equals(post))
+                {
+                    if (File.Exists(files[i])) File.Delete(files[i]);
+                    
+                    for (int n = i + 1; n < files.Length; n++)
+                        File.Move(files[n], GetFullFilename(n-1));
+
+                    OnQueueChanged();
+                    return;
+                }
+            }
+        }
+
+        public Queue<Post> GetQueue()
+        {
+            Queue<Post> copy = new Queue<Post>();
+            string[] queuedFiles = GetQueuedFiles();
+
+            foreach (string file in queuedFiles)
+                copy.Enqueue(Post.Deserialize(file));
+
+            return copy;
         }
 
         protected string[] GetQueuedFiles()
@@ -155,5 +208,23 @@ namespace PushPost.Models.Database
 
             Debug.WriteMessage(string.Format("aq now has {0} elements.", aq.Count()));
         }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
     }
+
+    public delegate void QueueChangedEventHandler(object sender);
 }

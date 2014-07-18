@@ -9,6 +9,11 @@ namespace PushPost.ViewModels
 {
     internal class PostViewModel : Extender.WPF.ViewModel
     {
+        public Models.Database.ArchiveQueue ArchiveQueue
+        {
+            get;
+            set;
+        }
         private Post _Post;
         public Post Post
         {
@@ -56,7 +61,8 @@ namespace PushPost.ViewModels
         {
             base.Initialize();
 
-            this._Post = TextPost.TemplatePost();
+            this._Post          = TextPost.TemplatePost();
+            this.ArchiveQueue   = new Models.Database.ArchiveQueue();
 
             // Post buttons' commands
             this.QueuePostCommand       = new QueuePostCommand(this);
@@ -75,6 +81,7 @@ namespace PushPost.ViewModels
             this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
             this.ViewReferencesCommand      = new ViewReferencesCommand(this);
             this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
+
         }
 
         /// <summary>
@@ -177,7 +184,9 @@ namespace PushPost.ViewModels
 
         public void QueuePostForSubmit()
         {
-            System.Windows.Forms.MessageBox.Show("Post queued.");
+            this.ArchiveQueue.Enqueue(this.Post);
+
+            this.Post = TextPost.TemplatePost();
         }
 
         public void QueueForRemoval()
@@ -233,7 +242,7 @@ namespace PushPost.ViewModels
 
         public void OpenArchiveManager()
         {
-            PushPost.View.ArchiveManager archive = new View.ArchiveManager();
+            PushPost.View.ArchiveManager archive = new View.ArchiveManager(this.ArchiveQueue);
             archive.Show();
         }
 

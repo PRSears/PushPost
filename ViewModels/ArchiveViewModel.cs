@@ -13,16 +13,17 @@ namespace PushPost.ViewModels
 {
     internal class ArchiveViewModel : ViewModel
     {
-        protected ObservableCollection<CheckablePost> _QueuedPosts;        
-        public ObservableCollection<CheckablePost> QueuedPosts
+        protected Models.Database.ArchiveQueue ArchiveQueue;
+        protected ObservableCollection<CheckablePost> _CheckablePostCollection;        
+        public ObservableCollection<CheckablePost> CheckablePostCollection
         {
             get
             {
-                return _QueuedPosts;
+                return _CheckablePostCollection;
             }
             set
             {
-                _QueuedPosts = value;
+                _CheckablePostCollection = value;
                 OnPropertyChanged("QueuedPosts");
             }
         }
@@ -45,7 +46,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                foreach(CheckablePost entry in QueuedPosts)
+                foreach(CheckablePost entry in CheckablePostCollection)
                 {
                     if (entry.IsChecked)
                         return true;
@@ -58,7 +59,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return (_QueuedPosts.Count > 0) &&
+                return (_CheckablePostCollection.Count > 0) &&
                         QueueHasSelected;
             }
         }
@@ -66,22 +67,15 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return QueuedPosts.Count() < Properties.Settings.Default.MaxQueueSize;
+                return CheckablePostCollection.Count() < Properties.Settings.Default.MaxQueueSize;
             }
         }
 
-        public ArchiveViewModel()
+        public ArchiveViewModel(Models.Database.ArchiveQueue archiveQueue)
         {
-            QueuedPosts = new ObservableCollection<CheckablePost>();
 
-            #region Debug: add dummy posts
-            if (DEBUG)
-            {
-                QueuedPosts.Add(new CheckablePost(TextPost.Dummy()));
-                QueuedPosts.Add(new CheckablePost(TextPost.Dummy()));
-                QueuedPosts.Add(new CheckablePost(TextPost.Dummy()));
-            }
-            #endregion
+            CheckablePostCollection = new ObservableCollection<CheckablePost>();
+            ArchiveQueue            = archiveQueue;
 
             SelectAllCommand        = new RelayCommand(() => this.SelectAll());
             SelectNoneCommand       = new RelayCommand(() => this.SelectNone());
@@ -104,11 +98,34 @@ namespace PushPost.ViewModels
 
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
             UploadPagesCommand      = new RelayCommand(() => this.UploadPages());
+
+            ArchiveQueue.QueueChanged += ArchiveQueue_QueueChanged;
+            ArchiveQueue_QueueChanged(this);
+
+            #region Debug: add dummy posts
+            //ArchiveQueue.Enqueue(TextPost.Dummy());
+            //ArchiveQueue.Enqueue(TextPost.Dummy());
+            //ArchiveQueue.Enqueue(TextPost.Dummy());
+            #endregion
+        }
+
+        protected void ArchiveQueue_QueueChanged(object sender)
+        {
+            RefreshCollection(ArchiveQueue.GetQueue());
+        }
+
+        protected void RefreshCollection(Queue<Post> posts)
+        {
+            _CheckablePostCollection = new ObservableCollection<CheckablePost>();
+            foreach (Post p in posts)
+                CheckablePostCollection.Add(new CheckablePost(p));
+
+            OnPropertyChanged("CheckablePostCollection");
         }
 
         public void SelectNone()
         {
-            foreach(CheckablePost entry in QueuedPosts)
+            foreach(CheckablePost entry in CheckablePostCollection)
             {
                 entry.IsChecked = false;
             }
@@ -116,7 +133,7 @@ namespace PushPost.ViewModels
 
         public void SelectAll()
         {
-            foreach(CheckablePost entry in QueuedPosts)
+            foreach(CheckablePost entry in CheckablePostCollection)
             {
                 entry.IsChecked = true;
             }
@@ -154,10 +171,10 @@ namespace PushPost.ViewModels
             if (!ConfirmationDialog.Show("Confirm removal", "Remove all selected posts from the queue?"))
                 return;
 
-            foreach(CheckablePost entry in QueuedPosts.ToArray())
+            foreach(CheckablePost entry in CheckablePostCollection.ToArray())
             {
                 if (entry.IsChecked)
-                    QueuedPosts.Remove(entry);
+                    ArchiveQueue.Remove(entry.Post);
             }
         }
 
@@ -214,7 +231,6 @@ namespace PushPost.ViewModels
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -224,6 +240,7 @@ namespace PushPost.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
 
         #endregion
     }
