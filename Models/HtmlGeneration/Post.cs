@@ -315,32 +315,48 @@ namespace PushPost.Models.HtmlGeneration
         {
             Type postType;
 
-            // Attempt to determine Post implementation's type.
-            using(FileStream streamedPost = new FileStream(
-                filePath,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.ReadWrite))
+            if (!File.Exists(filePath))
+                return null;
+
+            try
             {
-                System.Xml.XmlReader r = System.Xml.XmlReader.Create(streamedPost);
-                r.MoveToContent();
 
-                postType = Type.GetType(string.Format(
-                    "{0}.{1}",
-                    typeof(Post).Namespace,
-                    r.Name));
+                // Attempt to determine Post implementation's type.
+                using (FileStream streamedPost = new FileStream(
+                    filePath,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite))
+                {
+                    System.Xml.XmlReader r = System.Xml.XmlReader.Create(streamedPost);
 
-                // default to abstract Post if type could not be determined
-                if (postType == null) postType = typeof(Post);
+                    r.MoveToContent();
 
-                streamedPost.Position = 0;
+                    postType = Type.GetType(string.Format(
+                        "{0}.{1}",
+                        typeof(Post).Namespace,
+                        r.Name));
 
-                System.Xml.Serialization.XmlSerializer deserializer = 
-                    new System.Xml.Serialization.XmlSerializer(postType);
+                    // default to abstract Post if type could not be determined
+                    if (postType == null) postType = typeof(Post);
 
-                return (Post)deserializer.Deserialize(streamedPost);
+                    streamedPost.Position = 0;
+
+                    System.Xml.Serialization.XmlSerializer deserializer =
+                        new System.Xml.Serialization.XmlSerializer(postType);
+
+                    return (Post)deserializer.Deserialize(streamedPost);
+                }
             }
+            catch (Exception e)
+            {
+                Extender.Debugging.ExceptionTools.WriteExceptionText(
+                    e, true,
+                    string.Format("Post.Deserialize could not read file at {0}.",
+                    filePath));
 
+                return null;
+            }
             // TODO handle attached IResource objects as well
         }
 

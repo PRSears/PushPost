@@ -113,8 +113,14 @@
                    Foreground="#5e5e5e"
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
-                        Content="Recreate pages"
+                        Content="Create pages"
                         Command="{Binding GeneratePagesCommand}"
+                        HorizontalAlignment="Left"
+                        Margin="10,10,10,0"
+                        Style="{DynamicResource FlatActionButtonStyle}"/>
+            <Button Width="130" Height="35"
+                        Content="Preview Queue"
+                        Command="{Binding PreviewQueueCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>

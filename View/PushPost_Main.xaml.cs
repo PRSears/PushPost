@@ -32,6 +32,21 @@ namespace PushPost
                 vm.CloseAction = new Action(() => this.Close());
         }
 
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if ((DataContext as PostViewModel).HasChildrenOpen)
+            {
+                if (Extender.WPF.ConfirmationDialog.Show(
+                    "Confirm",
+                    "Exiting now will close all open Views.\n\nAre you sure you want to quit?"))
+                    (DataContext as PostViewModel).CloseChildren();
+                else
+                    e.Cancel = true;
+            }
+
+            base.OnClosing(e);
+        }
+
         private string GetAssemblyVersion()
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();

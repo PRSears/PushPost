@@ -43,15 +43,6 @@ namespace PushPost.Models.Database
             this.FilenameFormat = @"{0}//{1}_queued_post.xml";
         }
 
-        //protected void InitializeWatcher()
-        //{
-        //    this.QueueWatcher               = new FileSystemWatcher();
-        //    this.QueueWatcher.Path          = StoragePath;
-        //    this.QueueWatcher.NotifyFilter  = NotifyFilters.LastWrite;
-
-        //    this.QueueWatcher.Changed += QueueWatcher_Changed;
-        //}
-
         protected void OnQueueChanged()
         {
             QueueChangedEventHandler handler = QueueChanged;
@@ -164,8 +155,8 @@ namespace PushPost.Models.Database
             {
                 if(DEBUG)
                 {
-                    Debug.WriteMessage("ArchiveQueue.Peek() encountered an exception:");
-                    Extender.Exceptions.ExceptionTools.WriteExceptionText(e, false);
+                    ExceptionTools.WriteExceptionText(e, false, 
+                        "ArchiveQueue.Peek() encountered an exception:");
                 }
                 return null;
             }

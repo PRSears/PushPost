@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Linq;
+using System.IO;
 using System.Text;
+using Extender;
 using Extender.WPF;
+using Extender.Debugging;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using PushPost.Models.HtmlGeneration;
+using PushPost.Models.Database;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace PushPost.ViewModels
 {
     internal class ArchiveViewModel : ViewModel
     {
         protected Models.Database.ArchiveQueue ArchiveQueue;
-        protected ObservableCollection<CheckablePost> _CheckablePostCollection;        
+        protected ObservableCollection<CheckablePost> _CheckablePostCollection;
         public ObservableCollection<CheckablePost> CheckablePostCollection
         {
             get
@@ -40,6 +45,7 @@ namespace PushPost.ViewModels
         public ICommand EditFromDBCommand       { get; private set; }
 
         public ICommand GeneratePagesCommand    { get; private set; }
+        public ICommand PreviewQueueCommand     { get; private set; }
         public ICommand UploadPagesCommand      { get; private set; }
 
         public bool QueueHasSelected
@@ -97,6 +103,7 @@ namespace PushPost.ViewModels
             EditFromDBCommand       = new RelayCommand(() => this.EditFromDB());
 
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
+            PreviewQueueCommand     = new RelayCommand(() => this.PreviewQueue());
             UploadPagesCommand      = new RelayCommand(() => this.UploadPages());
 
             ArchiveQueue.QueueChanged += ArchiveQueue_QueueChanged;
@@ -141,15 +148,53 @@ namespace PushPost.ViewModels
 
         public void UploadPages()
         {
+            System.Windows.Forms.MessageBox.Show("Not implemented.");
         }
 
         public void GeneratePages()
         {
-            Models.Database.ArchiveQueue.TestHarness();
+            // prompt user to pick output folder
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.Title = "Select a folder to save the site in";
+
+            CommonFileDialogResult r = dialog.ShowDialog();
+            if (r != CommonFileDialogResult.Ok) return;
+
+            // retrieve all posts from the database
+            Post[] allPosts;
+            using(Archive database = new Archive())
+            {                
+                allPosts = database.Dump();
+            }            
+                        
+            // generate 
+            PageBuilder site = new PageBuilder(allPosts);
+            site.CreatePages();
+            site.SavePages(dialog.FileName);            
+        }
+
+        public void PreviewQueue()
+        {
+            PageBuilder previewer = new PageBuilder(ArchiveQueue.GetQueue().ToArray());
+
+            previewer.CreatePages();
+            previewer.SavePages(Properties.Settings.Default.PreviewFolderPath);
+
+            string firstFilePath = System.IO.Path.Combine(
+                Properties.Settings.Default.PreviewFolderPath,
+                previewer.Pages[0].FileName);
+
+            System.Diagnostics.Process browserProc = new System.Diagnostics.Process();
+
+            browserProc.StartInfo.FileName = firstFilePath;
+            browserProc.StartInfo.UseShellExecute = true;
+            browserProc.Start();
         }
 
         public void EditFromDB()
         {
+            System.Windows.Forms.MessageBox.Show("Not implemented.");
         }
 
         public void RemoveFromDB()
@@ -158,20 +203,77 @@ namespace PushPost.ViewModels
 
         public void ImportFromXML()
         {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = @"XML documents (*.txt, *.xml)
+                |*.txt;*.xml|All files (*.*)|*.*";
+
+            Nullable<bool> result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                Post imported  = Post.Deserialize(dialog.FileName);
+                ArchiveQueue.Enqueue(imported);
+                
+                if (DEBUG) Debug.WriteMessage("Imported: " + imported.ToString(), "info");
+            }
+            else return;
         }
 
         public void ExportSelected()
         {
+            if (!QueueHasSelected)
+                return;
+
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.Title = "Select export folder";
+
+            CommonFileDialogResult r = dialog.ShowDialog();
+
+            if(r == CommonFileDialogResult.Ok)
+            {
+                foreach(CheckablePost entry in CheckablePostCollection) if(entry.IsChecked)
+                {
+                        using(StreamWriter stream = File.CreateText(
+                            GetUniqueFilename(dialog.FileName, entry.Post.Title)))
+                        {
+                            entry.Post.Serialize(stream);
+                        }
+                }
+            }
+        }
+
+        private string GetUniqueFilename(string dir, string name)
+        {
+            int n = 0;
+
+            string fullname;
+
+            do
+            {
+                fullname = System.IO.Path.Combine(dir, string.Format(
+                    @"{0}_{1}.xml", 
+                    name, 
+                    (n++).ToString("D3")));
+            } while (System.IO.File.Exists(fullname));
+
+            return fullname;
         }
 
         public void RemoveSelected()
         {
+            RemoveSelected(Properties.Settings.Default.ConfirmBeforeRemove);
+        }
 
-            if (ConfirmBeforeRemoval)
+        protected void RemoveSelected(bool confirm)
+        {
+            if (confirm)
             if (!ConfirmationDialog.Show("Confirm removal", "Remove all selected posts from the queue?"))
-                return;
+                    return;
 
-            foreach(CheckablePost entry in CheckablePostCollection.ToArray())
+            foreach (CheckablePost entry in CheckablePostCollection.ToArray())
             {
                 if (entry.IsChecked)
                     ArchiveQueue.Remove(entry.Post);
@@ -180,6 +282,28 @@ namespace PushPost.ViewModels
 
         public void SubmitSelected()
         {
+            try
+            {
+                using (Archive database = new Archive())
+                {
+                    foreach (CheckablePost post in CheckablePostCollection)
+                    {
+                        if (post.IsChecked)
+                            database.CommitPost(post.Post);
+                    }
+
+                    database.SubmitChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Extender.Debugging.ExceptionTools.WriteExceptionText(e, true,
+                    "Failed to submit posts to the databse.");
+                return;
+            }
+
+            //successful
+            this.RemoveSelected(false);
         }
 
         private bool DEBUG { get { return Properties.Settings.Default.DEBUG; } }

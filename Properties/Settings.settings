@@ -26,5 +26,8 @@
     <Setting Name="QueueFolderPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">queue</Value>
     </Setting>
+    <Setting Name="PreviewFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">previews</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

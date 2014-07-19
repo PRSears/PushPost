@@ -9,11 +9,9 @@ namespace PushPost.ViewModels
 {
     internal class PostViewModel : Extender.WPF.ViewModel
     {
-        public Models.Database.ArchiveQueue ArchiveQueue
-        {
-            get;
-            set;
-        }
+        public View.ArchiveManager  ArchiveManager_Window;
+        public View.AddRefsDialog   AddRef_Window;
+
         private Post _Post;
         public Post Post
         {
@@ -33,6 +31,11 @@ namespace PushPost.ViewModels
             {
                 return NavCategory.AllCategories;
             }
+        }
+        public Models.Database.ArchiveQueue ArchiveQueue
+        {
+            get;
+            set;
         }
 
         #region ICommands
@@ -81,7 +84,6 @@ namespace PushPost.ViewModels
             this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
             this.ViewReferencesCommand      = new ViewReferencesCommand(this);
             this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
-
         }
 
         /// <summary>
@@ -122,6 +124,59 @@ namespace PushPost.ViewModels
             else
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
                 // Doesn't override the default _Post the parameterless constructor set.
+        }
+
+        public void OpenArchiveManager()
+        {
+            if (ArchiveManager_Window != null)
+            { 
+                ArchiveManager_Window.Focus();
+                return;
+            }
+
+            ArchiveManagerOpen              = true;
+            ArchiveManager_Window           = new View.ArchiveManager(ArchiveQueue);
+            ArchiveManager_Window.Closed   += ArchiveManager_Closed;
+
+            ArchiveManager_Window.Show();
+        }
+
+        protected void ArchiveManager_Closed(object sender, EventArgs e)
+        {
+            ArchiveManagerOpen      = false;
+            ArchiveManager_Window   = null;
+        }
+
+        private bool _ArchiveManagerOpen;
+        public bool ArchiveManagerOpen
+        {
+            get
+            {
+                return _ArchiveManagerOpen; ;
+            }
+            protected set
+            {
+                _ArchiveManagerOpen = value;
+                OnPropertyChanged("ArchiveManagerOpen");
+            }
+        }
+
+        public bool HasChildrenOpen
+        {
+            get
+            {
+                return (ArchiveManager_Window   != null) ||
+                       (AddRef_Window           != null);
+            }
+        }
+
+        public void CloseChildren()
+        {
+            if(AddRef_Window != null)
+                AddRef_Window.Close();
+
+            if(ArchiveManager_Window != null)
+                ArchiveManager_Window.Close();
         }
 
         public bool CanSubmitPost 
@@ -201,8 +256,21 @@ namespace PushPost.ViewModels
 
         public void OpenAddRefsDialog(int startIndex)
         {
-            AddRefsDialog dialog = new AddRefsDialog(this.Post, startIndex);
-            dialog.Show();
+            if (AddRef_Window != null)
+            {
+                AddRef_Window.Focus();
+                return;
+            }
+
+            AddRef_Window           = new View.AddRefsDialog(this.Post, startIndex);
+            AddRef_Window.Closed   += AddRef_Window_Closed;
+
+            AddRef_Window.Show();
+        }
+
+        protected void AddRef_Window_Closed(object sender, EventArgs e)
+        {
+            AddRef_Window = null;
         }
 
         public void OpenAddFootnoteDialog()
@@ -237,13 +305,20 @@ namespace PushPost.ViewModels
 
         public void PreviewInBrowser()
         {
-            throw new NotImplementedException();
-        }
+            PageBuilder previewer = new PageBuilder(new Post[] { this.Post });
 
-        public void OpenArchiveManager()
-        {
-            PushPost.View.ArchiveManager archive = new View.ArchiveManager(this.ArchiveQueue);
-            archive.Show();
+            previewer.CreatePages();
+            previewer.SavePages(Properties.Settings.Default.PreviewFolderPath);
+
+            string firstFilePath = System.IO.Path.Combine(
+                Properties.Settings.Default.PreviewFolderPath,
+                previewer.Pages[0].FileName);
+
+            System.Diagnostics.Process browserProc  = new System.Diagnostics.Process();
+
+            browserProc.StartInfo.FileName          = firstFilePath;
+            browserProc.StartInfo.UseShellExecute   = true;
+            browserProc.Start();
         }
 
         public void OpenPageGenerator()
@@ -273,9 +348,13 @@ namespace PushPost.ViewModels
 
             if (result == true)
             {
-                this.Post = Post.Deserialize(dialog.FileName);
+                Post deserialized = Post.Deserialize(dialog.FileName);
 
-                if (DEBUG) Debug.WriteMessage("Imported: " + this._Post.ToString(), "info");
+                if (deserialized != null)
+                {
+                    this.Post = deserialized;
+                    if (DEBUG) Debug.WriteMessage("Imported: " + this._Post.ToString(), "info");
+                }
             }
             else return;
         }

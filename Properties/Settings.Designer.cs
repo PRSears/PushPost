@@ -118,5 +118,17 @@ namespace PushPost.Properties {
                 this["QueueFolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("preview.html")]
+        public string PreviewFolderPath {
+            get {
+                return ((string)(this["PreviewFolderPath"]));
+            }
+            set {
+                this["PreviewFolderPath"] = value;
+            }
+        }
     }
 }

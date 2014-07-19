@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using Extender.Exceptions;
 using Extender.Debugging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -44,7 +43,11 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
-        protected List<Page> Pages;
+        public List<Page> Pages
+        {
+            get;
+            protected set;
+        }
 
         public PageBuilder()
         {
@@ -165,10 +168,17 @@ namespace PushPost.Models.HtmlGeneration
             {
                 foreach (Page page in this.Pages)
                 {
-                    using (StreamWriter stream = File.CreateText(
-                            Path.Combine(
+                    if(!Directory.Exists(outDirectoryPath))
+                        Directory.CreateDirectory(outDirectoryPath);
+
+                    string nextFilename = Path.Combine(
                                 outDirectoryPath,
-                                page.FileName)))
+                                page.FileName);
+
+                    if (File.Exists(nextFilename))
+                        File.Delete(nextFilename);
+
+                    using (StreamWriter stream = File.CreateText(nextFilename))
                     {
                         StringReader buffer = new StringReader(page.Create());
                         while (buffer.Peek() != -1)

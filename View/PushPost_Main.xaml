@@ -37,7 +37,8 @@
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Post creator" IsCheckable="False" IsChecked="True"/>
-                <MenuItem Header="Archive manager" IsCheckable="True" IsChecked="False"
+                <MenuItem Header="Archive manager" IsCheckable="False" 
+                          IsChecked="{Binding ArchiveManagerOpen}"
                           Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
                 <MenuItem Header="References..."/>

@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace PushPost
+namespace PushPost.View
 {
     /// <summary>
     /// Interaction logic for AddRefsWindow.xaml

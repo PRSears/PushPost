@@ -8,7 +8,7 @@ using System.Data.Linq;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using Extender.Date;
-using Extender.Exceptions;
+using Extender.Debugging;
 
 namespace PushPost.Models.Database
 {

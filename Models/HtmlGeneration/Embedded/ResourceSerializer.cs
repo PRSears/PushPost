@@ -7,7 +7,7 @@ using PushPost.Models.HtmlGeneration.Embedded;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using Extender.Strings;
+using Extender;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {

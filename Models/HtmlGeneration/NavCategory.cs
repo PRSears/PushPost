@@ -1,5 +1,5 @@
 ﻿using System;
-using Extender.Strings;
+using Extender;
 
 namespace PushPost.Models.HtmlGeneration
 {
