@@ -15,21 +15,28 @@ namespace PushPost
     /// </summary>
     public partial class PushPost_Main : Window
     {
+        private Extender.WPF.ViewModel ViewModel
+        {
+            get
+            {
+                return (Extender.WPF.ViewModel)DataContext;
+            }
+            set
+            {
+                DataContext = value;
+            }
+        }
+
         public PushPost_Main()
         {
             InitializeComponent();
-            DataContext = new PostViewModel();
-            RegisterCloseAction();
+            this.ViewModel = new PostViewModel();
+            this.ViewModel.RegisterCloseAction(() => this.Close());
 
             Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
-        }
-
-        protected void RegisterCloseAction()
-        {
-            PostViewModel vm = (DataContext as PostViewModel);
-
-            if (vm.CloseAction == null)
-                vm.CloseAction = new Action(() => this.Close());
+        
+            //(DataContext as PostViewModel).CloseCommand =
+            //    new Extender.WPF.RelayCommand(() => this.Close());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

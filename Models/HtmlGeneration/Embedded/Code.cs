@@ -105,7 +105,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                     {
                         while (reader.Peek() != -1)
                         {
-                            html.WriteLine(reader.ReadLine());
+                            html.WriteLine(reader.ReadLine().Trim());
                         }
                     }
 

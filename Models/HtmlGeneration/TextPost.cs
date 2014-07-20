@@ -15,16 +15,14 @@ namespace PushPost.Models.HtmlGeneration
     public partial class TextPost : Post
     {
         public TextPost()
-            : base()
-        {
-        }
+            : base() { }
 
         public TextPost(string title, DateTime timestamp, string author)
             : this()
         {
-            Title = title;
-            Timestamp = timestamp;
-            Author = author;
+            Title       = title;
+            Timestamp   = timestamp;
+            Author      = author;
         }
 
         public TextPost(string title, DateTime timestamp, string author, string body)
