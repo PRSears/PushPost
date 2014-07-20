@@ -48,6 +48,28 @@ namespace PushPost.Models.HtmlGeneration
         }
 
         /// <summary>
+        /// Name of this Page's file, including the category subfolder.
+        /// </summary>
+        public string FullName
+        {
+            get
+            {
+                return Path.Combine(PageCategory.ToString(), FileName);
+            }
+        }
+
+        /// <summary>
+        /// Subfolder (by PageCategory) this Page is to be stored in.
+        /// </summary>
+        public string Subfolder
+        {
+            get
+            {
+                return PageCategory.ToString();
+            }
+        }
+
+        /// <summary>
         /// Builds a Page's filename.
         /// </summary>
         /// <param name="category">The category the Page resides in.</param>
@@ -57,7 +79,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             return string.Format("{0}_p{1}.html", category.ToString(), pageNumber.ToString("D4"));
         }
-
+        
         /// <summary>
         /// Builds a title for a Page.
         /// </summary>
@@ -127,6 +149,12 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
+        public string WrapperID
+        {
+            get;
+            set;
+        }
+
         public Page
             (
                 string title, 
@@ -138,7 +166,8 @@ namespace PushPost.Models.HtmlGeneration
             UpperNavigation = new Navigation();
             LowerNavigation = new Breadcrumbs();
             Posts           = new List<Post>();
-            PrimaryColumnID = "primary-column"; 
+            PrimaryColumnID = "primary-column";
+            WrapperID       = "wrapper";
             FinalComment    = "This page was generated automatically by PushPost.";
 
             //
@@ -180,6 +209,7 @@ namespace PushPost.Models.HtmlGeneration
 
         #endregion
 
+
         /// <summary>
         /// Uses HtmlTextWriter to render this page with the content supplied by the it's properties.
         /// </summary>
@@ -199,11 +229,20 @@ namespace PushPost.Models.HtmlGeneration
 
                 // <body>
                 w.RenderBeginTag(HtmlTextWriterTag.Body);
-                    w.WriteLine(this.UpperNavigation.Create());
-                    w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
+                    
+                    // <wrapper>
+                    w.AddAttribute(HtmlTextWriterAttribute.Id, WrapperID);
                     w.RenderBeginTag(HtmlTextWriterTag.Div);
-                        foreach (Post post in this.Posts) w.WriteLine(post.Create());
+
+                        w.WriteLine(this.UpperNavigation.Create());
+                        w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
+                        w.RenderBeginTag(HtmlTextWriterTag.Div);
+                            foreach (Post post in this.Posts) w.WriteLine(post.Create());
+                        w.RenderEndTag();
+
                     w.RenderEndTag();
+                    // </Wrapper>
+
                     w.WriteLine(this.LowerNavigation.Create());
                 w.RenderEndTag();
                 // </body>
@@ -220,12 +259,33 @@ namespace PushPost.Models.HtmlGeneration
                     formatter.OutputHtml = true;
                     formatter.IndentSpaces = 4;
                     formatter.WrapAt = 116;
-                    formatter.AddVerticalSpace = true;
-                    formatter.IndentBlockElements = AutoBool.Yes;
+                    formatter.IndentBlockElements = AutoBool.Auto;
                     formatter.CleanAndRepair();
 
-                    return formatter.Save();
+                    return RemoveEmptyLines(
+                        formatter.Save().Replace("<br>", System.Environment.NewLine));
+
+                    //return  RemoveEmptyLines(
+                    //        formatter.Save().
+                    //        Replace("<br>", System.Environment.NewLine));
                 }
+            }
+        }
+
+        protected string RemoveEmptyLines(string page)
+        {
+            using(StringReader reader = new StringReader(page))
+            {
+                StringBuilder buffer = new StringBuilder();
+                string next;
+                while(reader.Peek() != -1)
+                {
+                    next = reader.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(next))
+                        buffer.AppendLine(next);
+                }
+
+                return buffer.ToString();
             }
         }
 

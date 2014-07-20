@@ -21,7 +21,7 @@
                    Margin="20,0,0,0"
                    VerticalAlignment="Center"
                    Style="{DynamicResource LabelStyle}"/>
-        <TextBlock Text="Commands" 
+        <TextBlock Text="Archive Commands" 
                    Grid.Row="0" Grid.Column="1"
                    FontSize="14" 
                    HorizontalAlignment="Center" 
@@ -73,7 +73,7 @@
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
-                        Content="Remove selected"
+                        Content="Delete selected"
                         Command="{Binding RemoveSelectedCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
@@ -113,20 +113,14 @@
                    Foreground="#5e5e5e"
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
-                        Content="Create pages"
-                        Command="{Binding GeneratePagesCommand}"
-                        HorizontalAlignment="Left"
-                        Margin="10,10,10,0"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
-            <Button Width="130" Height="35"
                         Content="Preview Queue"
                         Command="{Binding PreviewQueueCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
-                        Content="Upload pages"
-                        Command="{Binding UploadPagesCommand}"
+                        Content="Create pages"
+                        Command="{Binding GeneratePagesCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>

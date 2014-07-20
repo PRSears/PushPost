@@ -106,8 +106,8 @@ namespace PushPost.Models.HtmlGeneration
             using (StringWriter buffer = new StringWriter())
             using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Id, "primary-column");
-                writer.RenderBeginTag(HtmlTextWriterTag.Div);
+                //writer.AddAttribute(HtmlTextWriterAttribute.Id, "primary-column");
+                //writer.RenderBeginTag(HtmlTextWriterTag.Div);
                     if(this.Copyright != "")
                     {
                         writer.AddAttribute(HtmlTextWriterAttribute.Id, "copyright");
@@ -146,7 +146,7 @@ namespace PushPost.Models.HtmlGeneration
                         }
                         writer.RenderEndTag();
                     writer.RenderEndTag();
-                writer.RenderEndTag();
+                //writer.RenderEndTag();
 
 
                 return buffer.ToString();

@@ -33,7 +33,7 @@ namespace PushPost.Models.HtmlGeneration
 
         public AlbumPost()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void AddImage(string name, string url)

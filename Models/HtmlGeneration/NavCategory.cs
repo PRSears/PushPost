@@ -41,8 +41,12 @@ namespace PushPost.Models.HtmlGeneration
 
         private NavCategory(string category)
         {
-            Category = category;
-            MainPageURL = Category.ToLower() + ".html";
+            Category    = category;
+            MainPageURL = System.IO.Path.Combine(
+                Category,
+                Page.GenerateFilename(this, 1));
+
+            //Category.ToLower() + ".html";
         }
 
         public override bool Equals(object o)

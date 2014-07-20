@@ -50,6 +50,8 @@ namespace PushPost.Models.HtmlGeneration
             foreach (string font in this.HypertextReferences)
                 build.AppendLine("<link href='" + font + "' rel='stylesheet' type='text/css'/>");
 
+            build.AppendLine(@"<script src=""https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sons-of-obsidian"" defer=""defer""></script>");
+
             build.Append("</head>");
 
             return build.ToString();

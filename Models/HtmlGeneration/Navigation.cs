@@ -89,7 +89,8 @@ namespace PushPost.Models.HtmlGeneration
                         writer.WriteLine(string.Empty);
                             for(int i = 0; i < Categories.Count; i++)
                             {
-                                writer.AddAttribute(HtmlTextWriterAttribute.Href, Categories[i].MainPageURL);
+                                writer.AddAttribute(HtmlTextWriterAttribute.Href, 
+                                    @"../" + Categories[i].MainPageURL);
                                 if (Categories[i].Equals(this.CurrentCategory))
                                     writer.AddAttribute(HtmlTextWriterAttribute.Class, "current");
                                 writer.RenderBeginTag(HtmlTextWriterTag.A);

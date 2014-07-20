@@ -1,4 +1,5 @@
 ﻿using Extender.Debugging;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using System;
@@ -54,6 +55,7 @@ namespace PushPost.ViewModels
         public ICommand OpenPageGeneratorCommand    { get; private set; }
         public ICommand ViewReferencesCommand       { get; private set; }
         public ICommand ViewFootnotesCommand        { get; private set; }
+        public ICommand CreateSiteCommand           { get; private set; }
         #endregion
 
         /// <summary>
@@ -84,6 +86,7 @@ namespace PushPost.ViewModels
             this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
             this.ViewReferencesCommand      = new ViewReferencesCommand(this);
             this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
+            this.CreateSiteCommand          = new Extender.WPF.RelayCommand(() => this.CreateSite());
         }
 
         /// <summary>
@@ -280,21 +283,25 @@ namespace PushPost.ViewModels
 
         public void SubmitNow()
         {
-            // QueuePostForSubmit()
-            // Queue.SubmitQueue()...
-
-            System.Text.StringBuilder post = new System.Text.StringBuilder();
-            post.AppendLine(this.Post.ToString());
-            post.AppendLine("");
-            
-            foreach(PushPost.Models.HtmlGeneration.Embedded.IResource r in Post.Resources)
+            if (Extender.WPF.ConfirmationDialog.Show("Confirm", "Add this post to the database as-is?"))
             {
-                post.AppendLine(r.ToString());
+                try
+                {
+                    using(Models.Database.Archive database = new Models.Database.Archive())
+                    {
+                        database.CommitPost(this.Post);
+                        database.SubmitChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Extender.Debugging.ExceptionTools.WriteExceptionText(e, true,
+                        "Failed to submit post to the databse.");
+                    return;
+                }
+
+                this.Post = TextPost.TemplatePost();
             }
-
-            System.Windows.Forms.MessageBox.Show(post.ToString());
-
-            System.Windows.Forms.MessageBox.Show(Post.ParsedMainText);
         }
 
         public void Discard()
@@ -377,6 +384,29 @@ namespace PushPost.ViewModels
             {
                 this.Post.Serialize(stream);
             }
+        }
+
+        public void CreateSite()
+        {
+            // prompt user to pick output folder
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.Title = "Select a folder to save the site in";
+
+            CommonFileDialogResult r = dialog.ShowDialog();
+            if (r != CommonFileDialogResult.Ok) return;
+
+            // retrieve all posts from the database
+            Post[] allPosts;
+            using (PushPost.Models.Database.Archive database = new PushPost.Models.Database.Archive())
+            {
+                allPosts = database.Dump();
+            }
+
+            // generate 
+            PageBuilder site = new PageBuilder(allPosts);
+            site.CreatePages();
+            site.SavePages(dialog.FileName);    
         }
 
         public bool DEBUG 

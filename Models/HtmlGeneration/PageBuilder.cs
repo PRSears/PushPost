@@ -54,9 +54,10 @@ namespace PushPost.Models.HtmlGeneration
             this.PostsPerPage   = 10;
             this.Hrefs          = new List<string>();
 
-            Hrefs.Add("css/styles.css");
-            Hrefs.Add("css/gallery.css");
             Hrefs.Add("http://fonts.googleapis.com/css?family=Open+Sans:300");
+            Hrefs.Add("../css/styles.css");
+            //Hrefs.Add("https://google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css");
+            //Hrefs.Add("../css/gallery.css");
         }
         #region constructor overloads
         public PageBuilder(Post[] posts)
@@ -153,6 +154,8 @@ namespace PushPost.Models.HtmlGeneration
             return new List<string>(links);
         }
 
+        // TODO Sort files into subfolders based on category
+
         /// <summary>
         /// Saves the most recently generated Pages (generated when this.CreatePages() is called)
         /// out to an HTML file.
@@ -168,12 +171,18 @@ namespace PushPost.Models.HtmlGeneration
             {
                 foreach (Page page in this.Pages)
                 {
+                    string subfolderPath = Path.Combine(
+                        outDirectoryPath,
+                        page.Subfolder);
+
                     if(!Directory.Exists(outDirectoryPath))
                         Directory.CreateDirectory(outDirectoryPath);
+                    if(!Directory.Exists(subfolderPath))
+                        Directory.CreateDirectory(subfolderPath);
 
                     string nextFilename = Path.Combine(
                                 outDirectoryPath,
-                                page.FileName);
+                                page.FullName);
 
                     if (File.Exists(nextFilename))
                         File.Delete(nextFilename);

@@ -33,6 +33,8 @@
                 <MenuItem Header="Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
                 <MenuItem Header="Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
                 <Separator/>
+                <MenuItem Header="Create pages from database..." Command="{Binding CreateSiteCommand}"/>
+                <Separator/>
                 <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
             </MenuItem>
             <MenuItem Header="View">
@@ -132,33 +134,23 @@
             Margin="10" 
             Orientation="Horizontal">
             <Button 
-                x:Name="SubmitPostButton"
-                Content="SUBMIT POST"
-                Style="{DynamicResource FlatActionButtonStyle}"
-                Command="{Binding SubmitPostCommand}"/>
-            <Button 
                 x:Name="EnqueuePostButton"
                 Content="ENQUEUE POST"  
                 Style="{DynamicResource FlatActionButtonStyle}"
                 Command="{Binding QueuePostCommand}"/>
             <Button 
-                x:Name="SubmitQueueButton"
-                Content="SUBMIT QUEUE"  
-                Command="{Binding SubmitQueueCommand}"
-                Style="{DynamicResource FlatActionButtonStyle}"/>
-            <Button 
-                x:Name="ManageQueueButton"
-                Content="MANAGE QUEUE"
-                Command="{Binding OpenArchiveManagerCommand}"
-                Style="{DynamicResource FlatActionButtonStyle}"/>
+                x:Name="SubmitPostButton"
+                Content="SUBMIT POST"
+                Style="{DynamicResource FlatActionButtonStyle}"
+                Command="{Binding SubmitPostCommand}"/>
         </StackPanel>
         <Button 
-            x:Name="RemovePostButton"
-            Content="REMOVE A POST" 
+            x:Name="ManageQueueButton"
+            Content="MANAGE QUEUE"
+            Command="{Binding OpenArchiveManagerCommand}"
             Grid.Row="5" Grid.Column="1" 
             Margin="10"  
             HorizontalAlignment="Right"
-            Command="{Binding RemovePostCommand}"
             Style="{DynamicResource FlatActionButtonStyle}"/>
         <Rectangle 
             Grid.Row="4" Grid.Column="0" 

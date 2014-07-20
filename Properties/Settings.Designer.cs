@@ -97,7 +97,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.1)_01.mdf")]
+        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.2)_02.mdf")]
         public string DBRelativeFilename {
             get {
                 return ((string)(this["DBRelativeFilename"]));
