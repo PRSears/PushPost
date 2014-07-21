@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Input;
-using System.Linq;
-using System.IO;
-using System.Text;
-using Extender;
+﻿using Extender.Debugging;
 using Extender.WPF;
-using Extender.Debugging;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using PushPost.Models.HtmlGeneration;
-using PushPost.Models.Database;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using PushPost.Models.Database;
+using PushPost.Models.HtmlGeneration;
+using PushPost.ViewModels.ArchivesViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
     internal class ArchiveViewModel : ViewModel
     {
-        protected Models.Database.ArchiveQueue ArchiveQueue;
-        protected ObservableCollection<CheckablePost> _CheckablePostCollection;
+        public ViewModel Current
+        {
+            get
+            {
+                return _Current;
+            }
+            set
+            {
+                _Current = value;
+                OnPropertyChanged("Current");
+            }
+        }
         public ObservableCollection<CheckablePost> CheckablePostCollection
         {
             get
@@ -33,20 +41,26 @@ namespace PushPost.ViewModels
             }
         }
 
+        // Selection
         public ICommand SelectAllCommand        { get; private set; }
         public ICommand SelectNoneCommand       { get; private set; }
-
+        // Queue
         public ICommand SubmitSelectedCommand   { get; private set; }
         public ICommand RemoveSelectedCommand   { get; private set; }
         public ICommand ExportSelectedCommand   { get; private set; }
         public ICommand ImportFromXMLCommand    { get; private set; }
-
+        // Database
         public ICommand RemoveFromDBCommand     { get; private set; }
+        public ICommand SearchDBCommand         { get; private set; }
         public ICommand EditFromDBCommand       { get; private set; }
-
+        // Generation
         public ICommand GeneratePagesCommand    { get; private set; }
         public ICommand PreviewQueueCommand     { get; private set; }
         public ICommand UploadPagesCommand      { get; private set; }
+
+        protected Models.Database.ArchiveQueue          ArchiveQueue;
+        protected ObservableCollection<CheckablePost>   _CheckablePostCollection;
+        protected ViewModel                             _Current;
 
         public bool QueueHasSelected
         {
@@ -66,54 +80,57 @@ namespace PushPost.ViewModels
             get
             {
                 return (_CheckablePostCollection.Count > 0) &&
-                        QueueHasSelected;
+                        QueueHasSelected &&
+                       (Current is QueueViewModel);
             }
         }
         public bool QueueCanAdd
         {
             get
             {
-                return CheckablePostCollection.Count() < Properties.Settings.Default.MaxQueueSize;
+                return CheckablePostCollection.Count() < Properties.Settings.Default.MaxQueueSize &&
+                       (Current is QueueViewModel);
             }
         }
 
-        public ArchiveViewModel(Models.Database.ArchiveQueue archiveQueue)
+        public ArchiveViewModel(ArchiveQueue archiveQueue) : this(archiveQueue, false) { }
+
+        public ArchiveViewModel(ArchiveQueue archiveQueue, bool startInDBView)
         {
+            //if (startInDBView)  Current = new DatabaseViewModel(this);
+            //else                Current = new QueueViewModel(this);
+            Current = new DatabaseViewModel(this);
 
             CheckablePostCollection = new ObservableCollection<CheckablePost>();
             ArchiveQueue            = archiveQueue;
 
+            // Selection
             SelectAllCommand        = new RelayCommand(() => this.SelectAll());
             SelectNoneCommand       = new RelayCommand(() => this.SelectNone());
-
-            SubmitSelectedCommand   = new RelayCommand(
-                () => this.SubmitSelected(),
-                () => this.QueueCanExecute);
-            RemoveSelectedCommand   = new RelayCommand(
-                () => this.RemoveSelected(),
-                () => this.QueueCanExecute);
-            ExportSelectedCommand   = new RelayCommand(
-                () => this.ExportSelected(),
-                () => this.QueueCanExecute);
-            ImportFromXMLCommand    = new RelayCommand(
-                () => this.ImportFromXML(),
-                () => this.QueueCanAdd);
-
-            RemoveFromDBCommand     = new RelayCommand(() => this.RemoveFromDB());
-            EditFromDBCommand       = new RelayCommand(() => this.EditFromDB());
-
+            // Queue
+            SubmitSelectedCommand   = new RelayCommand(() => this.SubmitSelected(),
+                                                       () => this.QueueCanExecute);
+            RemoveSelectedCommand   = new RelayCommand(() => this.RemoveSelected(),
+                                                       () => this.QueueCanExecute);
+            ExportSelectedCommand   = new RelayCommand(() => this.ExportSelected(),
+                                                       () => this.QueueCanExecute);
+            ImportFromXMLCommand    = new RelayCommand(() => this.ImportFromXML(),
+                                                       () => this.QueueCanAdd);
+            // Database
+            RemoveFromDBCommand     = new RelayCommand(() => this.RemoveFromDB(), 
+                                                       () => this.Current is DatabaseViewModel);
+            SearchDBCommand         = new RelayCommand(() => this.SearchDB(),
+                                                       () => this.Current is DatabaseViewModel);
+            EditFromDBCommand       = new RelayCommand(() => this.EditFromDB(),
+                                                       () => this.Current is DatabaseViewModel);
+            // Generation
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
-            PreviewQueueCommand     = new RelayCommand(() => this.PreviewQueue());
+            PreviewQueueCommand     = new RelayCommand(() => this.PreviewQueue(),
+                                                       () => this.QueueCanExecute);
             UploadPagesCommand      = new RelayCommand(() => this.UploadPages());
 
             ArchiveQueue.QueueChanged += ArchiveQueue_QueueChanged;
             ArchiveQueue_QueueChanged(this);
-
-            #region Debug: add dummy posts
-            //ArchiveQueue.Enqueue(TextPost.Dummy());
-            //ArchiveQueue.Enqueue(TextPost.Dummy());
-            //ArchiveQueue.Enqueue(TextPost.Dummy());
-            #endregion
         }
 
         protected void ArchiveQueue_QueueChanged(object sender)
@@ -121,10 +138,19 @@ namespace PushPost.ViewModels
             RefreshCollection(ArchiveQueue.GetQueue());
         }
 
-        protected void RefreshCollection(Queue<Post> posts)
+        public void RefreshCollection(Queue<Post> posts)
         {
             _CheckablePostCollection = new ObservableCollection<CheckablePost>();
             foreach (Post p in posts)
+                CheckablePostCollection.Add(new CheckablePost(p));
+
+            OnPropertyChanged("CheckablePostCollection");
+        }
+
+        protected void RefreshCollection(Queue<PostTableLayer> posts)
+        {
+            _CheckablePostCollection = new ObservableCollection<CheckablePost>();
+            foreach (PostTableLayer p in posts)
                 CheckablePostCollection.Add(new CheckablePost(p));
 
             OnPropertyChanged("CheckablePostCollection");
@@ -199,6 +225,12 @@ namespace PushPost.ViewModels
 
         public void RemoveFromDB()
         {
+            System.Windows.Forms.MessageBox.Show("Not implemented.");
+        }
+
+        public void SearchDB()
+        {
+            (Current as DatabaseViewModel).ExecuteSearch();
         }
 
         public void ImportFromXML()
@@ -350,6 +382,16 @@ namespace PushPost.ViewModels
         {
             this.Post       = post;
             this.IsChecked  = isChecked;
+        }
+
+        public CheckablePost(PostTableLayer post)
+        {
+            this.Post = post.TryCreatePost();
+        }
+
+        public CheckablePost(PostTableLayer post, bool isChecked)
+        {
+
         }
 
         #region INotifyPropertyChanged Members

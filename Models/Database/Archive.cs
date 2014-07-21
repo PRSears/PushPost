@@ -229,16 +229,38 @@ namespace PushPost.Models.Database
         /// </param>
         /// <returns>List of Posts where the 'query' function returned true. If any posts could not
         /// be parsed from the PostTableLayer they will appear in the list as null.</returns>
-        public List<Post> PullPostsWhere(Func<PostTableLayer, bool> query)
+        public Post[] TryPullPostsWhere(Func<PostTableLayer, bool> query)
         {
-            var queried = db.Posts.Where(query);
+            var queried = db.Posts.Where(query).ToArray();
 
-            if (queried.Count() < 1)
+            if (queried.Length < 1)
                 throw new DatabasePullException(query.ToString());
 
-            List<Post> pulled = new List<Post>();
-            foreach (PostTableLayer layer in queried)
-                pulled.Add(layer.TryCreatePost());
+            //List<Post> pulled = new List<Post>();
+            //foreach (PostTableLayer layer in queried)
+            //    pulled.Add(layer.TryCreatePost());
+
+            Post[] pulled = new Post[queried.Length];
+            for (int i = 0; i < pulled.Length; i++)
+            {
+                pulled[i] = queried[i].TryCreatePost();
+            }
+
+            return pulled;
+        }
+
+        public Post[] PullPostsWhere(Func<PostTableLayer, bool> query)
+        {
+            var queried = db.Posts.Where(query).ToArray();
+
+            if (queried.Length < 1)
+                throw new DatabasePullException(query.ToString());
+
+            Post[] pulled = new Post[queried.Length];
+            for (int i = 0; i < pulled.Length; i++)
+            {
+                pulled[i] = queried[i].TryCreatePost();
+            }
 
             return pulled;
         }

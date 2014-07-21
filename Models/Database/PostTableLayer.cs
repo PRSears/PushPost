@@ -184,7 +184,7 @@ namespace PushPost.Models.Database
             post.Title      = this.Title;
             post.Timestamp  = this.Timestamp;
             post.Author     = this.Author;
-            post.Category   = PushPost.Models.HtmlGeneration.NavCategory.Parse(this.PostCategory);
+            post.Category   = NavCategory.Parse(this.PostCategory);
             post.MainText   = this.MainText;
 
             post.Footers    = this.Footers;
@@ -200,7 +200,8 @@ namespace PushPost.Models.Database
         /// </summary>
         /// <returns>If successful, a Post object based on this PostTableLayer is
         /// returned. Returns null if the Post implementation could not be determined.</returns>
-        public Post TryCreatePost()
+        [Obsolete]
+        private Post TryCreatePost_()
         {
             NavCategory thisCat = NavCategory.TryParse(this.PostCategory);
             Post newPost;
@@ -221,6 +222,14 @@ namespace PushPost.Models.Database
             return newPost;
         }
 
+        public Post TryCreatePost()
+        {
+            NavCategory thisCat = NavCategory.TryParse(this.PostCategory);
+            if (thisCat == NavCategory.None) return null;
+
+            return CreatePost(thisCat.PostType);
+        }
+
         /// <summary>
         /// Attempts to create a new Post object from this PostTableLayer.
         /// </summary>
@@ -233,7 +242,10 @@ namespace PushPost.Models.Database
             if (concreteType == null)
                 return null;
 
-            return (Post)Activator.CreateInstance(concreteType);
+            Post exported = (Post)Activator.CreateInstance(concreteType);
+            this.ExportTo(ref exported);
+
+            return exported;
         }
 
         /// <summary>
@@ -253,14 +265,14 @@ namespace PushPost.Models.Database
 
         public static void ConvertToPost(PostTableLayer layer, ref Post post)
         {
-            post.Title = layer.Title;
-            post.Timestamp = layer.Timestamp;
-            post.Author = layer.Author;
-            post.Category = PushPost.Models.HtmlGeneration.NavCategory.Parse(layer.PostCategory);
-            post.MainText = layer.MainText;
+            post.Title      = layer.Title;
+            post.Timestamp  = layer.Timestamp;
+            post.Author     = layer.Author;
+            post.Category   = PushPost.Models.HtmlGeneration.NavCategory.Parse(layer.PostCategory);
+            post.MainText   = layer.MainText;
 
-            post.Footers = layer.Footers;
-            post.Tags = layer.Tags;
+            post.Footers    = layer.Footers;
+            post.Tags       = layer.Tags;
 
             post.ForceRefreshUniqueID();
         }
@@ -308,16 +320,24 @@ namespace PushPost.Models.Database
 
         public override string ToString()
         {
-            StringBuilder build = new StringBuilder();
+            Post p = this.TryCreatePost();
+            if (p != null)
+            {
+                return p.ToString();
+            }
+            else
+            {
+                StringBuilder build = new StringBuilder();
 
-            build.AppendLine("\tPostTableLayer [" + this.Title + "]");
-            build.AppendLine(this.UniqueID.ToString());
-            build.AppendLine(this.Timestamp.ToShortDateString());
-            build.AppendLine(this.Author);
-            build.AppendLine(this.PostCategory);
-            build.AppendLine(this.MainText);
+                build.AppendLine("PostTableLayer [" + this.Title + "]");
+                build.AppendLine(this.UniqueID.ToString());
+                build.AppendLine(this.Timestamp.ToShortDateString());
+                build.AppendLine(this.Author);
+                build.AppendLine(this.PostCategory);
+                build.AppendLine(this.MainText);
 
-            return build.ToString();
+                return build.ToString();
+            }
         }
 
     }

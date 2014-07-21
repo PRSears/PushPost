@@ -26,22 +26,60 @@ namespace PushPost.Models.HtmlGeneration
             private set;
         }
 
+        public Type PostType
+        {
+            get;
+            private set;
+        }
+
         // !!
         // If new properties are added, make sure to update the statics, and Equals() method.
         // Remember to change this.AllCategories any time a static constructor is added.
         // !!
 
-        public static NavCategory Photography { get { return new NavCategory("photography"); } }
-        public static NavCategory Code { get { return new NavCategory("code"); } }
-        public static NavCategory Contact { get { return new NavCategory("contact"); } }
-        public static NavCategory Blog { get { return new NavCategory("blog"); } }
-        public static NavCategory None { get { return new NavCategory("none"); } }
+        public static NavCategory Photography 
+        { 
+            get 
+            { 
+                return new NavCategory("photography", typeof(AlbumPost)); 
+            } 
+        }
+        public static NavCategory Code
+        {
+            get
+            {
+                return new NavCategory("code", typeof(TextPost));
+            }
+        }
+        public static NavCategory Contact
+        {
+            get
+            {
+                return new NavCategory("contact", typeof(TextPost)); 
+            }
+        }
+        public static NavCategory Blog
+        {
+            get
+            {
+                return new NavCategory("blog", typeof(TextPost));
+            }
+        }
+
+        public static NavCategory None
+        {
+            get
+            {
+                return new NavCategory("none");
+            }
+        }
 
         public static NavCategory[] AllCategories = { Photography, Code, Contact, Blog };
 
-        private NavCategory(string category)
+        private NavCategory(string category, Type type)
         {
             Category    = category;
+            PostType    = type;
             MainPageURL = System.IO.Path.Combine(
                 Category,
                 Page.GenerateFilename(this, 1));
@@ -49,39 +87,8 @@ namespace PushPost.Models.HtmlGeneration
             //Category.ToLower() + ".html";
         }
 
-        public override bool Equals(object o)
-        {
-            NavCategory b;
-
-            if (o is NavCategory)
-                b = (NavCategory)o;
-            else if (o is string)
-                b = new NavCategory((string)o);
-            else
-                return false;
-
-            return 
-            (
-                this.Category.Equals(b.Category) &&
-                this.MainPageURL.Equals(b.MainPageURL)
-            );
-        }
-
-        public override int GetHashCode()
-        {
-            return Category.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Category;
-        }
-
-        public string ToTitleString()
-        {
-            return Category.ToPropercase();
-        }
-
+        private NavCategory(string category) : this(category, null) { }
+        
         public static NavCategory Parse(string category)
         {
             foreach (NavCategory comparator in AllCategories)
@@ -107,12 +114,44 @@ namespace PushPost.Models.HtmlGeneration
             {
                 return Parse(category);
             }
-            catch(ArgumentException e)
+            catch
             {
                 Extender.Debugging.Debug.WriteMessage(string.Format
                     ("Parsing {0} failed.", category), "eroor");
                 return NavCategory.None;
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            NavCategory other;
+
+            if (obj is NavCategory)
+                other = (NavCategory)obj;
+            else if (obj is string)
+                other = new NavCategory((string)obj);
+            else
+                return false;
+
+            return 
+            (
+                this.Category.Equals(other.Category, StringComparison.OrdinalIgnoreCase) &&
+                this.MainPageURL.Equals(other.MainPageURL, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+
+        public override int GetHashCode()
+        {
+            return Category.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return Category;
+        }
+
+        public string ToTitleString()
+        {
+            return Category.ToPropercase();
         }
 
         public static Boolean operator ==(NavCategory a, NavCategory b)

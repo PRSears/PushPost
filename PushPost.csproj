@@ -34,9 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Extender, Version=1.0.5310.25104, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Extender, Version=1.2.5313.35571, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Extender 1.2\bin\Release\Extender.dll</HintPath>
+      <HintPath>..\Extensions\bin\Release\Extender.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,6 +92,8 @@
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
     <Compile Include="Models\S3\Push.cs" />
+    <Compile Include="ViewModels\ArchivesViewModels\DatabaseViewModel.cs" />
+    <Compile Include="ViewModels\ArchivesViewModels\QueueViewModel.cs" />
     <Compile Include="ViewModels\ArchiveViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />

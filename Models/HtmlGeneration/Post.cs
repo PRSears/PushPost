@@ -262,25 +262,6 @@ namespace PushPost.Models.HtmlGeneration
             return Hashing.GenerateHashCode(blocks);
         }
 
-        public override string ToString()
-        {
-            Type type = this.GetType();
-            StringBuilder build = new StringBuilder();
-
-            build.AppendLine(string.Format(
-                "{0} [{1}]",
-                type.Name,
-                this.Title));
-            build.AppendLine(this.UniqueID.ToString());
-            build.AppendLine(this.Timestamp.ToShortDateString());
-            build.AppendLine(this.Author);
-            build.AppendLine(this.Category.ToString());
-            foreach (Tag t in Tags) build.AppendLine(t.ToString());
-            build.AppendLine(this.MainText);
-            foreach (Footer f in Footers) build.AppendLine(f.ToString());
-
-            return build.ToString();
-        }
 
         public virtual void AddTag(string tag)
         {
@@ -357,7 +338,6 @@ namespace PushPost.Models.HtmlGeneration
 
                 return null;
             }
-            // TODO handle attached IResource objects as well
         }
 
         public Post()
@@ -381,6 +361,26 @@ namespace PushPost.Models.HtmlGeneration
 
             PreviewLength           = 250;
             IncludePostEndComments  = true;
+        }
+
+        public override string ToString()
+        {
+            Type type = this.GetType();
+            StringBuilder build = new StringBuilder();
+
+            build.AppendLine(string.Format(
+                "{0} [{1}]",
+                type.Name,
+                this.Title));
+            build.AppendLine(this.UniqueID.ToString());
+            build.AppendLine(this.Timestamp.ToShortDateString());
+            build.AppendLine(this.Author);
+            build.AppendLine(this.Category.ToString());
+            foreach (Tag t in Tags) build.AppendLine(t.ToString());
+            build.AppendLine(this.MainText);
+            foreach (Footer f in Footers) build.AppendLine(f.ToString());
+
+            return build.ToString();
         }
 
         public override bool Equals(object obj)

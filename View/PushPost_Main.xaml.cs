@@ -1,10 +1,5 @@
-﻿using PushPost.Models.HtmlGeneration.Embedded;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Input;
-using PushPost.ViewModels;
+﻿using PushPost.ViewModels;
 using System.Windows;
-using System;
 
 namespace PushPost
 {
