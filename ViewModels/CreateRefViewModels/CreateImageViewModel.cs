@@ -41,7 +41,7 @@ namespace PushPost.ViewModels.CreateRefViewModels
         {
             get
             {
-                return true; // TODO add CanOpenFileBrowser logic
+                return true;
             }
         }
 

@@ -9,8 +9,6 @@ using System.Linq;
 
 namespace PushPost.Models.Database
 {
-    // TODO load connection string from a config file
-
     /// <remarks>
     /// This class handles the storage and retrieval of posts from the database archives.
     /// It's essentially just a wrapper for the DataContext to provide some sanity checks,
@@ -115,7 +113,6 @@ namespace PushPost.Models.Database
         /// </summary>
         public void SubmitChanges()
         {
-            // TODO surround in trycatch and display a warning popup on errors
             db.SubmitChanges();
         }
 
@@ -185,7 +182,7 @@ namespace PushPost.Models.Database
             if (matches.Count() < 1)
             {
                 Debug.WriteMessage(string.Format(
-                    "DeletePost could not find post with GUID [{0}]", post.UniqueID.ToString()));
+                    "DeletePost could not find post with GUID [{0}]", post.UniqueID.ToString()), "info");
                 return;
             }
 
@@ -203,7 +200,7 @@ namespace PushPost.Models.Database
             if(matches.Count() < 1)
             {
                 Debug.WriteMessage(string.Format("DeletePost could not find post [{0} {1}] in the database",
-                    title, date.ToShortDateString()));
+                    title, date.ToShortDateString()), "info");
                 return;
             }
 
@@ -218,11 +215,20 @@ namespace PushPost.Models.Database
         /// <param name="posts">Array of posts to search for and (if found) remove from the database.</param>
         public void DeletePosts(Post[] posts)
         {
-            var matches = db.Posts.Join(
-                posts.Select(ids => ids.UniqueID),
-                layer => layer.UniqueID,
-                id => id,
-                (layer, id) => layer);
+            //var matches = db.Posts.Join(
+            //    posts.Select(ids => ids.UniqueID),
+            //    layer => layer.UniqueID,
+            //    id => id,
+            //    (layer, id) => layer);
+
+            var matches = db.Posts.Where(m => posts.Select(p => p.UniqueID)
+                                                   .Contains(m.UniqueID));
+
+            if(matches.Count() < 1)
+            {
+                Debug.WriteMessage("DeletePosts could not find any matching Post UniqueIDs", "info");
+                return;
+            }
 
             db.Posts.DeleteAllOnSubmit(matches);
             AddToTrash(matches.ToArray());
@@ -418,11 +424,14 @@ namespace PushPost.Models.Database
             Console.WriteLine("\nLooking for these: ");
             foreach (Post post in toFind) Console.WriteLine(post.UniqueID.ToString());
 
-            var matches = stored.Join(
-                toFind.Select(ids => ids.UniqueID),
-                layer => layer.UniqueID,
-                id => id,
-                (layer, id) => layer);
+            //var matches = stored.Join(
+            //    toFind.Select(ids => ids.UniqueID),
+            //    layer => layer.UniqueID,
+            //    id => id,
+            //    (layer, id) => layer);
+
+            var matches = stored.Where(s => toFind.Select(t => t.UniqueID)
+                                                  .Contains(s.UniqueID));
 
             Console.WriteLine("\nRetrieved: ");
             foreach (var match in matches) Console.WriteLine(match.UniqueID.ToString());

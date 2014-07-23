@@ -216,8 +216,7 @@ namespace PushPost.ViewModels
         public bool CanSwitchViews
         {
             get
-            {   // TODO add logic to enable/disable view switching
-                //return string.IsNullOrEmpty(CurrentView.Resource.ResourceType); 
+            {   
                 return string.IsNullOrEmpty(this.SelectedResource);
             }
         }

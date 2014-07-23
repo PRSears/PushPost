@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:PushPost.ViewModels.ArchivesViewModels"
         Title="ArchiveManager" 
         Width="1050" Height="1050" 
-        MinWidth="160" MinHeight="750">
+        MinWidth="160" MinHeight="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:QueueViewModel}">
             <!--<TextBlock Text="Queued Posts" 
@@ -24,17 +24,17 @@
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
                 <ListBox ItemsSource="{Binding DisplayedPosts}"
-                 Grid.Row="1" Grid.Column="0"
-                 Margin="10,0,0,0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 >
+                         Grid.Row="1" Grid.Column="0"
+                         Margin="10,0,0,0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Background="#ebe4e5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{Binding IsChecked}"
-                              HorizontalAlignment="Stretch">
+                                  HorizontalAlignment="Stretch">
                                 <TextBlock TextWrapping="Wrap" 
-                                   Text="{Binding Post}"
-                                   HorizontalAlignment="Stretch"/>
+                                       Text="{Binding Post}"
+                                       HorizontalAlignment="Stretch"/>
                             </CheckBox>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -52,22 +52,22 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding DisplayedPosts}"
-                 Grid.Row="1" Grid.Column="0"
-                 Margin="10,0,0,0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 >
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsChecked}"
-                              HorizontalAlignment="Stretch">
-                                <TextBlock TextWrapping="Wrap" 
-                                   Text="{Binding Post}"
-                                   HorizontalAlignment="Stretch"/>
-                            </CheckBox>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    <ListBox ItemsSource="{Binding DisplayedPosts}"
+                             Grid.Row="1" Grid.Column="0"
+                             Margin="10,0,0,0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Background="#eff4f6">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsChecked}"
+                                          HorizontalAlignment="Stretch">
+                                            <TextBlock TextWrapping="Wrap" 
+                                               Text="{Binding Post}"
+                                               HorizontalAlignment="Stretch"/>
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                    </ListBox>
                 <StackPanel Orientation="Vertical"
                             VerticalAlignment="Bottom"
                             Grid.Row="1" Grid.Column="1"
@@ -159,7 +159,7 @@
                     HorizontalAlignment="Left"
                     Height="32"
                     SelectedIndex="{Binding SelectedTabIndex, UpdateSourceTrigger=PropertyChanged}">
-            <TabItem >
+            <TabItem Background="#ebe4e5">
                 <TabItem.Header>
                     <TextBlock Text="Queued Posts" 
                            Grid.Row="0"
@@ -169,7 +169,7 @@
                            Style="{DynamicResource LabelStyle}"/>                    
                 </TabItem.Header>
             </TabItem>
-            <TabItem>
+            <TabItem Background="#eff4f6">
                 <TabItem.Header>
                     <TextBlock Text="Database Search Results" 
                            Grid.Row="0"

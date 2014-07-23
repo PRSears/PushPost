@@ -1,10 +1,9 @@
 ﻿using PushPost.ViewModels;
+using System;
 using System.Windows;
 
 namespace PushPost
 {
-    // TODO Autosave timer
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,9 +28,6 @@ namespace PushPost
             this.ViewModel.RegisterCloseAction(() => this.Close());
 
             Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
-        
-            //(DataContext as PostViewModel).CloseCommand =
-            //    new Extender.WPF.RelayCommand(() => this.Close());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

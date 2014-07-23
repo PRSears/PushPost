@@ -149,9 +149,7 @@ namespace PushPost.Models.HtmlGeneration
 
             return new List<string>(links);
         }
-
-        // TODO Sort files into subfolders based on category
-
+        
         /// <summary>
         /// Saves the most recently generated Pages (generated when this.CreatePages() is called)
         /// out to an HTML file.
@@ -220,5 +218,3 @@ namespace PushPost.Models.HtmlGeneration
         }
     }
 }
-
-// TODO Get optional css class/id names from a .cfg file.

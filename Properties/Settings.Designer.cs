@@ -130,5 +130,29 @@ namespace PushPost.Properties {
                 this["PreviewFolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("autosaves")]
+        public string AutosaveLocation {
+            get {
+                return ((string)(this["AutosaveLocation"]));
+            }
+            set {
+                this["AutosaveLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("autosaved_{0}.xml")]
+        public string AutosaveFilenameFormat {
+            get {
+                return ((string)(this["AutosaveFilenameFormat"]));
+            }
+            set {
+                this["AutosaveFilenameFormat"] = value;
+            }
+        }
     }
 }

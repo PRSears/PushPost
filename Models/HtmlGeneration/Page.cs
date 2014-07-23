@@ -171,8 +171,7 @@ namespace PushPost.Models.HtmlGeneration
             FinalComment    = "This page was generated automatically by PushPost.";
 
             //
-            // TODO Implement loading from cfg file
-            //      Remove hard-coded class ID string(s)
+            // TODO_ Implement loading from cfg file
         }
         #region Constructor overloads
         public Page(Head header):this(header.Title)

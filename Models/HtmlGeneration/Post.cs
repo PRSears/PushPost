@@ -100,6 +100,9 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
+                if(_Timestamp == null || _Timestamp.Equals(DateTime.MinValue))
+                    _Timestamp = new DateTime(Timestamp_Ticks);
+
                 return _Timestamp;
             }
             set
@@ -300,7 +303,7 @@ namespace PushPost.Models.HtmlGeneration
             System.Xml.Serialization.XmlSerializer serializer = 
                 new System.Xml.Serialization.XmlSerializer(this.GetType());
 
-            serializer.Serialize(outputStream, this);            
+            serializer.Serialize(outputStream, this);
         }
 
         public static Post Deserialize(string filePath)
@@ -396,6 +399,8 @@ namespace PushPost.Models.HtmlGeneration
 
         public override bool Equals(object obj)
         {
+            if (obj == null) return false;
+
             Post other;
             if (obj is Post)
             {

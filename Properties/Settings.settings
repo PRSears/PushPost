@@ -29,5 +29,11 @@
     <Setting Name="PreviewFolderPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">previews</Value>
     </Setting>
+    <Setting Name="AutosaveLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">autosaves</Value>
+    </Setting>
+    <Setting Name="AutosaveFilenameFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">autosaved_{0}.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

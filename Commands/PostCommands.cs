@@ -120,9 +120,7 @@ namespace PushPost.Commands
 
         public bool CanExecute(object parameter)
         {
-            return true; // THOUGHT Not sure always returning true is a good idea, 
-                         //         but I can't think of any situation where a simple
-                         //         dicard operation shouldn't be allowed to happen.
+            return true; 
         }
 
         public void Execute(object parameter)

@@ -46,7 +46,6 @@ namespace PushPost.Models.HtmlGeneration
             w.RenderBeginTag(HtmlTextWriterTag.H1);
             w.Write(this.Title);
             w.RenderEndTag();
-            // TODO_ include author in the header somewhere
         }
 
         protected override void RenderBody(System.Web.UI.HtmlTextWriter w)

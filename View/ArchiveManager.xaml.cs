@@ -32,7 +32,7 @@ namespace PushPost.View
         {
             // VK_LBUTTON = 0x01,
             // Returns negative when the button is DOWN and 0 when the button is UP
-            if (GetKeyState(0x01) < 0) return;
+            if (GetKeyState(VK_LBUTTON) < 0) return;
             
             MaxWidth        = int.MaxValue;
             MinWidth        = 160;
@@ -76,6 +76,8 @@ namespace PushPost.View
 
         [DllImport("user32.dll")]
         public static extern short GetKeyState(UInt16 virtualKeyCode);
+
+        public const UInt16 VK_LBUTTON = 0x01;
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Extender.Debugging;
 using Extender.WPF;
+using Extender;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Models.Database;
 using PushPost.Models.HtmlGeneration;
@@ -147,7 +148,7 @@ namespace PushPost.ViewModels
             // Database
             RemoveFromDBCommand     = new RelayCommand(() => this.RemoveFromDB(),
                                                        () => this.Current is DatabaseViewModel 
-                                                          || this.QueueHasSelected);
+                                                          && this.QueueHasSelected);
             ExportFromDBCommand     = new RelayCommand(() => this.ExportFromDB(),
                                                        () => this.Current is DatabaseViewModel 
                                                           && this.QueueHasSelected);
@@ -233,7 +234,7 @@ namespace PushPost.ViewModels
 
             string firstFilePath = System.IO.Path.Combine(
                 Properties.Settings.Default.PreviewFolderPath,
-                previewer.Pages[0].FileName);
+                previewer.Pages[0].FullName);
 
             System.Diagnostics.Process browserProc = new System.Diagnostics.Process();
 
@@ -254,30 +255,16 @@ namespace PushPost.ViewModels
 It will be a pain in the ass to get them back afterward."))
                 return;
 
-            using(Archive db = new Archive())
+            using (Archive db = new Archive())
             {
-                db.DeletePosts(
-                    Current.DisplayedPosts
-                    .Where(cp => cp.IsChecked)
-                    .Select(cp => cp.Post)
-                    .ToArray());
-
+                db.DeletePosts(Current.DisplayedPosts
+                                       .Where(cp => cp.IsChecked)
+                                       .Select(cp => cp.Post)
+                                       .ToArray());
                 db.SubmitChanges();
             }
 
-            #region one at a time...
-            //using(Archive db = new Archive())
-            //{
-            //    var selected = Current.DisplayedPosts.Where(p => p.IsChecked).ToArray();
-            //    foreach (var post in selected)
-            //    {
-            //        db.DeletePost(post.Post);
-            //        Current.DisplayedPosts.Remove(post);
-            //    }
-
-            //    db.SubmitChanges();
-            //}
-            #endregion
+            Current.DisplayedPosts.RemoveAll(cp => cp.IsChecked);
         }
 
         public void SearchDB()
@@ -298,18 +285,22 @@ It will be a pain in the ass to get them back afterward."))
         {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
 
-            dialog.DefaultExt = ".xml";
-            dialog.Filter = @"XML documents (*.txt, *.xml)
+            dialog.DefaultExt   = ".xml";
+            dialog.Multiselect  = true;
+            dialog.Filter       = @"XML documents (*.txt, *.xml)
                 |*.txt;*.xml|All files (*.*)|*.*";
 
             Nullable<bool> result = dialog.ShowDialog();
 
             if (result == true)
             {
-                Post imported  = Post.Deserialize(dialog.FileName);
-                ArchiveQueue.Enqueue(imported);
-                
-                if (DEBUG) Debug.WriteMessage("Imported: " + imported.ToString(), "info");
+                foreach (string filename in dialog.FileNames)
+                {
+                    Post imported = Post.Deserialize(filename);
+                    ArchiveQueue.Enqueue(imported);
+
+                    if (DEBUG) Debug.WriteMessage("Imported: " + imported.ToString(), "info");
+                }
             }
             else return;
         }

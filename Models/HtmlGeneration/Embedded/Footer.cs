@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
+using System.IO;
 using System.Text;
+using System.Web.UI;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
@@ -104,8 +106,20 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <returns>The rendered HTML for this footnote, in one string.</returns>
         public string CreateHTML(List<IResource> resources)
         {
-            // TODO Double check that this is expanding correctly
-            return "<p class=\"" + this.Class + "\">" + ResourceManager.ExpandReferences(Value, resources) + "</p>"; 
+            using(StringWriter buffer = new StringWriter())
+            using(HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.Class);
+                writer.RenderBeginTag(HtmlTextWriterTag.P);
+                
+                writer.Write(ResourceManager.ExpandReferences(Value, resources));
+
+                writer.RenderEndTag();
+
+
+                return buffer.ToString();
+            }
+            //return "<p class=\"" + this.Class + "\">" + ResourceManager.ExpandReferences(Value, resources) + "</p>"; 
         }
 
         public Footer()

@@ -3,6 +3,8 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using System;
+using System.Linq;
+using System.IO;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels
@@ -12,7 +14,8 @@ namespace PushPost.ViewModels
         public View.ArchiveManager  ArchiveManager_Window;
         public View.AddRefsDialog   AddRef_Window;
 
-        private Post _Post;
+        private short   _LastAutosaveIndex;
+        private Post    _Post;
         public Post Post
         {
             get
@@ -55,6 +58,13 @@ namespace PushPost.ViewModels
         public ICommand ViewReferencesCommand       { get; private set; }
         public ICommand ViewFootnotesCommand        { get; private set; }
         public ICommand CreateSiteCommand           { get; private set; }
+
+        protected System.Windows.Threading.DispatcherTimer AutosaveTimer =
+              new System.Windows.Threading.DispatcherTimer
+              {
+                  Interval  = new TimeSpan(0, 0, 2),
+                  IsEnabled = false
+              };
         #endregion
 
         /// <summary>
@@ -65,8 +75,9 @@ namespace PushPost.ViewModels
         {
             base.Initialize();
 
-            this._Post          = TextPost.TemplatePost();
-            this.ArchiveQueue   = new Models.Database.ArchiveQueue();
+            this._Post              = TextPost.TemplatePost();
+            this.ArchiveQueue       = new Models.Database.ArchiveQueue();
+            this._LastAutosaveIndex = 0;
 
             // Post buttons' commands
             this.QueuePostCommand       = new QueuePostCommand(this);
@@ -86,6 +97,27 @@ namespace PushPost.ViewModels
             this.ViewReferencesCommand      = new ViewReferencesCommand(this);
             this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
             this.CreateSiteCommand          = new Extender.WPF.RelayCommand(() => this.CreateSite());
+
+            Post.PropertyChanged            += PostViewModel_PropertyChanged;
+            this.AutosaveTimer.Tick         += AutosaveTimer_Tick;
+        }
+
+        private void AutosaveTimer_Tick(object sender, EventArgs e)
+        {
+            this.Autosave();
+            this.AutosaveTimer.IsEnabled = false;
+        }
+
+        private void PostViewModel_PropertyChanged(
+            object sender, 
+            System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "MainText")
+            {
+                this.AutosaveTimer.IsEnabled = true;
+                this.AutosaveTimer.Stop();
+                this.AutosaveTimer.Start();
+            }
         }
 
         /// <summary>
@@ -185,17 +217,11 @@ namespace PushPost.ViewModels
         { 
             get
             {
-                // TODO validate post
-                return true;
-            }
-        }
-
-        public bool CanSubmitQueue
-        {
-            get
-            {
-                // TODO (re)check all posts in queue
-                return true;
+                Post def = TextPost.TemplatePost();
+                return !(
+                    this.Post.Title == def.Title &&
+                    this.Post.Author == def.Author && 
+                    this.Post.MainText == def.MainText);
             }
         }
 
@@ -203,8 +229,6 @@ namespace PushPost.ViewModels
         {
             get
             {
-                // TODO Check to see if the post has valid Title/ID/etc
-                // try Archive.remove
                 return true;
             }
         }
@@ -213,8 +237,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                // TODO implement CanAddResource logic
-                return true;
+                return this.Post != null;
             }
         }
 
@@ -222,7 +245,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return true; // TODO add HasReferences logic... Check to see if the refs temp file is present
+                return this.Post.Resources.Count() > 0; 
             }
         }
 
@@ -230,13 +253,13 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return true; // TODO add HasFootnotes logic... Check to see if the refs temp file is present
+                return this.Post.Footers.Count() > 0;
             }
         }
 
         public bool MenuToolbarCanExecute
         {
-            get { return true; } // TODO add MenuToolbarCanExecute logic
+            get { return true; }
         }
 
         public void QueuePostForSubmit()
@@ -318,7 +341,7 @@ namespace PushPost.ViewModels
 
             string firstFilePath = System.IO.Path.Combine(
                 Properties.Settings.Default.PreviewFolderPath,
-                previewer.Pages[0].FileName);
+                previewer.Pages[0].FullName);
 
             System.Diagnostics.Process browserProc  = new System.Diagnostics.Process();
 
@@ -379,24 +402,51 @@ namespace PushPost.ViewModels
             if  (result == true) savePath = dialog.FileName;
             else return;
 
-            using(System.IO.StreamWriter stream = System.IO.File.CreateText(savePath))
-            {
-                bool success;
-                try
-                {
-                    this.Post.Serialize(stream);
-                    success = true;
-                }
-                catch (Exception e)
-                {
-                    success = false;
-                    ExceptionTools.WriteExceptionText(e, true);
-                }
+            using(StreamWriter stream = File.CreateText(savePath))
+                Extender.WPF.CompletedMessagebox.Show(Export(stream));
+        }
 
-                Extender.WPF.CompletedMessagebox.Show(success);
+        public bool Export(StreamWriter stream)
+        {
+            bool success;
+            try
+            {
+
+                this.Post.Serialize(stream);
+                success = true;
+            }
+            catch (Exception e)
+            {
+                success = false;
+                ExceptionTools.WriteExceptionText(e, true);
             }
 
-            // TODO Add Extender.WPF.CompletedMessagebox on success
+            return success;
+        }
+
+        protected void Autosave()
+        {            
+            using(StreamWriter stream = File.CreateText(GenerateAutosaveName()))
+            {
+                Export(stream);
+            }
+        }
+
+        protected string GenerateAutosaveName()
+        {
+            if(!Directory.Exists(AUTOSAVE_LOCATION))
+                Directory.CreateDirectory(AUTOSAVE_LOCATION);
+
+            if (_LastAutosaveIndex >= 5)
+                _LastAutosaveIndex = 0;
+
+            return GenerateAutosaveName(_LastAutosaveIndex++);
+        }
+
+        protected string GenerateAutosaveName(int fileNum)
+        {
+            return Path.Combine(AUTOSAVE_LOCATION, string.Format(
+                AUTOSAVE_FILENAME_FORMAT, fileNum.ToString("D2")));
         }
 
         public void CreateSite()
@@ -427,6 +477,22 @@ namespace PushPost.ViewModels
             get
             {
                 return Properties.Settings.Default.DEBUG;
+            }
+        }
+
+        public string AUTOSAVE_LOCATION
+        {
+            get
+            {
+                return Properties.Settings.Default.AutosaveLocation;
+            }
+        }
+
+        public string AUTOSAVE_FILENAME_FORMAT
+        {
+            get
+            {
+                return Properties.Settings.Default.AutosaveFilenameFormat;
             }
         }
     }
