@@ -382,8 +382,22 @@ namespace PushPost.ViewModels
 
             using(System.IO.StreamWriter stream = System.IO.File.CreateText(savePath))
             {
-                this.Post.Serialize(stream);
+                bool success;
+                try
+                {
+                    this.Post.Serialize(stream);
+                    success = true;
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    ExceptionTools.WriteExceptionText(e, true);
+                }
+
+                Extender.WPF.CompletedMessagebox.Show(success);
             }
+
+            // TODO Add Extender.WPF.CompletedMessagebox on success
         }
 
         public void CreateSite()

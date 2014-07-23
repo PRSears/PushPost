@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using PushPost.ViewModels;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Extender;
+﻿using PushPost.ViewModels;
+using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace PushPost.View
 {
@@ -26,10 +14,12 @@ namespace PushPost.View
         {
             InitializeComponent();
             DataContext         = new ArchiveViewModel(archiveQueue);
+
             SizeChanged        += ArchiveManager_SizeChanged;
             _resizeTimer.Tick  += _resizeTimer_Tick;
         }
 
+        #region Auto-collapse hack job
         private System.Windows.Threading.DispatcherTimer _resizeTimer =
             new System.Windows.Threading.DispatcherTimer
             {
@@ -58,7 +48,7 @@ namespace PushPost.View
 
             if (!_Collapsed)
             {
-                if (e.NewSize.Width > 160 && e.NewSize.Width < 850)
+                if (e.NewSize.Width > 160 && e.NewSize.Width < 950)
                 {
                     MaxWidth = 160;
                     _Collapsed = true;
@@ -74,7 +64,7 @@ namespace PushPost.View
                 if(e.NewSize.Width >= 170)
                 {
                     MaxWidth = int.MaxValue;
-                    MinWidth = 870;
+                    MinWidth = 1050;
                     _Collapsed = false;
                 }
                 else
@@ -86,5 +76,6 @@ namespace PushPost.View
 
         [DllImport("user32.dll")]
         public static extern short GetKeyState(UInt16 virtualKeyCode);
+        #endregion
     }
 }

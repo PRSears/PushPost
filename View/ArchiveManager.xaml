@@ -7,12 +7,39 @@
         MinWidth="160" MinHeight="750">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:QueueViewModel}">
-            <TextBlock Text="Queued Posts" 
+            <!--<TextBlock Text="Queued Posts" 
                 FontSize="14" 
                 HorizontalAlignment="Left" 
                 Margin="20,0,0,0"
                 VerticalAlignment="Center"
-                Style="{DynamicResource LabelStyle}"/>
+                Style="{DynamicResource LabelStyle}"/>-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding DisplayedPosts}"
+                 Grid.Row="1" Grid.Column="0"
+                 Margin="10,0,0,0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked}"
+                              HorizontalAlignment="Stretch">
+                                <TextBlock TextWrapping="Wrap" 
+                                   Text="{Binding Post}"
+                                   HorizontalAlignment="Stretch"/>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:DatabaseViewModel}">
             <Grid>
@@ -21,13 +48,49 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="35"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Database Search Results" 
-                           Grid.Row="0"
-                           FontSize="14" 
-                           HorizontalAlignment="Left" 
-                           Margin="20,0,0,0"
-                           VerticalAlignment="Center"
-                           Style="{DynamicResource LabelStyle}"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding DisplayedPosts}"
+                 Grid.Row="1" Grid.Column="0"
+                 Margin="10,0,0,0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked}"
+                              HorizontalAlignment="Stretch">
+                                <TextBlock TextWrapping="Wrap" 
+                                   Text="{Binding Post}"
+                                   HorizontalAlignment="Stretch"/>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Bottom"
+                            Grid.Row="1" Grid.Column="1"
+                            Grid.RowSpan="2">
+                    <CheckBox Margin="10,10,10,0"
+                          IsChecked="{Binding SearchWithDate}">
+                    <TextBlock TextWrapping="Wrap"
+                           Foreground="#2e2e2e"
+                           VerticalAlignment="Top"
+                           Text="Restrict search by date"
+                           ToolTip="Restrict search by looking only at posts from a specific date, or date range."
+                           />
+                    </CheckBox>
+                    <CheckBox Margin="10"
+                              IsChecked="{Binding UseDateRange}">
+                        <TextBlock TextWrapping="Wrap"
+                               Foreground="#2e2e2e"
+                               VerticalAlignment="Top"
+                               Text="Use date range"
+                               ToolTip="Search for posts between two dates, or for posts from a single day."
+                               />
+                    </CheckBox>
+                </StackPanel>                
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="2">
                     <TextBox 
@@ -89,6 +152,35 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
+        <TabControl TabStripPlacement="Top"
+                    Grid.Row="0" Grid.Column="0"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Height="32"
+                    SelectedIndex="{Binding SelectedTabIndex, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem >
+                <TabItem.Header>
+                    <TextBlock Text="Queued Posts" 
+                           Grid.Row="0"
+                           FontSize="14" 
+                           Margin="10,0,10,0"
+                           VerticalAlignment="Center"
+                           Style="{DynamicResource LabelStyle}"/>                    
+                </TabItem.Header>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="Database Search Results" 
+                           Grid.Row="0"
+                           FontSize="14" 
+                           HorizontalAlignment="Left" 
+                           Margin="10,0,10,0"
+                           VerticalAlignment="Center"
+                           Style="{DynamicResource LabelStyle}"/>
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
         <ContentControl 
             Content="{Binding Current, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="0" Grid.Column="0"
@@ -103,27 +195,10 @@
                    Width="150" Height="35"
                    Padding="0,10,0,0"
                    Style="{DynamicResource LabelStyle}"/>
-        <ListBox ItemsSource="{Binding CheckablePostCollection}"
-                 Grid.Row="1" Grid.Column="0"
-                 Margin="10,0,0,0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsChecked}"
-                              HorizontalAlignment="Stretch">
-                        <TextBlock TextWrapping="Wrap" 
-                                   Text="{Binding Post}"
-                                   HorizontalAlignment="Stretch"/>
-                    </CheckBox>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Grid.Row="2" Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Background="#e4e4e4">
+                    Grid.ColumnSpan="2">
                 <Button Width="85" Height="22"
                         Content="Select All"
                         Command="{Binding SelectAllCommand}"
@@ -174,14 +249,14 @@
                    Foreground="#5e5e5e"
                    HorizontalAlignment="Center"/>
             <Button Width="130" Height="35"
-                        Content="Remove Selected"
-                        Command="{Binding RemoveFromDBCommand}"
+                        Content="Export Selected"
+                        Command="{Binding ExportFromDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
-                        Content="Edit Selected"
-                        Command="{Binding EditFromDBCommand}"
+                        Content="Remove Selected"
+                        Command="{Binding RemoveFromDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>
@@ -193,10 +268,10 @@
                         Style="{DynamicResource FlatActionButtonStyle}"/>
             <Button Width="130" Height="35"
                         Content="Next Search"
-                        Command="{Binding SearchDBCommand}"
+                        Command="{Binding ReSearchDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
+                        Style="{DynamicResource FlatActionButtonStyle}"/>            
             <Separator Margin="10,50,10,0"/>
             <Label Content="Generation commands"
                    FontSize="12"

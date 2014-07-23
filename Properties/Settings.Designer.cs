@@ -13,7 +13,7 @@ namespace PushPost.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -97,7 +97,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.2)_02.mdf")]
+        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.2)_10.mdf")]
         public string DBRelativeFilename {
             get {
                 return ((string)(this["DBRelativeFilename"]));
@@ -121,7 +121,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("preview.html")]
+        [global::System.Configuration.DefaultSettingValueAttribute("previews")]
         public string PreviewFolderPath {
             get {
                 return ((string)(this["PreviewFolderPath"]));

@@ -16,7 +16,18 @@ namespace PushPost.ViewModels
 {
     internal class ArchiveViewModel : ViewModel
     {
-        public ViewModel Current
+        public IArchiveViewModel[] Tabs 
+        {
+            get
+            {
+                return _Tabs;
+            }
+            set
+            {
+                _Tabs = value;
+            }
+        }
+        public IArchiveViewModel Current
         {
             get
             {
@@ -28,18 +39,30 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("Current");
             }
         }
-        public ObservableCollection<CheckablePost> CheckablePostCollection
+        public int SelectedTabIndex
         {
             get
             {
-                return _CheckablePostCollection;
+                return Array.IndexOf(Tabs, Current);
             }
             set
             {
-                _CheckablePostCollection = value;
-                OnPropertyChanged("QueuedPosts");
+                Current = Tabs[value];
+                OnPropertyChanged("SelectedTabIndex");
             }
         }
+        //public ObservableCollection<CheckablePost> CheckablePostCollection
+        //{
+        //    get
+        //    {
+        //        return _CheckablePostCollection;
+        //    }
+        //    set
+        //    {
+        //        _CheckablePostCollection = value;
+        //        OnPropertyChanged("QueuedPosts");
+        //    }
+        //}
 
         // Selection
         public ICommand SelectAllCommand        { get; private set; }
@@ -51,22 +74,24 @@ namespace PushPost.ViewModels
         public ICommand ImportFromXMLCommand    { get; private set; }
         // Database
         public ICommand RemoveFromDBCommand     { get; private set; }
+        public ICommand ExportFromDBCommand     { get; private set; }
         public ICommand SearchDBCommand         { get; private set; }
-        public ICommand EditFromDBCommand       { get; private set; }
+        public ICommand ReSearchDBCommand       { get; private set; }
         // Generation
         public ICommand GeneratePagesCommand    { get; private set; }
         public ICommand PreviewQueueCommand     { get; private set; }
         public ICommand UploadPagesCommand      { get; private set; }
 
+        //protected ObservableCollection<CheckablePost>   _CheckablePostCollection;
         protected Models.Database.ArchiveQueue          ArchiveQueue;
-        protected ObservableCollection<CheckablePost>   _CheckablePostCollection;
-        protected ViewModel                             _Current;
+        protected IArchiveViewModel[]                   _Tabs;
+        protected IArchiveViewModel                     _Current;
 
         public bool QueueHasSelected
         {
             get
             {
-                foreach(CheckablePost entry in CheckablePostCollection)
+                foreach(CheckablePost entry in Current.DisplayedPosts)
                 {
                     if (entry.IsChecked)
                         return true;
@@ -79,7 +104,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return (_CheckablePostCollection.Count > 0) &&
+                return (Current.DisplayedPosts.Count > 0) &&
                         QueueHasSelected &&
                        (Current is QueueViewModel);
             }
@@ -88,7 +113,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return CheckablePostCollection.Count() < Properties.Settings.Default.MaxQueueSize &&
+                return Current.DisplayedPosts.Count() < Properties.Settings.Default.MaxQueueSize &&
                        (Current is QueueViewModel);
             }
         }
@@ -99,9 +124,12 @@ namespace PushPost.ViewModels
         {
             //if (startInDBView)  Current = new DatabaseViewModel(this);
             //else                Current = new QueueViewModel(this);
-            Current = new DatabaseViewModel(this);
-
-            CheckablePostCollection = new ObservableCollection<CheckablePost>();
+            Tabs = new IArchiveViewModel[]
+            {
+                new QueueViewModel(this),
+                new DatabaseViewModel(this)
+            };
+            Current                 = Tabs[0];
             ArchiveQueue            = archiveQueue;
 
             // Selection
@@ -117,11 +145,15 @@ namespace PushPost.ViewModels
             ImportFromXMLCommand    = new RelayCommand(() => this.ImportFromXML(),
                                                        () => this.QueueCanAdd);
             // Database
-            RemoveFromDBCommand     = new RelayCommand(() => this.RemoveFromDB(), 
-                                                       () => this.Current is DatabaseViewModel);
+            RemoveFromDBCommand     = new RelayCommand(() => this.RemoveFromDB(),
+                                                       () => this.Current is DatabaseViewModel 
+                                                          || this.QueueHasSelected);
+            ExportFromDBCommand     = new RelayCommand(() => this.ExportFromDB(),
+                                                       () => this.Current is DatabaseViewModel 
+                                                          && this.QueueHasSelected);
             SearchDBCommand         = new RelayCommand(() => this.SearchDB(),
                                                        () => this.Current is DatabaseViewModel);
-            EditFromDBCommand       = new RelayCommand(() => this.EditFromDB(),
+            ReSearchDBCommand       = new RelayCommand(() => this.NextSearch(),
                                                        () => this.Current is DatabaseViewModel);
             // Generation
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
@@ -135,30 +167,22 @@ namespace PushPost.ViewModels
 
         protected void ArchiveQueue_QueueChanged(object sender)
         {
-            RefreshCollection(ArchiveQueue.GetQueue());
+            var queueVM = Tabs.First(viewModel => 
+                               viewModel.GetType().Equals(typeof(QueueViewModel)));
+
+            if (queueVM == null) return;
+
+            queueVM.RefreshCollection(ArchiveQueue.GetQueue());
         }
 
         public void RefreshCollection(Queue<Post> posts)
         {
-            _CheckablePostCollection = new ObservableCollection<CheckablePost>();
-            foreach (Post p in posts)
-                CheckablePostCollection.Add(new CheckablePost(p));
-
-            OnPropertyChanged("CheckablePostCollection");
-        }
-
-        protected void RefreshCollection(Queue<PostTableLayer> posts)
-        {
-            _CheckablePostCollection = new ObservableCollection<CheckablePost>();
-            foreach (PostTableLayer p in posts)
-                CheckablePostCollection.Add(new CheckablePost(p));
-
-            OnPropertyChanged("CheckablePostCollection");
+            this.Current.RefreshCollection(posts);
         }
 
         public void SelectNone()
         {
-            foreach(CheckablePost entry in CheckablePostCollection)
+            foreach(CheckablePost entry in Current.DisplayedPosts)
             {
                 entry.IsChecked = false;
             }
@@ -166,7 +190,7 @@ namespace PushPost.ViewModels
 
         public void SelectAll()
         {
-            foreach(CheckablePost entry in CheckablePostCollection)
+            foreach (CheckablePost entry in Current.DisplayedPosts)
             {
                 entry.IsChecked = true;
             }
@@ -218,19 +242,60 @@ namespace PushPost.ViewModels
             browserProc.Start();
         }
 
-        public void EditFromDB()
+        public void ExportFromDB()
         {
-            System.Windows.Forms.MessageBox.Show("Not implemented.");
+            this.ExportSelected();
         }
 
         public void RemoveFromDB()
         {
-            System.Windows.Forms.MessageBox.Show("Not implemented.");
+            if (!ConfirmationDialog.Show("Confirm post deletion",
+                @"Are you sure you want to remove all selected posts from the DATABASE?
+It will be a pain in the ass to get them back afterward."))
+                return;
+
+            using(Archive db = new Archive())
+            {
+                db.DeletePosts(
+                    Current.DisplayedPosts
+                    .Where(cp => cp.IsChecked)
+                    .Select(cp => cp.Post)
+                    .ToArray());
+
+                db.SubmitChanges();
+            }
+
+            #region one at a time...
+            //using(Archive db = new Archive())
+            //{
+            //    var selected = Current.DisplayedPosts.Where(p => p.IsChecked).ToArray();
+            //    foreach (var post in selected)
+            //    {
+            //        db.DeletePost(post.Post);
+            //        Current.DisplayedPosts.Remove(post);
+            //    }
+
+            //    db.SubmitChanges();
+            //}
+            #endregion
         }
 
         public void SearchDB()
         {
+            if (!(Current is DatabaseViewModel)) return;
+
             (Current as DatabaseViewModel).ExecuteSearch();
+        }
+
+        public void NextSearch()
+        {
+            // DEBUGGING
+            Archive.TestHarness();
+            return;
+
+            if (!(Current is DatabaseViewModel)) return;
+
+            (Current as DatabaseViewModel).ExecuteNextSearch();
         }
 
         public void ImportFromXML()
@@ -266,14 +331,26 @@ namespace PushPost.ViewModels
 
             if(r == CommonFileDialogResult.Ok)
             {
-                foreach(CheckablePost entry in CheckablePostCollection) if(entry.IsChecked)
+                bool success;
+                try
                 {
-                        using(StreamWriter stream = File.CreateText(
+                    foreach (CheckablePost entry in Current.DisplayedPosts) if (entry.IsChecked)
+                    {
+                        using (StreamWriter stream = File.CreateText(
                             GetUniqueFilename(dialog.FileName, entry.Post.Title)))
                         {
                             entry.Post.Serialize(stream);
                         }
+                    }
+                    success = true;
                 }
+                catch (Exception e)
+                {
+                    ExceptionTools.WriteExceptionText(e, false);
+                    success = false;
+                }
+
+                CompletedMessagebox.Show(success);
             }
         }
 
@@ -305,7 +382,7 @@ namespace PushPost.ViewModels
             if (!ConfirmationDialog.Show("Confirm removal", "Remove all selected posts from the queue?"))
                     return;
 
-            foreach (CheckablePost entry in CheckablePostCollection.ToArray())
+            foreach (CheckablePost entry in Current.DisplayedPosts.ToArray())
             {
                 if (entry.IsChecked)
                     ArchiveQueue.Remove(entry.Post);
@@ -318,7 +395,7 @@ namespace PushPost.ViewModels
             {
                 using (Archive database = new Archive())
                 {
-                    foreach (CheckablePost post in CheckablePostCollection)
+                    foreach (CheckablePost post in Current.DisplayedPosts)
                     {
                         if (post.IsChecked)
                             database.CommitPost(post.Post);

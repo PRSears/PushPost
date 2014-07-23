@@ -93,6 +93,7 @@
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
     <Compile Include="Models\S3\Push.cs" />
     <Compile Include="ViewModels\ArchivesViewModels\DatabaseViewModel.cs" />
+    <Compile Include="ViewModels\ArchivesViewModels\IArchiveViewModel.cs" />
     <Compile Include="ViewModels\ArchivesViewModels\QueueViewModel.cs" />
     <Compile Include="ViewModels\ArchiveViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateImageViewModel.cs" />

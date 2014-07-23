@@ -96,6 +96,7 @@ namespace PushPost.Models.HtmlGeneration
         /// <summary>
         /// DateTime object representing the Post's creation time.
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
         public DateTime Timestamp 
         {
             get
@@ -106,6 +107,17 @@ namespace PushPost.Models.HtmlGeneration
             {
                 _Timestamp = value;
                 OnPropertyChanged("Timestamp");
+            }
+        }
+        public long Timestamp_Ticks
+        {
+            get
+            {
+                return this.Timestamp.Ticks;
+            }
+            set
+            {
+                this.Timestamp = new DateTime(value);
             }
         }
         /// <summary>
@@ -255,7 +267,7 @@ namespace PushPost.Models.HtmlGeneration
 
             blocks.Add(Encoding.Default.GetBytes(this.Title));
             blocks.Add(Encoding.Default.GetBytes(this.Author));
-            blocks.Add(Encoding.Default.GetBytes(this.MainText));
+            blocks.Add(Encoding.Default.GetBytes(this.ParsedMainText));
             blocks.Add(Encoding.Default.GetBytes(Category.ToString()));
             blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
 

@@ -73,16 +73,36 @@ namespace PushPost.Models.Database
         }
 
         private DateTime _Timestamp;
-        [Column(Storage = "_Timestamp")]
         public DateTime Timestamp
         {
             get
             {
+                if (_Timestamp == null || _Timestamp.Equals(DateTime.MinValue))
+                {
+                    _Timestamp = new DateTime(_Timestamp_Ticks);
+                }
+
                 return _Timestamp;
             }
             private set
             {
                 _Timestamp = value;
+            }
+        }
+
+        private long _Timestamp_Ticks;
+        [Column(Storage = "_Timestamp_Ticks")]
+        public long Timestamp_Ticks
+        {
+            get
+            {
+                _Timestamp_Ticks = this.Timestamp.Ticks;
+                return _Timestamp_Ticks;
+            }
+            set
+            {
+                _Timestamp_Ticks = value;
+                this.Timestamp = new DateTime(_Timestamp_Ticks);
             }
         }
 
@@ -157,7 +177,7 @@ namespace PushPost.Models.Database
             this.Timestamp      = post.Timestamp;
             this.Author         = post.Author;
             this.PostCategory   = post.Category.ToString();
-            this.MainText       = post.MainText;
+            this.MainText       = post.ParsedMainText;
 
             this.Footers    = post.Footers;
             this.Tags       = post.Tags;
@@ -171,7 +191,7 @@ namespace PushPost.Models.Database
             constructed.Timestamp       = post.Timestamp;
             constructed.Author          = post.Author;
             constructed.PostCategory    = post.Category.ToString();
-            constructed.MainText        = post.MainText;
+            constructed.MainText        = post.ParsedMainText;
 
             constructed.Footers     = post.Footers;
             constructed.Tags        = post.Tags;
@@ -200,28 +220,6 @@ namespace PushPost.Models.Database
         /// </summary>
         /// <returns>If successful, a Post object based on this PostTableLayer is
         /// returned. Returns null if the Post implementation could not be determined.</returns>
-        [Obsolete]
-        private Post TryCreatePost_()
-        {
-            NavCategory thisCat = NavCategory.TryParse(this.PostCategory);
-            Post newPost;
-
-            if (thisCat == NavCategory.Blog)
-                newPost = new TextPost();
-            else if (thisCat == NavCategory.Code)
-                newPost = new TextPost();
-            else if (thisCat == NavCategory.Photography)
-                newPost = new AlbumPost();
-            else if (thisCat == NavCategory.Contact)
-                newPost = new TextPost();
-            else
-                return null;
-
-            ExportTo(ref newPost);
-
-            return newPost;
-        }
-
         public Post TryCreatePost()
         {
             NavCategory thisCat = NavCategory.TryParse(this.PostCategory);
@@ -279,18 +277,37 @@ namespace PushPost.Models.Database
 
         public byte[] GetHashData()
         {
-            List<byte[]> blocks = new List<byte[]>();
+            Post converted = this.TryCreatePost();
 
-            foreach (PushPost.Models.HtmlGeneration.Embedded.Footer footer in this.Footers)
-                blocks.Add(Encoding.Default.GetBytes(footer.Value));
-            foreach (PushPost.Models.HtmlGeneration.Embedded.Tag tag in this.Tags)
-                blocks.Add(Encoding.Default.GetBytes(tag.Text));
-            blocks.Add(Encoding.Default.GetBytes(this.Title));
-            blocks.Add(Encoding.Default.GetBytes(this.Author));
-            blocks.Add(Encoding.Default.GetBytes(this.MainText));
-            blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
+            if (converted != null)
+            {
+                return converted.GetHashData();
+            }
+            else
+            {
+                #region Updated
+                List<byte[]> blocks = new List<byte[]>();
 
-            return Hashing.GenerateHashCode(blocks);
+
+                blocks.Add(Encoding.Default.GetBytes(this.Title));
+                blocks.Add(Encoding.Default.GetBytes(this.Author));
+                blocks.Add(Encoding.Default.GetBytes(this.MainText));
+                blocks.Add(Encoding.Default.GetBytes(this.PostCategory));
+                blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
+
+                return Hashing.GenerateHashCode(blocks);
+                #endregion
+            }
+            #region Original
+            //foreach (PushPost.Models.HtmlGeneration.Embedded.Footer footer in this.Footers)
+            //    blocks.Add(Encoding.Default.GetBytes(footer.Value));
+            //foreach (PushPost.Models.HtmlGeneration.Embedded.Tag tag in this.Tags)
+            //    blocks.Add(Encoding.Default.GetBytes(tag.Text));
+            //blocks.Add(Encoding.Default.GetBytes(this.Title));
+            //blocks.Add(Encoding.Default.GetBytes(this.Author));
+            //blocks.Add(Encoding.Default.GetBytes(this.MainText));
+            //blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
+            #endregion
         }
 
         public override int GetHashCode()

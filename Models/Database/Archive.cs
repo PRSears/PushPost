@@ -160,6 +160,12 @@ namespace PushPost.Models.Database
                 this.CommitPost(p);
         }
 
+        protected void CommitPosts(PostTableLayer[] newPosts, PostsDataContext database)
+        {
+            foreach(PostTableLayer p in newPosts)
+                this.CommitPost(p, database);
+        }
+
         /// <summary>
         /// Removes the old post from the database, then adds the new one.
         /// Call SubmitChanges() to implement the changes.
@@ -176,17 +182,60 @@ namespace PushPost.Models.Database
         /// Removes all posts with matching UniqueID from the database, and backs them up in
         /// a seperate 'trash' database.
         /// </summary>
-        /// <param name="post"></param>
         public void DeletePost(Post post)
         {
-            var matches = db.Posts.Where(p => p.UniqueID == post.UniqueID);
+            var matches = db.Posts.Where(p => p.UniqueID.Equals(post.UniqueID));
             if (matches.Count() < 1)
-                return;
-
-            foreach (PostTableLayer q in matches)
             {
-                AddToTrash(q);
-                db.Posts.DeleteOnSubmit(q);
+                Debug.WriteMessage(string.Format(
+                    "DeletePost could not find post with GUID [{0}]", post.UniqueID.ToString()));
+                return;
+            }
+
+            db.Posts.DeleteAllOnSubmit(matches);
+            AddToTrash(matches.ToArray());
+        }
+
+        /// <summary>
+        /// Removes all posts with matching UniqueID from the database, and backs them up in
+        /// a seperate 'trash' database.
+        /// </summary>
+        public void DeletePost(string title, DateTime date)
+        {
+            var matches = db.Posts.Where(p => p.Title.Equals(title) && p.Timestamp.Date.Equals(date.Date));
+            if(matches.Count() < 1)
+            {
+                Debug.WriteMessage(string.Format("DeletePost could not find post [{0} {1}] in the database",
+                    title, date.ToShortDateString()));
+                return;
+            }
+
+            db.Posts.DeleteAllOnSubmit(matches);
+            AddToTrash(matches.ToArray());
+        }
+
+        /// <summary>
+        /// Removes all posts found in the database with UniqueIDs matching any UniqueIDs of the provided
+        /// posts.
+        /// </summary>
+        /// <param name="posts">Array of posts to search for and (if found) remove from the database.</param>
+        public void DeletePosts(Post[] posts)
+        {
+            var matches = db.Posts.Join(
+                posts.Select(ids => ids.UniqueID),
+                layer => layer.UniqueID,
+                id => id,
+                (layer, id) => layer);
+
+            db.Posts.DeleteAllOnSubmit(matches);
+            AddToTrash(matches.ToArray());
+        }
+
+        protected string TrashConnectionString
+        {
+            get
+            {
+                return Archive.GenerateConnectionString(this.RelativeFilename + "_trash.mdf");
             }
         }
 
@@ -195,13 +244,27 @@ namespace PushPost.Models.Database
         /// </summary>
         protected void AddToTrash(PostTableLayer post)
         {
-            string trashConnectionString = Archive.GenerateConnectionString(this.RelativeFilename + "_trash.mdf");
-            using (PostsDataContext db_trash = new PostsDataContext(trashConnectionString))
+            using (PostsDataContext db_trash = new PostsDataContext(this.TrashConnectionString))
             {
                 if (!db_trash.DatabaseExists())
                     db_trash.CreateDatabase();
 
                 CommitPost(post, db_trash);
+                db_trash.SubmitChanges();
+            }
+        }
+
+        /// <summary>
+        /// Backs up the posts to a secondary trash database (at 'normaldb.mdf_trash.mdf')
+        /// </summary>
+        protected void AddToTrash(PostTableLayer[] posts)
+        {
+            using (PostsDataContext db_trash = new PostsDataContext(this.TrashConnectionString))
+            {
+                if (!db_trash.DatabaseExists())
+                    db_trash.CreateDatabase();
+
+                CommitPosts(posts, db_trash);
                 db_trash.SubmitChanges();
             }
         }
@@ -234,7 +297,12 @@ namespace PushPost.Models.Database
             var queried = db.Posts.Where(query).ToArray();
 
             if (queried.Length < 1)
-                throw new DatabasePullException(query.ToString());
+            {
+                Debug.WriteMessage(string.Format("Query ({0}) returned no results.",
+                    query.ToString()),
+                    "info");
+                return null;
+            }
 
             //List<Post> pulled = new List<Post>();
             //foreach (PostTableLayer layer in queried)
@@ -304,6 +372,15 @@ namespace PushPost.Models.Database
             return dumped;
         }
 
+        public void DumpToDebug()
+        {
+            foreach(PostTableLayer p in db.Posts)
+            {
+                Console.WriteLine("0: " + p.UniqueID.ToString());
+                Console.WriteLine("1: " + p.TryCreatePost().UniqueID.ToString() + "\n");
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -316,6 +393,8 @@ namespace PushPost.Models.Database
             {
                 if (disposing)
                 {
+                    // THOUGHT should I submit all pending operations before
+                    //         disposal?
                     db.Dispose();
                 }
                 _disposed = true;
@@ -324,17 +403,57 @@ namespace PushPost.Models.Database
 
         public static void TestHarness()
         {
-            List<Post> test_posts = new List<Post>();
-            for (int i = 0; i < 12; i++)
+            List<Post> stored = new List<Post>();
+            List<Post> toFind = new List<Post>();
+
+            for(int i = 0; i < 10; i++)
             {
-                test_posts.Add(HtmlGeneration.TextPost.Dummy());
-                Extender.Debugging.Debug.WriteMessage(test_posts[i].ToString());
+                stored.Add(TextPost.Dummy());
             }
 
-            Archive db = new Archive(@"Post_TestDB_2014-17-07_001.mdf");
-            db.CommitPosts(test_posts);
-            db.SubmitChanges();
-            db.Dump(@"2014-29-04_003.dump.txt");
+            toFind.Add(stored[2]);
+            toFind.Add(stored[4]);
+            toFind.Add(stored[6]);
+
+            Console.WriteLine("All posts in stored: ");
+            foreach (Post post in stored) Console.WriteLine(post.UniqueID.ToString());
+
+            Console.WriteLine("\nLooking for these: ");
+            foreach (Post post in toFind) Console.WriteLine(post.UniqueID.ToString());
+
+            var matches = stored.Join(
+                toFind.Select(ids => ids.UniqueID),
+                layer => layer.UniqueID,
+                id => id,
+                (layer, id) => layer);
+
+            Console.WriteLine("\nRetrieved: ");
+            foreach (var match in matches) Console.WriteLine(match.UniqueID.ToString());
+
+            #region commit / delete
+            //using (Archive arc = new Archive("test_harness_002.mdf"))
+            //{
+            //    Console.Write("Initial dump: \n");
+            //    arc.DumpToDebug();
+
+            //    Post testPost = TextPost.TemplatePost();
+            //    arc.CommitPost(testPost);
+            //    arc.SubmitChanges();
+
+            //    Console.WriteLine("\nAfter post added: ");
+            //    arc.DumpToDebug();
+
+            //    Console.WriteLine("\nRetrieving post.");
+            //    Post retrieved = arc.PullPostsWhere(p => p.Title == "Enter Title").ToArray()[0];
+
+            //    arc.DeletePost(retrieved);
+            //    arc.SubmitChanges();
+
+            //    Console.WriteLine("\nAfter post removed: ");
+            //    arc.DumpToDebug();
+
+            //}
+            #endregion
         }
     } 
 
