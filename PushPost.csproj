@@ -73,6 +73,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\HtmlGeneration\Site.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="View\SettingsEditor.xaml.cs">
+      <DependentUpon>SettingsEditor.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\AddRefsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,7 +104,7 @@
     <Compile Include="ViewModels\CreateRefViewModels\CreateFootViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateCodeViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreateLinkViewModel.cs" />
-    <Compile Include="ViewModels\IRefViewModel.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\IRefViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
     <Compile Include="View\AddRefsDialog.xaml.cs">
@@ -137,6 +142,10 @@
       <DependentUpon>PushPost_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\SettingsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

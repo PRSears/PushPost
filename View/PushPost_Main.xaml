@@ -27,29 +27,33 @@
             HorizontalAlignment="Stretch" 
             VerticalAlignment="Top"
             Height="22" >
-            <MenuItem Header="File">
-                <MenuItem Header="Import from file..." Command="{Binding ImportFromFileCommand}"/>
-                <MenuItem Header="Export to file..." Command="{Binding ExportToFileCommand}"/>
-                <MenuItem Header="Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
-                <MenuItem Header="Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Import from file..." Command="{Binding ImportFromFileCommand}"/>
+                <MenuItem Header="_Export to file..." Command="{Binding ExportToFileCommand}"/>
+                <MenuItem Header="_Preview in browser..." Command="{Binding PreviewInBrowserCommand}"/>
+                <MenuItem Header="_Sumbit to archive" Command="{Binding SubmitPostCommand}"/>
                 <Separator/>
-                <MenuItem Header="Create pages from database..." Command="{Binding CreateSiteCommand}"/>
+                <MenuItem Header="_Create pages from database..." Command="{Binding CreateSiteCommand}" 
+                          ToolTip="You can change the default export folder in Settings."/>
                 <Separator/>
-                <MenuItem Header="Exit" Command="{Binding CloseCommand}"/>
+                <MenuItem Header="E_xit" Command="{Binding CloseCommand}"/>
             </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Post creator" IsCheckable="False" IsChecked="True"/>
-                <MenuItem Header="Archive manager" IsCheckable="False" 
+            <MenuItem Header="_View">
+                <MenuItem Header="_Post creator" IsCheckable="False" IsChecked="True"/>
+                <MenuItem Header="_Archive manager" IsCheckable="False" 
                           IsChecked="{Binding ArchiveManagerOpen}"
                           Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
-                <MenuItem Header="References..."/>
-                <MenuItem Header="Footnotes..."/>
+                <MenuItem Header="_References..."/>
+                <MenuItem Header="_Footnotes..."/>
             </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="Documentation"/>
+            <MenuItem Header="_Settings">
+                <MenuItem Header="Change _settings..." Command="{Binding EditSettingsCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Documentation" Command="{Binding OpenHelpDocsCommand}"/>
                 <Separator/>
-                <MenuItem Header="About..."/>
+                <MenuItem Header="_About..." Command="{Binding DisplayAboutCommand}"/>
             </MenuItem>
         </Menu>
         <TextBox 

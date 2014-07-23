@@ -55,11 +55,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             throw new NotImplementedException();
         }
 
-        public void Upload()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Creates HTML markup of an image tag pointing to the local version
         /// of this Image.

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PushPost.Models.HtmlGeneration.Embedded;
 
-namespace PushPost.ViewModels
+namespace PushPost.ViewModels.CreateRefViewModels
 {
     internal interface IRefViewModel
     {

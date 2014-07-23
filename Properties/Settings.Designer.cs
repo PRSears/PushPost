@@ -154,5 +154,29 @@ namespace PushPost.Properties {
                 this["AutosaveFilenameFormat"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SiteExportFolder {
+            get {
+                return ((string)(this["SiteExportFolder"]));
+            }
+            set {
+                this["SiteExportFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int PostsPerPage {
+            get {
+                return ((int)(this["PostsPerPage"]));
+            }
+            set {
+                this["PostsPerPage"] = value;
+            }
+        }
     }
 }

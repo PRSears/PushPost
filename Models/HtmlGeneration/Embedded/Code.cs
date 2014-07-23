@@ -108,13 +108,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
                 return buffer.ToString();
             }
-
-
-            //StringBuilder build = new StringBuilder();
-            //build.AppendLine("\n<pre class=\"" + this.PreformatClass + " linenums:" + this.LineNum + "\"><code>");
-            //build.AppendLine(this.Value);
-            //build.AppendLine(@"</code></pre>");
-            //return build.ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Extender.Debugging;
+using Extender.WPF;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
@@ -13,6 +14,7 @@ namespace PushPost.ViewModels
     {
         public View.ArchiveManager  ArchiveManager_Window;
         public View.AddRefsDialog   AddRef_Window;
+        public View.SettingsEditor  SettingsEditor_Window;
 
         private short   _LastAutosaveIndex;
         private Post    _Post;
@@ -59,6 +61,10 @@ namespace PushPost.ViewModels
         public ICommand ViewFootnotesCommand        { get; private set; }
         public ICommand CreateSiteCommand           { get; private set; }
 
+        public ICommand EditSettingsCommand         { get; private set; }
+        public ICommand DisplayAboutCommand         { get; private set; }
+        public ICommand OpenHelpDocsCommand         { get; private set; }
+
         protected System.Windows.Threading.DispatcherTimer AutosaveTimer =
               new System.Windows.Threading.DispatcherTimer
               {
@@ -96,29 +102,16 @@ namespace PushPost.ViewModels
             this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
             this.ViewReferencesCommand      = new ViewReferencesCommand(this);
             this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
-            this.CreateSiteCommand          = new Extender.WPF.RelayCommand(() => this.CreateSite());
+            this.CreateSiteCommand          = new RelayCommand(() => this.CreateSite());
+
+            this.EditSettingsCommand    = new RelayCommand(() => this.EditSettings());
+            this.DisplayAboutCommand    = new RelayCommand(() => this.DisplayAbout());
+            this.OpenHelpDocsCommand    = new RelayCommand(() => this.OpenHelpDocs());
 
             Post.PropertyChanged            += PostViewModel_PropertyChanged;
             this.AutosaveTimer.Tick         += AutosaveTimer_Tick;
         }
 
-        private void AutosaveTimer_Tick(object sender, EventArgs e)
-        {
-            this.Autosave();
-            this.AutosaveTimer.IsEnabled = false;
-        }
-
-        private void PostViewModel_PropertyChanged(
-            object sender, 
-            System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == "MainText")
-            {
-                this.AutosaveTimer.IsEnabled = true;
-                this.AutosaveTimer.Stop();
-                this.AutosaveTimer.Start();
-            }
-        }
 
         /// <summary>
         /// Initializes a new isntance of the PostViewModel class.
@@ -158,6 +151,52 @@ namespace PushPost.ViewModels
             else
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
                 // Doesn't override the default _Post the parameterless constructor set.
+        }
+        public void OpenHelpDocs()
+        {
+            System.Windows.Forms.MessageBox.Show("Not implemented.");
+        }
+
+        public void DisplayAbout()
+        {
+            System.Windows.Forms.MessageBox.Show("Not implemented.");
+        }
+
+        public void EditSettings()
+        {
+            if(SettingsEditor_Window != null)
+            {
+                SettingsEditor_Window.Focus();
+                return;
+            }
+
+            SettingsEditor_Window           = new View.SettingsEditor();
+            SettingsEditor_Window.Closed    += SettingsEditor_Closed;
+
+            SettingsEditor_Window.Show();
+        }
+
+        protected void SettingsEditor_Closed(object sender, EventArgs e)
+        {
+            SettingsEditor_Window = null;
+        }
+
+        private void AutosaveTimer_Tick(object sender, EventArgs e)
+        {
+            this.Autosave();
+            this.AutosaveTimer.IsEnabled = false;
+        }
+
+        private void PostViewModel_PropertyChanged(
+            object sender, 
+            System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "MainText")
+            {
+                this.AutosaveTimer.IsEnabled = true;
+                this.AutosaveTimer.Stop();
+                this.AutosaveTimer.Start();
+            }
         }
 
         public void OpenArchiveManager()
@@ -200,17 +239,21 @@ namespace PushPost.ViewModels
             get
             {
                 return (ArchiveManager_Window   != null) ||
-                       (AddRef_Window           != null);
+                       (AddRef_Window           != null) ||
+                       (SettingsEditor_Window   != null);
             }
         }
 
         public void CloseChildren()
         {
-            if(AddRef_Window != null)
+            if (AddRef_Window != null)
                 AddRef_Window.Close();
 
-            if(ArchiveManager_Window != null)
+            if (ArchiveManager_Window != null)
                 ArchiveManager_Window.Close();
+
+            if (SettingsEditor_Window != null)
+                SettingsEditor_Window.Close();
         }
 
         public bool CanSubmitPost 
@@ -334,20 +377,7 @@ namespace PushPost.ViewModels
 
         public void PreviewInBrowser()
         {
-            PageBuilder previewer = new PageBuilder(new Post[] { this.Post });
-
-            previewer.CreatePages();
-            previewer.SavePages(Properties.Settings.Default.PreviewFolderPath);
-
-            string firstFilePath = System.IO.Path.Combine(
-                Properties.Settings.Default.PreviewFolderPath,
-                previewer.Pages[0].FullName);
-
-            System.Diagnostics.Process browserProc  = new System.Diagnostics.Process();
-
-            browserProc.StartInfo.FileName          = firstFilePath;
-            browserProc.StartInfo.UseShellExecute   = true;
-            browserProc.Start();
+            Site.Preview(new Post[] { this.Post });
         }
 
         public void OpenPageGenerator()
@@ -451,25 +481,7 @@ namespace PushPost.ViewModels
 
         public void CreateSite()
         {
-            // prompt user to pick output folder
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.Title = "Select a folder to save the site in";
-
-            CommonFileDialogResult r = dialog.ShowDialog();
-            if (r != CommonFileDialogResult.Ok) return;
-
-            // retrieve all posts from the database
-            Post[] allPosts;
-            using (PushPost.Models.Database.Archive database = new PushPost.Models.Database.Archive())
-            {
-                allPosts = database.Dump();
-            }
-
-            // generate 
-            PageBuilder site = new PageBuilder(allPosts);
-            site.CreatePages();
-            site.SavePages(dialog.FileName);    
+            Site.Create();
         }
 
         public bool DEBUG 

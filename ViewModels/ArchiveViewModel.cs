@@ -204,43 +204,12 @@ namespace PushPost.ViewModels
 
         public void GeneratePages()
         {
-            // prompt user to pick output folder
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.Title = "Select a folder to save the site in";
-
-            CommonFileDialogResult r = dialog.ShowDialog();
-            if (r != CommonFileDialogResult.Ok) return;
-
-            // retrieve all posts from the database
-            Post[] allPosts;
-            using(Archive database = new Archive())
-            {                
-                allPosts = database.Dump();
-            }            
-                        
-            // generate 
-            PageBuilder site = new PageBuilder(allPosts);
-            site.CreatePages();
-            site.SavePages(dialog.FileName);            
+            Site.Create();
         }
 
         public void PreviewQueue()
         {
-            PageBuilder previewer = new PageBuilder(ArchiveQueue.GetQueue().ToArray());
-
-            previewer.CreatePages();
-            previewer.SavePages(Properties.Settings.Default.PreviewFolderPath);
-
-            string firstFilePath = System.IO.Path.Combine(
-                Properties.Settings.Default.PreviewFolderPath,
-                previewer.Pages[0].FullName);
-
-            System.Diagnostics.Process browserProc = new System.Diagnostics.Process();
-
-            browserProc.StartInfo.FileName = firstFilePath;
-            browserProc.StartInfo.UseShellExecute = true;
-            browserProc.Start();
+            Site.Preview(ArchiveQueue.GetQueue().ToArray());
         }
 
         public void ExportFromDB()
