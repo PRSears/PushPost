@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
+﻿using Extender.Debugging;
 using PushPost.Models.HtmlGeneration;
-using Extender.Debugging;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 
 namespace PushPost.Models.Database
 {
@@ -41,6 +39,9 @@ namespace PushPost.Models.Database
         {
             this.StoragePath    = storagePath;
             this.FilenameFormat = @"{0}//{1}_queued_post.xml";
+
+            if (!Directory.Exists(StoragePath))
+                 Directory.CreateDirectory(StoragePath);
         }
 
         protected void OnQueueChanged()
@@ -112,6 +113,7 @@ namespace PushPost.Models.Database
 
         protected string[] GetQueuedFiles()
         {
+            if (!Directory.Exists(StoragePath)) return new string[]{};
             return Directory.GetFiles(StoragePath, "*.xml");
         }
 
@@ -139,6 +141,7 @@ namespace PushPost.Models.Database
         /// <returns></returns>
         public int Count()
         {
+            if (!Directory.Exists(StoragePath)) return 0;
             return Directory.EnumerateFiles(StoragePath, "*.xml").Count();
         }
 

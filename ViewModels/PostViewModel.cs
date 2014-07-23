@@ -3,7 +3,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels

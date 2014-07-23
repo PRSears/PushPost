@@ -289,10 +289,6 @@ It will be a pain in the ass to get them back afterward."))
 
         public void NextSearch()
         {
-            // DEBUGGING
-            Archive.TestHarness();
-            return;
-
             if (!(Current is DatabaseViewModel)) return;
 
             (Current as DatabaseViewModel).ExecuteNextSearch();

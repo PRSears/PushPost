@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Extender;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PushPost.Models.HtmlGeneration.Embedded;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Extender;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
