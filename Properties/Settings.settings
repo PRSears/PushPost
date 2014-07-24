@@ -41,5 +41,20 @@
     <Setting Name="PostsPerPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
+    <Setting Name="ImagesSubfolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">images</Value>
+    </Setting>
+    <Setting Name="ImageSizes" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;480&lt;/string&gt;
+  &lt;string&gt;600&lt;/string&gt;
+  &lt;string&gt;775&lt;/string&gt;
+  &lt;string&gt;1080&lt;/string&gt;
+  &lt;string&gt;1440&lt;/string&gt;
+  &lt;string&gt;1600&lt;/string&gt;
+  &lt;string&gt;0&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -6,6 +6,7 @@ using PushPost.ViewModels.CreateRefViewModels;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace PushPost.ViewModels
 {
@@ -209,8 +210,38 @@ namespace PushPost.ViewModels
                 if (AutoInsertMarkup) this.Post.MainText += CurrentView.Resource.Markup;
             }
 
+            if(CurrentView is CreateImageViewModel)
+            {
+                if(string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder))
+                {
+                    System.Windows.Forms.MessageBox.Show("You need to select a folder " +
+                        "to create the site in before an image can be added.");
+
+                    do
+                    {
+                        Properties.Settings.Default.SiteExportFolder = SelectSiteExportFolder();
+                    } while (string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder));
+                }
+
+                (CurrentView as CreateImageViewModel).Image.Proccess();
+            }
+
             CloseAction();
             return CurrentView.Resource.Markup;
+        }
+
+        private string SelectSiteExportFolder()
+        {
+            var dialog = new CommonOpenFileDialog();
+
+            dialog.IsFolderPicker = true;
+            dialog.Title = string.Format("Select a folder to export the site into");
+
+            CommonFileDialogResult r = dialog.ShowDialog();
+            if (r != CommonFileDialogResult.Ok)
+                return string.Empty;
+            else
+                return dialog.FileName;
         }
 
         public bool CanSwitchViews

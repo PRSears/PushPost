@@ -142,6 +142,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public string ImagesSubfolder
+        {
+            get
+            {
+                return Properties.Settings.Default.ImagesSubfolder;
+            }
+            set
+            {
+                Properties.Settings.Default.ImagesSubfolder = value;
+                OnPropertyChanged("ImagesSubfolder");
+            }
+        }
+
         public int MaxQueueSize
         {
             get
@@ -172,6 +185,7 @@ namespace PushPost.ViewModels
         public ICommand BrowseQueueFolderCommand        { get; private set; }
         public ICommand BrowsePreviewsFolderCommand     { get; private set; }
         public ICommand BrowseAutosaveFolderCommand     { get; private set; }
+        public ICommand BrowseImagesFolderCommand       { get; private set; }
 
         public SettingsViewModel()
         {
@@ -179,6 +193,17 @@ namespace PushPost.ViewModels
             BrowseQueueFolderCommand    = new RelayCommand(() => this.ChangeQueueFolder());
             BrowsePreviewsFolderCommand = new RelayCommand(() => this.ChangePreviewsFolder());
             BrowseAutosaveFolderCommand = new RelayCommand(() => this.ChangeAutosaveFolder());
+            BrowseImagesFolderCommand   = new RelayCommand(() => this.ChangeImagesFolder());
+        }
+
+        public void ChangeImagesFolder()
+        {
+            string result = ShowFolderSelectDialog("inline images");
+
+            if (string.IsNullOrWhiteSpace(result)) 
+                return;
+            else 
+                this.ImagesSubfolder = result;            
         }
 
         public void ChangeSiteFolder()

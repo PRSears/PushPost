@@ -178,5 +178,38 @@ namespace PushPost.Properties {
                 this["PostsPerPage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("images")]
+        public string ImagesSubfolder {
+            get {
+                return ((string)(this["ImagesSubfolder"]));
+            }
+            set {
+                this["ImagesSubfolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>480</string>
+  <string>600</string>
+  <string>775</string>
+  <string>1080</string>
+  <string>1440</string>
+  <string>1600</string>
+  <string>0</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ImageSizes {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ImageSizes"]));
+            }
+            set {
+                this["ImageSizes"] = value;
+            }
+        }
     }
 }
