@@ -9,7 +9,7 @@
         MinWidth="500">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:CreateLinkViewModel}">
-            <Grid>        
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="35"/>
@@ -65,7 +65,7 @@
                     <ColumnDefinition Width="155"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <TextBlock
                     Text="Line number start:"
                     Grid.Row="0" Grid.Column="0"
@@ -129,7 +129,7 @@
                 </TextBox>
             </Grid>
         </DataTemplate>
-                
+
         <DataTemplate DataType="{x:Type vm:CreateImageViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -176,7 +176,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Stretch="Uniform"
-                    Source="{Binding Image.Value}"/>         
+                    Source="{Binding Image.Value}"/>
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -184,7 +184,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="35"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="182*"/>
+            <RowDefinition Height="137*"/>
             <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -198,12 +199,12 @@
             Style="{DynamicResource LabelStyle}"
             FontSize="16"
             HorizontalAlignment="Left"
-            Margin="10,0,10,0"/>
+            Margin="10,7,0,6"/>
         <ComboBox
             x:Name="RefTypeDropdown"
             Grid.Row="0" Grid.Column="1"
             HorizontalAlignment="Stretch"
-            Margin="10,0,10,0"
+            Margin="10,6,10,5"
             Style="{DynamicResource Dropdown}"
             ItemsSource="{Binding ResourceTypeList}"
             SelectedValue="{Binding SelectedResource}">
@@ -215,7 +216,7 @@
             Style="{DynamicResource LabelStyle}"
             FontSize="16"
             HorizontalAlignment="Left"
-            Margin="10,0,10,0"/>
+            Margin="10,7,0,6"/>
         <TextBox
             x:Name="RefNameField"
             Text="{Binding CurrentView.Resource.Name, UpdateSourceTrigger=PropertyChanged}"
@@ -223,12 +224,12 @@
             Grid.Row="1" Grid.Column="1"
             HorizontalAlignment="Stretch"
             FontSize="16"
-            Margin="10,0,10,0" />
+            Margin="10,5,10,4" />
 
         <StackPanel
             Grid.Row="4" Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="10"
+            Margin="10,10,0,10"
             Orientation="Horizontal"
             HorizontalAlignment="Left">
             <Button
@@ -242,7 +243,7 @@
                 Style="{DynamicResource FlatActionButtonStyle}"
                 Command="{Binding CancelRefCommand}"/>
         </StackPanel>
-        
+
         <TextBlock
             x:Name="MarkupPreviewText"
             Text="{Binding CurrentView.Resource.Markup, UpdateSourceTrigger=PropertyChanged}"
@@ -251,16 +252,16 @@
             FontSize="14"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Margin="10"
+            Margin="0,0,10,10"
             MouseLeftButtonUp="MarkupPreviewText_MouseLeftButtonUp"
             ToolTip="Left click to copy markup to the clipboard." >
             <TextBlock.InputBindings>
                 <MouseBinding Command="" MouseAction="LeftClick"/>
             </TextBlock.InputBindings>
         </TextBlock>
-        
+
         <ContentControl Content="{Binding CurrentView, UpdateSourceTrigger=PropertyChanged}"
                         Grid.Row="2" Grid.Column="0"
-                        Grid.ColumnSpan="2"/>
-    </Grid>    
+                        Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+    </Grid>
 </Window>    

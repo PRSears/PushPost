@@ -75,8 +75,12 @@
     </ApplicationDefinition>
     <Compile Include="Models\HtmlGeneration\Site.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ViewRefsViewModel.cs" />
     <Compile Include="View\SettingsEditor.xaml.cs">
       <DependentUpon>SettingsEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewRefs.xaml.cs">
+      <DependentUpon>ViewRefs.xaml</DependentUpon>
     </Compile>
     <Page Include="View\AddRefsDialog.xaml">
       <SubType>Designer</SubType>
@@ -90,9 +94,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Commands\PostCommands.cs" />
     <Compile Include="Commands\ResourceCommands.cs" />
-    <Compile Include="Commands\ToolbarCommands.cs" />
     <Compile Include="Models\Database\ArchiveQueue.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
@@ -143,6 +145,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\SettingsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ViewRefs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

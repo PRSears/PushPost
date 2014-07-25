@@ -6,18 +6,26 @@ using PushPost.Models.HtmlGeneration;
 using System;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 using System.Windows.Input;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PushPost.ViewModels
 {
     internal class PostViewModel : Extender.WPF.ViewModel
     {
-        public View.ArchiveManager  ArchiveManager_Window;
-        public View.AddRefsDialog   AddRef_Window;
-        public View.SettingsEditor  SettingsEditor_Window;
-
         private short   _LastAutosaveIndex;
         private Post    _Post;
+
+        protected WindowManager WindowManager;
+        protected System.Windows.Threading.DispatcherTimer AutosaveTimer =
+              new System.Windows.Threading.DispatcherTimer
+              {
+                  Interval  = new TimeSpan(0, 0, 2),
+                  IsEnabled = false
+              };
+
         public Post Post
         {
             get
@@ -45,10 +53,7 @@ namespace PushPost.ViewModels
 
         #region ICommands
         public ICommand SubmitPostCommand           { get; private set; }
-        public ICommand SubmitQueueCommand          { get; private set; }
         public ICommand QueuePostCommand            { get; private set; }
-        public ICommand RemovePostCommand           { get; private set; }
-        public ICommand DiscardCommand              { get; private set; }
         public ICommand AddIResourceCommand         { get; private set; }
         public ICommand AddFootnoteCommand          { get; private set; }
 
@@ -56,21 +61,12 @@ namespace PushPost.ViewModels
         public ICommand ExportToFileCommand         { get; private set; }
         public ICommand PreviewInBrowserCommand     { get; private set; }
         public ICommand OpenArchiveManagerCommand   { get; private set; }
-        public ICommand OpenPageGeneratorCommand    { get; private set; }
         public ICommand ViewReferencesCommand       { get; private set; }
-        public ICommand ViewFootnotesCommand        { get; private set; }
         public ICommand CreateSiteCommand           { get; private set; }
 
         public ICommand EditSettingsCommand         { get; private set; }
         public ICommand DisplayAboutCommand         { get; private set; }
         public ICommand OpenHelpDocsCommand         { get; private set; }
-
-        protected System.Windows.Threading.DispatcherTimer AutosaveTimer =
-              new System.Windows.Threading.DispatcherTimer
-              {
-                  Interval  = new TimeSpan(0, 0, 2),
-                  IsEnabled = false
-              };
         #endregion
 
         /// <summary>
@@ -83,36 +79,55 @@ namespace PushPost.ViewModels
 
             this._Post              = TextPost.TemplatePost();
             this.ArchiveQueue       = new Models.Database.ArchiveQueue();
+            this.WindowManager      = new WindowManager();
             this._LastAutosaveIndex = 0;
 
             // Post buttons' commands
-            this.QueuePostCommand       = new QueuePostCommand(this);
-            this.SubmitPostCommand      = new SubmitPostCommand(this);
-            this.RemovePostCommand      = new RemovePostCommand(this);
-            this.SubmitQueueCommand     = new SubmitQueueCommand(this);
-            this.DiscardCommand         = new DiscardNewPostCommand(this);
-            this.AddIResourceCommand    = new AddIResourceCommand(this);
-            this.AddFootnoteCommand     = new AddFootnoteCommand(this);
+            this.QueuePostCommand   = new RelayCommand
+                (
+                    () =>
+                        {
+                            this.ArchiveQueue.Enqueue(this.Post);
+                            this.Post = TextPost.TemplatePost();
+                        },
+                    () => !this.PostIsDefault
+                );
+            this.SubmitPostCommand  = new RelayCommand
+                (
+                    () => this.SubmitNow(),
+                    () => !this.PostIsDefault
+                );
 
             // Menu toolbar commands
-            this.ImportFromFileCommand      = new ImportFromFileCommand(this);
-            this.ExportToFileCommand        = new ExportToFileCommand(this);
-            this.PreviewInBrowserCommand    = new PreviewInBrowserCommand(this);
-            this.OpenArchiveManagerCommand  = new OpenArchiveManagerCommand(this);
-            this.OpenPageGeneratorCommand   = new OpenPageGeneratorCommand(this);
-            this.ViewReferencesCommand      = new ViewReferencesCommand(this);
-            this.ViewFootnotesCommand       = new ViewFootnotesCommand(this);
-            this.CreateSiteCommand          = new RelayCommand(() => this.CreateSite());
+            this.ImportFromFileCommand      = new RelayCommand(() => this.ImportFromFile());
+            this.ExportToFileCommand        = new RelayCommand(() => this.ExportToFile());
+            this.PreviewInBrowserCommand    = new RelayCommand(() => Site.Preview(this.Post));
+            this.CreateSiteCommand          = new RelayCommand(() => Site.Create());
 
-            this.EditSettingsCommand    = new RelayCommand(() => this.EditSettings());
-            this.DisplayAboutCommand    = new RelayCommand(() => this.DisplayAbout());
-            this.OpenHelpDocsCommand    = new RelayCommand(() => this.OpenHelpDocs());
+            // New window commands
+            this.EditSettingsCommand        = new RelayCommand(
+                () => WindowManager.OpenWindow(new View.SettingsEditor()));
 
-            Post.PropertyChanged            += PostViewModel_PropertyChanged;
+            this.OpenArchiveManagerCommand  = new RelayCommand(
+                () => WindowManager.OpenWindow(new View.ArchiveManager(this.ArchiveQueue)));
+
+            this.ViewReferencesCommand      = new RelayCommand(
+                () => WindowManager.OpenWindow(new View.ViewRefs()));
+
+            this.AddIResourceCommand        = new RelayFunction(
+                (parameter) => this.AddReference(parameter));
+
+            this.AddFootnoteCommand     = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented.")); 
+            this.DisplayAboutCommand    = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented."));
+            this.OpenHelpDocsCommand    = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented."));
+
+            this.Post.PropertyChanged       += PostMainText_Changed;
             this.AutosaveTimer.Tick         += AutosaveTimer_Tick;
+            this.WindowManager.WindowClosed += WindowManager_WindowClosed;
+            this.WindowManager.WindowOpened += WindowManager_WindowOpened;
         }
 
-
+        #region Constructor overloads
         /// <summary>
         /// Initializes a new isntance of the PostViewModel class.
         /// </summary>
@@ -152,198 +167,74 @@ namespace PushPost.ViewModels
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
                 // Doesn't override the default _Post the parameterless constructor set.
         }
-        public void OpenHelpDocs()
-        {
-            System.Windows.Forms.MessageBox.Show("Not implemented.");
-        }
+        #endregion
 
-        public void DisplayAbout()
+        public bool HasChildrenOpen
         {
-            System.Windows.Forms.MessageBox.Show("Not implemented.");
-        }
-
-        public void EditSettings()
-        {
-            if(SettingsEditor_Window != null)
+            get
             {
-                SettingsEditor_Window.Focus();
-                return;
-            }
-
-            SettingsEditor_Window           = new View.SettingsEditor();
-            SettingsEditor_Window.Closed    += SettingsEditor_Closed;
-
-            SettingsEditor_Window.Show();
-        }
-
-        protected void SettingsEditor_Closed(object sender, EventArgs e)
-        {
-            SettingsEditor_Window = null;
-        }
-
-        private void AutosaveTimer_Tick(object sender, EventArgs e)
-        {
-            this.Autosave();
-            this.AutosaveTimer.IsEnabled = false;
-        }
-
-        private void PostViewModel_PropertyChanged(
-            object sender, 
-            System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == "MainText")
-            {
-                this.AutosaveTimer.IsEnabled = true;
-                this.AutosaveTimer.Stop();
-                this.AutosaveTimer.Start();
+                return this.WindowManager.ChildOpen();
             }
         }
 
-        public void OpenArchiveManager()
+        public void CloseChildren()
         {
-            if (ArchiveManager_Window != null)
-            { 
-                ArchiveManager_Window.Focus();
-                return;
-            }
-
-            ArchiveManagerOpen              = true;
-            ArchiveManager_Window           = new View.ArchiveManager(ArchiveQueue);
-            ArchiveManager_Window.Closed   += ArchiveManager_Closed;
-
-            ArchiveManager_Window.Show();
+            this.WindowManager.CloseAll();
         }
 
-        protected void ArchiveManager_Closed(object sender, EventArgs e)
+        private void WindowManager_WindowOpened(object sender, System.Windows.Window window)
         {
-            ArchiveManagerOpen      = false;
-            ArchiveManager_Window   = null;
+            if (window is View.ArchiveManager)
+                this.ArchiveManagerOpen = true;
         }
 
-        private bool _ArchiveManagerOpen;
+        private void WindowManager_WindowClosed(object sender, Type windowType)
+        {
+            if (windowType == typeof(View.ArchiveManager))
+                this.ArchiveManagerOpen = false;
+        }
+
+        protected bool _ArchiveManagerOpen;
         public bool ArchiveManagerOpen
         {
             get
             {
-                return _ArchiveManagerOpen; ;
+                return _ArchiveManagerOpen;
             }
-            protected set
+            set
             {
                 _ArchiveManagerOpen = value;
                 OnPropertyChanged("ArchiveManagerOpen");
             }
         }
 
-        public bool HasChildrenOpen
+        public bool PostIsDefault
         {
-            get
-            {
-                return (ArchiveManager_Window   != null) ||
-                       (AddRef_Window           != null) ||
-                       (SettingsEditor_Window   != null);
-            }
-        }
-
-        public void CloseChildren()
-        {
-            if (AddRef_Window != null)
-                AddRef_Window.Close();
-
-            if (ArchiveManager_Window != null)
-                ArchiveManager_Window.Close();
-
-            if (SettingsEditor_Window != null)
-                SettingsEditor_Window.Close();
-        }
-
-        public bool CanSubmitPost 
-        { 
             get
             {
                 Post def = TextPost.TemplatePost();
-                return !(
-                    this.Post.Title == def.Title &&
-                    this.Post.Author == def.Author && 
-                    this.Post.MainText == def.MainText);
+                return this.Post.Title == def.Title &&
+                       this.Post.Author == def.Author &&
+                       this.Post.MainText == def.MainText;
             }
         }
 
-        public bool CanRemovePost
+        public bool AddReference(object parameter)
         {
-            get
-            {
-                return true;
-            }
-        }
 
-        public bool CanAddResource
-        {
-            get
-            {
-                return this.Post != null;
-            }
-        }
+            int startIndex = -1;
 
-        public bool HasReferences
-        {
-            get
-            {
-                return this.Post.Resources.Count() > 0; 
-            }
-        }
+            if (parameter is int)
+                startIndex = (int)parameter;
+            else if (parameter is string)
+                int.TryParse((string)parameter, out startIndex);
 
-        public bool HasFootnotes
-        {
-            get
-            {
-                return this.Post.Footers.Count() > 0;
-            }
-        }
+            if (startIndex < 0)
+                startIndex = 0;
 
-        public bool MenuToolbarCanExecute
-        {
-            get { return true; }
-        }
+            this.WindowManager.OpenWindow(new View.AddRefsDialog(startIndex));
 
-        public void QueuePostForSubmit()
-        {
-            this.ArchiveQueue.Enqueue(this.Post);
-
-            this.Post = TextPost.TemplatePost();
-        }
-
-        public void QueueForRemoval()
-        {
-            System.Windows.Forms.MessageBox.Show("Removing post.");
-        }
-
-        public void SubmitQueue()
-        {
-            System.Windows.Forms.MessageBox.Show("Submitted queue");
-        }
-
-        public void OpenAddRefsDialog(int startIndex)
-        {
-            if (AddRef_Window != null)
-            {
-                AddRef_Window.Focus();
-                return;
-            }
-
-            AddRef_Window           = new View.AddRefsDialog(this.Post, startIndex);
-            AddRef_Window.Closed   += AddRef_Window_Closed;
-
-            AddRef_Window.Show();
-        }
-
-        protected void AddRef_Window_Closed(object sender, EventArgs e)
-        {
-            AddRef_Window = null;
-        }
-
-        public void OpenAddFootnoteDialog()
-        {
-            System.Windows.Forms.MessageBox.Show("Footnotes not implemented.");
+            return true;
         }
 
         public void SubmitNow()
@@ -368,33 +259,6 @@ namespace PushPost.ViewModels
                 this.Post = TextPost.TemplatePost();
             }
         }
-
-        public void Discard()
-        {
-            InitializeByType(_Post.GetType());
-            System.Windows.Forms.MessageBox.Show("Discarded post.");
-        }
-
-        public void PreviewInBrowser()
-        {
-            Site.Preview(new Post[] { this.Post });
-        }
-
-        public void OpenPageGenerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ViewReferences()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ViewFootnotes()
-        {
-            throw new NotImplementedException();
-        }
-
         public void ImportFromFile()
         {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
@@ -454,6 +318,24 @@ namespace PushPost.ViewModels
             return success;
         }
 
+        private void AutosaveTimer_Tick(object sender, EventArgs e)
+        {
+            this.Autosave();
+            this.AutosaveTimer.IsEnabled = false;
+        }
+
+        private void PostMainText_Changed(
+            object sender,
+            System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "MainText")
+            {
+                this.AutosaveTimer.IsEnabled = true;
+                this.AutosaveTimer.Stop();
+                this.AutosaveTimer.Start();
+            }
+        }
+
         protected void Autosave()
         {            
             using(StreamWriter stream = File.CreateText(GenerateAutosaveName()))
@@ -479,10 +361,8 @@ namespace PushPost.ViewModels
                 AUTOSAVE_FILENAME_FORMAT, fileNum.ToString("D2")));
         }
 
-        public void CreateSite()
-        {
-            Site.Create();
-        }
+
+        #region Settings.settings aliases
 
         public bool DEBUG 
         { 
@@ -507,5 +387,7 @@ namespace PushPost.ViewModels
                 return Properties.Settings.Default.AutosaveFilenameFormat;
             }
         }
+
+        #endregion
     }
 }

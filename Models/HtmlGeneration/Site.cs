@@ -92,5 +92,10 @@ namespace PushPost.Models.HtmlGeneration
             browserProc.StartInfo.UseShellExecute   = true;
             browserProc.Start();
         }
+
+        public static void Preview(Post post)
+        {
+            Preview(new Post[] { post });
+        }
     }
 }

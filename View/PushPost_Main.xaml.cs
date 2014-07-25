@@ -34,15 +34,14 @@ namespace PushPost
         {
             if ((DataContext as PostViewModel).HasChildrenOpen)
             {
-                if (Extender.WPF.ConfirmationDialog.Show(
+                e.Cancel = !Extender.WPF.ConfirmationDialog.Show(
                     "Confirm",
-                    "Exiting now will close all open Views.\n\nAre you sure you want to quit?"))
-                    (DataContext as PostViewModel).CloseChildren();
-                else
-                    e.Cancel = true;
+                    "Exiting now will close all open Views.\n\nAre you sure you want to quit?");
             }
 
+            if (!e.Cancel) (DataContext as PostViewModel).CloseChildren();
             base.OnClosing(e);
+            if (!e.Cancel) this.Dispatcher.InvokeShutdown();
         }
 
         private string GetAssemblyVersion()

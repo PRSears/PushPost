@@ -39,10 +39,7 @@ namespace PushPost.View
 
         protected void RegisterCloseAction()
         {
-            CreateRefViewModel vm = (DataContext as CreateRefViewModel);
-
-            if (vm.CloseAction == null)
-                vm.CloseAction = new Action(() => this.Close());
+            (DataContext as CreateRefViewModel).RegisterCloseAction(() => this.Close());
         }
 
         private void MarkupPreviewText_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

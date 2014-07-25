@@ -41,7 +41,7 @@
             <MenuItem Header="_View">
                 <MenuItem Header="_Post creator" IsCheckable="False" IsChecked="True"/>
                 <MenuItem Header="_Archive manager" IsCheckable="False" 
-                          IsChecked="{Binding ArchiveManagerOpen}"
+                          IsChecked="{Binding ArchiveManagerOpen, UpdateSourceTrigger=PropertyChanged}"
                           Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
                 <MenuItem Header="_References..."/>
@@ -231,7 +231,8 @@
                     BorderThickness="1,0,0,0" 
                     Padding="3,0" 
                     HorizontalAlignment="Right" VerticalAlignment="Center" 
-                    Style="{DynamicResource RefButtonStyle}"/>
+                    Style="{DynamicResource RefButtonStyle}"
+                    Command="{Binding ViewReferencesCommand}"/>
             <Button 
                     x:Name="ManageTagsButton"
                     Content="manage tags..." 

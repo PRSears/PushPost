@@ -99,43 +99,6 @@ namespace PushPost.ViewModels
             _Post = post;
         }
 
-        public void Initialize(string resourceType)
-        {
-            if      (resourceType.ToLower().Contains("hypertext"))
-                _CurrentView = new CreateLinkViewModel();
-            else if (resourceType.ToLower().Contains("code"))
-                _CurrentView = new CreateCodeViewModel();
-            else if (resourceType.ToLower().Contains("image"))
-                _CurrentView = new CreateImageViewModel();
-            else
-                throw new ArgumentException("Provided resourceType is not supported.");
-
-            CurrentView.Resource.ResourceType = resourceType;
-        }
-
-        public void InitializeByType(Type type)
-        {
-            if      (type == typeof(Link))
-                _CurrentView = new CreateLinkViewModel();
-
-            else if (type == typeof(Code))
-                _CurrentView = new CreateCodeViewModel();
-
-            else if (type == typeof(InlineImage))
-                _CurrentView = new CreateImageViewModel();
-
-            else
-                throw new ArgumentException("Provided Type is not supported.");
-
-            _SelectedResource = type.Name;
-        }
-
-        [Obsolete]
-        protected void Subscribe()
-        {
-            CurrentView.Resource.PropertyChanged += Resource_PropertyChanged;
-        }
-
         protected void Resource_PropertyChanged(
             object sender, 
             System.ComponentModel.PropertyChangedEventArgs e)
@@ -217,8 +180,11 @@ namespace PushPost.ViewModels
                     System.Windows.Forms.MessageBox.Show("You need to select a folder " +
                         "to create the site in before an image can be added.");
 
+                    int count = 0;
                     do
                     {
+                        if ((count++) > 2) return string.Empty; // cancel
+
                         Properties.Settings.Default.SiteExportFolder = SelectSiteExportFolder();
                     } while (string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder));
                 }
