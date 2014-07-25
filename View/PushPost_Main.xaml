@@ -44,7 +44,9 @@
                           IsChecked="{Binding ArchiveManagerOpen, UpdateSourceTrigger=PropertyChanged}"
                           Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
-                <MenuItem Header="_References..."/>
+                <MenuItem Header="_References..." IsCheckable="False"
+                          IsChecked="{Binding ViewRefsOpen, UpdateSourceTrigger=PropertyChanged}"
+                          Command="{Binding ViewReferencesCommand}"/>
                 <MenuItem Header="_Footnotes..."/>
             </MenuItem>
             <MenuItem Header="_Settings">

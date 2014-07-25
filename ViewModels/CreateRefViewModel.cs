@@ -140,7 +140,7 @@ namespace PushPost.ViewModels
 
         public void Cancel()
         {
-            CloseAction();
+            CloseCommand.Execute(null);
         }
 
         public bool CanSave
@@ -192,7 +192,7 @@ namespace PushPost.ViewModels
                 (CurrentView as CreateImageViewModel).Image.Proccess();
             }
 
-            CloseAction();
+            CloseCommand.Execute(null);
             return CurrentView.Resource.Markup;
         }
 

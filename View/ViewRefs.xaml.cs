@@ -36,18 +36,18 @@ namespace PushPost.View
             }
         }
 
-        public ViewRefs()
+        public ViewRefs(Post post)
         {
-            Post dummy = TextPost.Dummy();
+            //Post dummy = TextPost.Dummy();
 
-            Models.HtmlGeneration.Embedded.Code res = new Models.HtmlGeneration.Embedded.Code(
-                "a_code", "Console.WriteLine()");
+            //Models.HtmlGeneration.Embedded.Code res = new Models.HtmlGeneration.Embedded.Code(
+            //    "a_code", "Console.WriteLine()");
 
-            for (int i = 0; i < 3; i++)
-                dummy.Resources.Add(res);
+            //for (int i = 0; i < 3; i++)
+            //    dummy.Resources.Add(res);
 
             InitializeComponent();
-            ViewModel = new ViewRefsViewModel(dummy);
+            ViewModel = new ViewRefsViewModel(post);
         }
     }
 }

@@ -9,11 +9,14 @@ namespace PushPost
     /// </summary>
     public partial class PushPost_Main : Window
     {
-        private Extender.WPF.ViewModel ViewModel
+        private PostViewModel ViewModel
         {
             get
             {
-                return (Extender.WPF.ViewModel)DataContext;
+                if (DataContext is PostViewModel)
+                    return (PostViewModel)DataContext;
+                else
+                    return null;
             }
             set
             {
@@ -32,14 +35,14 @@ namespace PushPost
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if ((DataContext as PostViewModel).HasChildrenOpen)
+            if (ViewModel.HasChildrenOpen)
             {
                 e.Cancel = !Extender.WPF.ConfirmationDialog.Show(
                     "Confirm",
                     "Exiting now will close all open Views.\n\nAre you sure you want to quit?");
             }
 
-            if (!e.Cancel) (DataContext as PostViewModel).CloseChildren();
+            if (!e.Cancel) ViewModel.CloseChildren();
             base.OnClosing(e);
             if (!e.Cancel) this.Dispatcher.InvokeShutdown();
         }

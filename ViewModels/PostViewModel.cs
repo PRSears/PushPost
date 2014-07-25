@@ -112,7 +112,7 @@ namespace PushPost.ViewModels
                 () => WindowManager.OpenWindow(new View.ArchiveManager(this.ArchiveQueue)));
 
             this.ViewReferencesCommand      = new RelayCommand(
-                () => WindowManager.OpenWindow(new View.ViewRefs()));
+                () => WindowManager.OpenWindow(new View.ViewRefs(this.Post)));
 
             this.AddIResourceCommand        = new RelayFunction(
                 (parameter) => this.AddReference(parameter));
@@ -184,14 +184,20 @@ namespace PushPost.ViewModels
 
         private void WindowManager_WindowOpened(object sender, System.Windows.Window window)
         {
-            if (window is View.ArchiveManager)
+            if      (window is View.ArchiveManager)
                 this.ArchiveManagerOpen = true;
+
+            else if (window is View.ViewRefs)
+                this.ViewRefsOpen = true;
         }
 
         private void WindowManager_WindowClosed(object sender, Type windowType)
         {
-            if (windowType == typeof(View.ArchiveManager))
+            if      (windowType == typeof(View.ArchiveManager))
                 this.ArchiveManagerOpen = false;
+
+            else if (windowType == typeof(View.ViewRefs))
+                this.ViewRefsOpen = false;
         }
 
         protected bool _ArchiveManagerOpen;
@@ -205,6 +211,20 @@ namespace PushPost.ViewModels
             {
                 _ArchiveManagerOpen = value;
                 OnPropertyChanged("ArchiveManagerOpen");
+            }
+        }
+
+        protected bool _ViewRefsOpen;
+        public bool ViewRefsOpen
+        {
+            get
+            {
+                return _ViewRefsOpen;
+            }
+            set
+            {
+                _ViewRefsOpen = value;
+                OnPropertyChanged("ViewRefsOpen");
             }
         }
 
@@ -232,7 +252,7 @@ namespace PushPost.ViewModels
             if (startIndex < 0)
                 startIndex = 0;
 
-            this.WindowManager.OpenWindow(new View.AddRefsDialog(startIndex));
+            this.WindowManager.OpenWindow(new View.AddRefsDialog(this.Post, startIndex));
 
             return true;
         }

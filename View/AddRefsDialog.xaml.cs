@@ -1,4 +1,5 @@
 ﻿using PushPost.Models.HtmlGeneration;
+using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.ViewModels;
 using System;
 using System.ComponentModel;
@@ -12,34 +13,32 @@ namespace PushPost.View
     /// </summary>
     public partial class AddRefsDialog : Window
     {
-        public AddRefsDialog()
+        private CreateRefViewModel ViewModel
         {
-            InitializeComponent();
-            DataContext = new CreateRefViewModel();
-            RegisterCloseAction();
+            get
+            {
+                if (DataContext is CreateRefViewModel)
+                    return (CreateRefViewModel)DataContext;
+                else
+                    return null;
+            }
+            set
+            {
+                DataContext = value;
+            }
         }
+
+        public AddRefsDialog() : this(0) { }
 
         public AddRefsDialog(int initialTypeIndex) : this(null, initialTypeIndex) { }
 
         public AddRefsDialog(Post post, int initialTypeIndex)
         {
             InitializeComponent();
-            DataContext = new CreateRefViewModel(
-                post,
-                Models.HtmlGeneration.Embedded.NotifyingResource.Types[initialTypeIndex]);
-            RegisterCloseAction();
-        }
+            this.ViewModel = 
+                new CreateRefViewModel(post, NotifyingResource.Types[initialTypeIndex]);
 
-        public AddRefsDialog(Post post, Type initialType)
-        {
-            InitializeComponent();
-            DataContext = new CreateRefViewModel(post, initialType);
-            RegisterCloseAction();
-        }
-
-        protected void RegisterCloseAction()
-        {
-            (DataContext as CreateRefViewModel).RegisterCloseAction(() => this.Close());
+            this.ViewModel.RegisterCloseAction(() => this.Close());
         }
 
         private void MarkupPreviewText_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
