@@ -6,7 +6,7 @@
         Height="490" 
         Width="500"
         MinHeight="490"
-        MinWidth="500">
+        MinWidth="500" Icon="/PushPost;component/PushPost.ico">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:CreateLinkViewModel}">
             <Grid>

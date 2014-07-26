@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PushPost.View.ViewRefs"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ViewRefs" Height="500" Width="350">
+        Title="ViewRefs" Height="500" Width="350" Icon="/PushPost;component/PushPost.ico">
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

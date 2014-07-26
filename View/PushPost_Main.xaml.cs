@@ -30,7 +30,7 @@ namespace PushPost
             this.ViewModel = new PostViewModel();
             this.ViewModel.RegisterCloseAction(() => this.Close());
 
-            Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetShortAssemblyVersion());
+            Title = string.Format("PushPost {0} - Post Builder", this.GetShortAssemblyVersion());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

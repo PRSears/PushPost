@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:PushPost.ViewModels.ArchivesViewModels"
         Title="ArchiveManager" 
         Width="1050" Height="1050" 
-        MinWidth="160" MinHeight="800">
+        MinWidth="160" MinHeight="800" Icon="/PushPost;component/PushPost.ico">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:QueueViewModel}">
             <!--<TextBlock Text="Queued Posts" 

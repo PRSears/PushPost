@@ -190,6 +190,7 @@
     <None Include="View\App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="PushPost.ico" />
     <Resource Include="img\dropshadow.png" />
     <Resource Include="img\noimg.png" />
     <Resource Include="img\aboutbackground.png" />

@@ -4,7 +4,7 @@
         Title="SettingsEditor" 
         Width="700" Height="550"
         ResizeMode="NoResize"
-        Background="#e4e4e4">
+        Background="#e4e4e4" Icon="/PushPost;component/PushPost.ico">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.33*"/>
