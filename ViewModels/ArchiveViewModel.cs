@@ -158,9 +158,14 @@ namespace PushPost.ViewModels
                                                        () => this.Current is DatabaseViewModel);
             // Generation
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
-            PreviewQueueCommand     = new RelayCommand(() => this.PreviewQueue(),
-                                                       () => this.QueueCanExecute);
-            UploadPagesCommand      = new RelayCommand(() => this.UploadPages());
+            PreviewQueueCommand     = new RelayCommand
+                (
+                    () => this.PreviewQueue(),
+                    () => (Current.DisplayedPosts.Count > 0) && QueueHasSelected
+                );
+
+            UploadPagesCommand      = new RelayCommand(
+                () => System.Windows.Forms.MessageBox.Show("Uploads aren't implemented."));
 
             ArchiveQueue.QueueChanged += ArchiveQueue_QueueChanged;
             ArchiveQueue_QueueChanged(this);
@@ -209,7 +214,10 @@ namespace PushPost.ViewModels
 
         public void PreviewQueue()
         {
-            Site.Preview(ArchiveQueue.GetQueue().ToArray());
+            Post[] selected = Current.DisplayedPosts.Where(cp => cp.IsChecked)
+                                                    .Select(cp => cp.Post)
+                                                    .ToArray();
+            Site.Preview(selected);
         }
 
         public void ExportFromDB()

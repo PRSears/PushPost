@@ -56,6 +56,7 @@ namespace PushPost.ViewModels
         public ICommand QueuePostCommand            { get; private set; }
         public ICommand AddIResourceCommand         { get; private set; }
         public ICommand AddFootnoteCommand          { get; private set; }
+        public ICommand ManageTagsCommand           { get; private set; }
 
         public ICommand ImportFromFileCommand       { get; private set; }
         public ICommand ExportToFileCommand         { get; private set; }
@@ -117,11 +118,18 @@ namespace PushPost.ViewModels
             this.AddIResourceCommand        = new RelayFunction(
                 (parameter) => this.AddReference(parameter));
 
+            this.AddFootnoteCommand     = new RelayCommand(
+                () => this.AddReference(3)); 
+
             this.DisplayAboutCommand    = new RelayCommand(
                 () => WindowManager.OpenWindow(new View.About()));
 
-            this.AddFootnoteCommand     = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented.")); 
-            this.OpenHelpDocsCommand    = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented."));
+            this.OpenHelpDocsCommand    = new RelayCommand(
+                () => System.Windows.Forms.MessageBox.Show("Not implemented."),
+                () => false);
+            this.ManageTagsCommand = new RelayCommand(
+                () => System.Windows.Forms.MessageBox.Show("Not implemented."),
+                () => false);
 
             this.Post.PropertyChanged       += PostMainText_Changed;
             this.AutosaveTimer.Tick         += AutosaveTimer_Tick;

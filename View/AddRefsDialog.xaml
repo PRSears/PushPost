@@ -185,6 +185,47 @@
                     Source="{Binding Image.Value}"/>
             </Grid>
         </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vm:CreateFootViewModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="Footnote:"
+                    Grid.Row="2" Grid.Column="0"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    FontSize="16"
+                    Margin="10,0,10,0"/>
+                <TextBox 
+                    TabIndex="2"
+                    Text="{Binding Footer.Value, UpdateSourceTrigger=PropertyChanged}"
+                    Grid.Row="2" Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                    TextWrapping="Wrap"
+                    AcceptsReturn="True"
+                    Foreground="#FFE4E4E4" 
+                    FontSize="14"                     
+                    Margin="0,5,0,0" 
+                    Padding="10" 
+                    BorderThickness="0" 
+                    BorderBrush="{x:Null}">
+                    <TextBox.Background>
+                        <ImageBrush ImageSource="/PushPost;component/img/dropshadow.png"  
+                                TileMode="FlipY"
+                                Stretch="Uniform"
+                                AlignmentY="Top"
+                                Viewport="0,0,2,4000"
+                                ViewportUnits="Absolute"/>
+                    </TextBox.Background>
+                </TextBox>
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>

@@ -30,7 +30,7 @@ namespace PushPost
             this.ViewModel = new PostViewModel();
             this.ViewModel.RegisterCloseAction(() => this.Close());
 
-            Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetAssemblyVersion());
+            Title = string.Format("PushPost - Post Builder [alpha {0}]", this.GetShortAssemblyVersion());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -53,6 +53,15 @@ namespace PushPost
             System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 
             return vi.FileVersion;
+        }
+
+        private string GetShortAssemblyVersion()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            return string.Format("{0}.{1}", vi.FileMajorPart, vi.FileMinorPart);
+
         }
     }
 }

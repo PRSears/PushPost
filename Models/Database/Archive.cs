@@ -137,10 +137,18 @@ namespace PushPost.Models.Database
             database.Posts.InsertOnSubmit(newPost);
             // Insert newPost's footers into the Footnotes table
             foreach (Footer f in newPost.Footers)
+            {
+                f.PostID = newPost.UniqueID;
+                f.ForceNewUniqueID();
                 database.Footnotes.InsertOnSubmit(f);
+            }
             // Insert newPost's tags into the Tags table
             foreach (Tag t in newPost.Tags)
+            {
+                t.PostID = newPost.UniqueID;
+                t.ForceNewUniqueID();
                 database.Tags.InsertOnSubmit(t);
+            }
         }
 
         /// <summary>
@@ -148,7 +156,7 @@ namespace PushPost.Models.Database
         /// pending inserts. Call SubmitChanges() to push the pending changes to the database.
         /// </summary>
         /// <param name="newPosts">List of new Post objects to add to the database.</param>
-        public void CommitPosts(List<Post> newPosts)
+        public void CommitPosts(Post[] newPosts)
         {
             foreach (Post p in newPosts)
                 this.CommitPost(p);
@@ -284,6 +292,9 @@ namespace PushPost.Models.Database
             if (pulled == null)
                 throw new DatabasePullException(postID.ToString());
 
+            pulled.Footers  = db.Footnotes.Where(f => f.PostID.Equals(postID)).ToList();
+            pulled.Tags     = db.Tags.Where(t => t.PostID.Equals(postID)).ToList();
+
             return pulled;
         }
 
@@ -315,6 +326,14 @@ namespace PushPost.Models.Database
             for (int i = 0; i < pulled.Length; i++)
             {
                 pulled[i] = queried[i].TryCreatePost();
+                if(pulled[i] != null)
+                {
+                    pulled[i].Footers = db.Footnotes.Where(
+                        f => f.PostID.Equals(pulled[i].UniqueID)).ToList();
+
+                    pulled[i].Tags = db.Tags.Where(
+                        t => t.PostID.Equals(pulled[i].UniqueID)).ToList();
+                }
             }
 
             return pulled;
@@ -331,6 +350,14 @@ namespace PushPost.Models.Database
             for (int i = 0; i < pulled.Length; i++)
             {
                 pulled[i] = queried[i].TryCreatePost();
+                if (pulled[i] != null)
+                {
+                    pulled[i].Footers = db.Footnotes.Where(
+                        f => f.PostID.Equals(pulled[i].UniqueID)).ToList();
+
+                    pulled[i].Tags = db.Tags.Where(
+                        t => t.PostID.Equals(pulled[i].UniqueID)).ToList();
+                }
             }
 
             return pulled;
@@ -398,6 +425,7 @@ namespace PushPost.Models.Database
                 {
                     // THOUGHT should I submit all pending operations before
                     //         disposal?
+                    //         No, probabaly not. Would lead to unexpected behaviour
                     db.Dispose();
                 }
                 _disposed = true;

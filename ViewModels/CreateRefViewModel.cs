@@ -75,6 +75,7 @@ namespace PushPost.ViewModels
                 NotifyingResource.Types[0].Name, 
                 NotifyingResource.Types[1].Name,
                 NotifyingResource.Types[2].Name,
+                NotifyingResource.Types[3].Name
             };
 
             ViewHistory         = new List<IRefViewModel>();
@@ -97,29 +98,6 @@ namespace PushPost.ViewModels
             : this(initialType)
         {
             _Post = post;
-        }
-
-        protected void Resource_PropertyChanged(
-            object sender, 
-            System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == "ResourceType")
-            {
-                Debug.WriteMessage("Attempting to switch ViewModels.", DEBUG, "info");
-
-                string newType = CurrentView.Resource.ResourceType;
-
-                if (newType.ToLower().Contains("hypertext"))
-                    SwitchToLinkView();
-                else if (newType.ToLower().Contains("code"))
-                    SwitchToCodeView();
-                else if (newType.ToLower().Contains("image"))
-                    SwitchToImageView();
-                else
-                    System.Windows.Forms.MessageBox.Show("Unkown ResourceType. Cannot switch views.");
-
-                CurrentView.Resource.QuietSetResourceType(newType);
-            }
         }
 
         protected void SelectedResource_PropertyChanged(
@@ -278,7 +256,13 @@ namespace PushPost.ViewModels
 
         public void SwitchToFooterView()
         {
-            throw new NotImplementedException();
+            AddToHistory(CurrentView);
+            IRefViewModel nextVM = RetrieveFromHistory(typeof(CreateFootViewModel));
+
+            if (nextVM == null)
+                nextVM = new CreateFootViewModel();
+
+            CurrentView = nextVM;
         }
 
         protected IRefViewModel RetrieveFromHistory(Type type)

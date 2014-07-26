@@ -127,17 +127,18 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             _Name           = string.Empty;
             _Value          = string.Empty;
             _PostID         = Guid.Empty;
-            CreationTime    = DateTime.MinValue;
+            CreationTime    = DateTime.Now;
 
             _Class = "footer";
         }
+
+        public Footer(Guid postID) : this(string.Empty, string.Empty, postID) { }
 
         public Footer(string name, string text, Guid postID) : this()
         {
             _Name           = name;
             _Value          = text;
             _PostID         = postID;
-            CreationTime    = DateTime.Now;
 
             _UID = new Guid(this.GetHashData());
         }
@@ -145,6 +146,11 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         public Footer(string name, string text, Guid postID, string className):this(name, text, postID)
         {
             _Class = className;
+        }
+
+        public void ForceNewUniqueID()
+        {
+            this._UID = new Guid(this.GetHashData());
         }
 
         /// <summary>

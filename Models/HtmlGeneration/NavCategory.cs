@@ -5,10 +5,6 @@ namespace PushPost.Models.HtmlGeneration
 {
     public class NavCategory
     {
-        //
-        // TODO_ Perhaps try to match unknown categories against a categories.cfg 
-        //       file with (optional) extra listings.
-        //  
         // Dear Future Me,
         //      Just use typeof(class) and pass around the Type object,
         //      instead of this convoluted mess.

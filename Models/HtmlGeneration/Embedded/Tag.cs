@@ -72,19 +72,14 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             _Text   = string.Empty;
         }
 
-        [Obsolete]
-        public byte[] GetHashCode()
+        public void ForceNewUniqueID()
         {
+            _TagID = new Guid(this.GetHashData());
+        }
 
-            System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-
-            byte[] name_block = Encoding.Default.GetBytes(this.Text);
-            byte[] poid_block = PostID.ToByteArray();
-
-            md5.TransformBlock(name_block, 0, name_block.Length, name_block, 0);
-            md5.TransformBlock(poid_block, 0, poid_block.Length, poid_block, 0);
-
-            return md5.Hash;
+        public override int GetHashCode()
+        {
+            return BitConverter.ToInt32(this.GetHashData(), 0);
         }
 
         public byte[] GetHashData()
@@ -100,6 +95,16 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         public override string ToString()
         {
             return this.Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Tag))
+                return false;
+
+            Tag b = (Tag)obj;
+
+            return this.GetHashCode().Equals(b.GetHashCode());
         }
 
         #region INotifyPropertyChanged Members

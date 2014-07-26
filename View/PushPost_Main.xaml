@@ -40,14 +40,13 @@
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_Post creator" IsCheckable="False" IsChecked="True"/>
-                <MenuItem Header="_Archive manager" IsCheckable="False" 
+                <MenuItem Header="_Archive manager..." IsCheckable="False" 
                           IsChecked="{Binding ArchiveManagerOpen, UpdateSourceTrigger=PropertyChanged}"
                           Command="{Binding OpenArchiveManagerCommand}"/>
                 <Separator/>
                 <MenuItem Header="_References..." IsCheckable="False"
                           IsChecked="{Binding ViewRefsOpen, UpdateSourceTrigger=PropertyChanged}"
                           Command="{Binding ViewReferencesCommand}"/>
-                <MenuItem Header="_Footnotes..."/>
             </MenuItem>
             <MenuItem Header="_Settings">
                 <MenuItem Header="Change _settings..." Command="{Binding EditSettingsCommand}"/>
@@ -236,7 +235,7 @@
                     Style="{DynamicResource RefButtonStyle}"
                     Command="{Binding ViewReferencesCommand}"/>
             <Button 
-                    x:Name="ManageTagsButton"
+                    Command="{Binding ManageTagsCommand}"
                     Content="manage tags..." 
                     Width="120" Height="20" 
                     Foreground="#FF2E2E2E" 
