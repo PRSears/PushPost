@@ -155,24 +155,6 @@ namespace PushPost.ViewModels
 
         public string Save()
         {
-            if (this.Post == null)
-            {
-                try
-                {
-                    CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
-                }
-                catch (Exception e)
-                {
-                    ExceptionTools.WriteExceptionText(e, true);
-                    return string.Empty;
-                }
-            }
-            else
-            {
-                this.Post.Resources.Add(CurrentView.Resource);
-                if (AutoInsertMarkup) this.Post.MainText += CurrentView.Resource.Markup;
-            }
-
             if(CurrentView is CreateImageViewModel)
             {
                 if(string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder))
@@ -190,6 +172,24 @@ namespace PushPost.ViewModels
                 }
 
                 (CurrentView as CreateImageViewModel).Image.Proccess();
+            }
+
+            if (this.Post == null)
+            {
+                try
+                {
+                    CurrentView.Save(Properties.Settings.Default.TempReferenceFilename);
+                }
+                catch (Exception e)
+                {
+                    ExceptionTools.WriteExceptionText(e, true);
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                this.Post.Resources.Add(CurrentView.Resource);
+                if (AutoInsertMarkup) this.Post.MainText += CurrentView.Resource.Markup;
             }
 
             CloseCommand.Execute(null);

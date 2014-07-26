@@ -117,8 +117,10 @@ namespace PushPost.ViewModels
             this.AddIResourceCommand        = new RelayFunction(
                 (parameter) => this.AddReference(parameter));
 
+            this.DisplayAboutCommand    = new RelayCommand(
+                () => WindowManager.OpenWindow(new View.About()));
+
             this.AddFootnoteCommand     = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented.")); 
-            this.DisplayAboutCommand    = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented."));
             this.OpenHelpDocsCommand    = new RelayCommand(() => System.Windows.Forms.MessageBox.Show("Not implemented."));
 
             this.Post.PropertyChanged       += PostMainText_Changed;
@@ -317,16 +319,16 @@ namespace PushPost.ViewModels
             else return;
 
             using(StreamWriter stream = File.CreateText(savePath))
-                Extender.WPF.CompletedMessagebox.Show(Export(stream));
+                Extender.WPF.CompletedMessagebox.Show(Export(stream, true));
         }
 
-        public bool Export(StreamWriter stream)
+        public bool Export(StreamWriter stream, bool parse)
         {
             bool success;
             try
             {
 
-                this.Post.Serialize(stream);
+                this.Post.Serialize(stream, parse);
                 success = true;
             }
             catch (Exception e)
@@ -360,7 +362,7 @@ namespace PushPost.ViewModels
         {            
             using(StreamWriter stream = File.CreateText(GenerateAutosaveName()))
             {
-                Export(stream);
+                Export(stream, false);
             }
         }
 

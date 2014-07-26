@@ -55,7 +55,7 @@ namespace PushPost.Models.Database
         {
             using(StreamWriter outStream = File.CreateText(GetFullFilename(Count())))
             {
-                post.Serialize(outStream);
+                post.Serialize(outStream, true);
             }
 
             OnQueueChanged();

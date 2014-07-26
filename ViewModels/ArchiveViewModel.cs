@@ -295,7 +295,7 @@ It will be a pain in the ass to get them back afterward."))
                         using (StreamWriter stream = File.CreateText(
                             GetUniqueFilename(dialog.FileName, entry.Post.Title)))
                         {
-                            entry.Post.Serialize(stream);
+                            entry.Post.Serialize(stream, true);
                         }
                     }
                     success = true;

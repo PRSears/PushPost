@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Extender;
+﻿using Extender;
 using Extender.WPF;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
@@ -38,6 +35,7 @@ namespace PushPost.ViewModels
         public ICommand SelectAllCommand        { get; private set; }
         public ICommand SelectNoneCommand       { get; private set; }
         public ICommand RemoveSelectedCommand   { get; private set; }
+        public ICommand CopySelectedCommand     { get; private set; }
         public ICommand RefreshViewCommand      { get; private set; }
 
         public ViewRefsViewModel(Post post)
@@ -48,7 +46,18 @@ namespace PushPost.ViewModels
             this.SelectAllCommand       = new RelayCommand(() => this.SelectAll());
             this.SelectNoneCommand      = new RelayCommand(() => this.SelectNone());
             this.RemoveSelectedCommand  = new RelayCommand(() => this.RemoveSelected());
+            this.CopySelectedCommand    = new RelayCommand(() => this.CopySelected());
             this.RefreshViewCommand     = new RelayCommand(() => this.RefreshCollection());
+
+            this._AutoRefreshTimer          = new System.Timers.Timer(3500);
+            this._AutoRefreshTimer.Elapsed  +=_AutoRefreshTimer_Elapsed;
+            this._AutoRefreshTimer.Enabled  = true;
+            this._AutoRefreshTimer.Start();
+        }
+
+        private void _AutoRefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            this.RefreshCollection();
         }
 
         public void RefreshCollection()
@@ -89,6 +98,29 @@ namespace PushPost.ViewModels
                 res.IsChecked = false;
             }
         }
+
+        public void CopySelected()
+        {
+            StringBuilder buffer = new StringBuilder();
+            foreach(CheckableResource res in ResourceCollection)
+            {
+                if(res.IsChecked)
+                {
+                    buffer.Append(string.Format(@"+@({0}) ", res.Resource.Name));
+                }
+            }
+
+            System.Windows.Clipboard.SetText(buffer.ToString());
+        }
+
+        public void OnClosing()
+        {
+            this._AutoRefreshTimer.Stop();
+            this._AutoRefreshTimer.Enabled = false;
+            this._AutoRefreshTimer.Dispose();
+        }
+
+        private System.Timers.Timer _AutoRefreshTimer;
     }
 
     internal class CheckableResource : INotifyPropertyChanged

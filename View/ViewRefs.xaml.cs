@@ -38,16 +38,14 @@ namespace PushPost.View
 
         public ViewRefs(Post post)
         {
-            //Post dummy = TextPost.Dummy();
-
-            //Models.HtmlGeneration.Embedded.Code res = new Models.HtmlGeneration.Embedded.Code(
-            //    "a_code", "Console.WriteLine()");
-
-            //for (int i = 0; i < 3; i++)
-            //    dummy.Resources.Add(res);
-
             InitializeComponent();
             ViewModel = new ViewRefsViewModel(post);
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            ViewModel.OnClosing();
+            base.OnClosing(e);
         }
     }
 }

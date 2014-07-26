@@ -17,11 +17,12 @@ namespace PushPost.Models.HtmlGeneration
     abstract public class Post : INotifyPropertyChanged
     {
         # region Boxed properties
-        private string        _Title;
-        private string        _Author;
-        private string        _MainText;
-        private DateTime      _Timestamp;
-        private NavCategory   _Category;
+        private string          _Title;
+        private string          _Author;
+        private string          _MainText;
+        private DateTime        _Timestamp;
+        private NavCategory     _Category;
+        private List<IResource> _Resources;
         #endregion
 
         protected Guid _PostID;
@@ -127,7 +128,18 @@ namespace PushPost.Models.HtmlGeneration
         /// for the post. 
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
-        public List<IResource> Resources; 
+        public List<IResource> Resources
+        {
+            get
+            {
+                return _Resources;
+            }
+            set
+            {
+                _Resources = value;
+                OnPropertyChanged("Resources");
+            }
+        }
         /// <summary>
         /// List of tags (categories/topics/etc) associated with this Post.
         /// </summary>
@@ -293,11 +305,12 @@ namespace PushPost.Models.HtmlGeneration
             _PostID = new Guid(this.GetHashData());
         }
 
-        public virtual void Serialize(StreamWriter outputStream)
+        public virtual void Serialize(StreamWriter outputStream, bool parse)
         {
             // Parse everything before serialization to simplify the 
             // deserialization proccess.
-            this._MainText = this.ParsedMainText;
+            if(parse)
+                this._MainText = this.ParsedMainText;
 
             // Serialize Post
             System.Xml.Serialization.XmlSerializer serializer = 
