@@ -22,9 +22,18 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
+        public string PrettyPrintScriptSource
+        {
+            get;
+            set;
+        }
+
         public Head(string title)
         {
             this.Title = title;
+
+            this.PrettyPrintScriptSource = 
+            @"<script src=""https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sons-of-obsidian"" defer=""defer""></script>";
         }
 
         public Head(string title, List<string> hypertextReferences):this(title)
@@ -45,10 +54,10 @@ namespace PushPost.Models.HtmlGeneration
             build.AppendLine(@"<head>");
             build.AppendLine("\t<title>" + this.Title + @"</title>");
 
-            foreach (string font in this.HypertextReferences)
-                build.AppendLine("<link href='" + font + "' rel='stylesheet' type='text/css'/>");
+            foreach (string href in this.HypertextReferences)
+                build.AppendLine("<link href='" + href + "' rel='stylesheet' type='text/css'/>");
 
-            build.AppendLine(@"<script src=""https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sons-of-obsidian"" defer=""defer""></script>");
+            build.AppendLine(this.PrettyPrintScriptSource);
 
             build.Append("</head>");
 

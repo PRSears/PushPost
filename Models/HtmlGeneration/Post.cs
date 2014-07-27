@@ -59,6 +59,27 @@ namespace PushPost.Models.HtmlGeneration
                 OnPropertyChanged("Title");
             }
         }
+        public string TitleLink
+        {
+            get
+            {
+                return string.Format(@"<a href=""{0}"">{1}</a>",
+                            TitlePath,
+                            this.Title);
+            }
+        }
+        public string TitlePath
+        {
+            get
+            {
+                return Path.Combine
+                    (
+                        @"..\",
+                        Properties.Settings.Default.SinglesSubfolder,
+                        string.Format("{0}.html", this.UniqueID.ToString())
+                    );
+            }
+        }
         /// <summary>
         /// Post's author/
         /// </summary>
@@ -217,35 +238,61 @@ namespace PushPost.Models.HtmlGeneration
         /// </summary>
         public virtual string CreatePreview()
         {
-            using (StringWriter buffer = new StringWriter())
-            using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            Embedded.Footer expand = new Embedded.Footer();
+            expand.Name  = "__foot_expand";
+            expand.Value = string.Format
+                (
+                    @" ... 
+<a href=""{0}""><i>[Full Post]</i></a>",
+                    this.TitlePath
+                );
+
+            this.MainText += expand.Markup;
+
+            this.Footers.Add(expand);
+
+            using(StringWriter buffer = new StringWriter())
+            using(HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
                 RenderHeader(writer);
-                writer.Write(writer.NewLine);
-
-                if (MainText.Length < PreviewLength)
-                    PreviewLength = MainText.Length;
-
-                // Throw an image at the top from the Resources list (if present)
-                foreach(IResource resource in Resources)
-                {
-                    if(resource is InlineImage)
-                    {
-                        writer.Write(resource.CreateHTML());
-                        break;
-                    }
-                }
-
-                string preview = ResourceManager.RemoveReferences(MainText.Substring(0, PreviewLength)); // grab the first x characters
-                writer.Write(preview);
+                RenderPreviewBody(writer);
+                RenderFooter(writer);
+                RenderComments(writer);
 
                 return buffer.ToString();
             }
 
+            #region obsolete...
+            //using (StringWriter buffer = new StringWriter())
+            //using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            //{
+            //    RenderHeader(writer);
+            //    writer.Write(writer.NewLine);
+
+            //    if (MainText.Length < PreviewLength)
+            //        PreviewLength = MainText.Length;
+
+            //    // Throw an image at the top from the Resources list (if present)
+            //    foreach(IResource resource in Resources)
+            //    {
+            //        if(resource is InlineImage)
+            //        {
+            //            writer.Write(resource.CreateHTML());
+            //            break;
+            //        }
+            //    }
+
+            //    string preview = ResourceManager.RemoveReferences(MainText.Substring(0, PreviewLength)); // grab the first x characters
+            //    writer.Write(preview);
+
+            //    return buffer.ToString();
+            //}
+            #endregion
         }
 
         abstract protected void RenderHeader(HtmlTextWriter w);
         abstract protected void RenderBody(HtmlTextWriter w);
+        abstract protected void RenderPreviewBody(HtmlTextWriter w);
         abstract protected void RenderFooter(HtmlTextWriter w);
         abstract protected void RenderComments(HtmlTextWriter w);
         

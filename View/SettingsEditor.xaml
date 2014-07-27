@@ -50,8 +50,10 @@
             </CheckBox>
             <CheckBox IsChecked="{Binding ConfirmBeforeRemove, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="Confirm before removal from queue"/>
-            </CheckBox>          
-            
+            </CheckBox>
+            <CheckBox IsChecked="{Binding IncludeBlogLinks, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock Text="Include Blog category in navigation"/>
+            </CheckBox>
             <Separator/>
 
             <Label Content="Max queue size"/>
@@ -251,11 +253,18 @@
             <TextBox Text="{Binding ImagesSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Content="Browse..."
                     Command="{Binding BrowseImagesFolderCommand}"/>
-            
+
+            <Label Content="Website name "/>
+            <TextBox Text="{Binding WebsiteName, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Content="Single post pages subfolder "/>
+            <TextBox Text="{Binding SinglesSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
+
             <CheckBox IsChecked="{Binding Debug, UpdateSourceTrigger=PropertyChanged}"
-                      Margin="0,340">
+                      Margin="0,262">
                 <TextBlock Text="Debug"/>
             </CheckBox>
+
         </StackPanel>
     </Grid>
 </Window>

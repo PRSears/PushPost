@@ -211,5 +211,41 @@ namespace PushPost.Properties {
                 this["ImageSizes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("patricksears.ca")]
+        public string WesbiteName {
+            get {
+                return ((string)(this["WesbiteName"]));
+            }
+            set {
+                this["WesbiteName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("single")]
+        public string SinglesSubfolder {
+            get {
+                return ((string)(this["SinglesSubfolder"]));
+            }
+            set {
+                this["SinglesSubfolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IncludeBlogLinks {
+            get {
+                return ((bool)(this["IncludeBlogLinks"]));
+            }
+            set {
+                this["IncludeBlogLinks"] = value;
+            }
+        }
     }
 }

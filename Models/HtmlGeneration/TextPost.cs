@@ -32,7 +32,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
             w.RenderBeginTag(HtmlTextWriterTag.H1);
-            w.Write(this.Title);
+            w.Write(this.TitleLink);
             w.RenderEndTag();
 
             w.AddAttribute(HtmlTextWriterAttribute.Id, base.SubHeaderID);
@@ -67,6 +67,28 @@ namespace PushPost.Models.HtmlGeneration
                     w.RenderBeginTag(HtmlTextWriterTag.P);
                     w.Write(line);
                     w.RenderEndTag();
+                }
+            }
+            w.RenderEndTag();
+        }
+
+        protected override void RenderPreviewBody(HtmlTextWriter w)
+        {
+            w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
+            w.RenderBeginTag(HtmlTextWriterTag.Div);
+            using (StringReader reader = new StringReader(this.ParsedMainText))
+            {
+                int charCount = 0;
+                string line = string.Empty;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (charCount > PreviewLength) break;
+
+                    w.RenderBeginTag(HtmlTextWriterTag.P);
+                    w.Write(line);
+                    w.RenderEndTag();
+
+                    charCount += line.Length;
                 }
             }
             w.RenderEndTag();

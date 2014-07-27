@@ -64,6 +64,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool IncludeBlogLinks
+        {
+            get
+            {
+                return Properties.Settings.Default.IncludeBlogLinks;
+            }
+            set
+            {
+                Properties.Settings.Default.IncludeBlogLinks = value;
+                OnPropertyChanged("IncludeBlogLinks");
+            }
+        }
+
         public string DatabaseFilename
         {
             get
@@ -154,6 +167,18 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("ImagesSubfolder");
             }
         }
+        public string SinglesSubfolder
+        {
+            get
+            {
+                return Properties.Settings.Default.SinglesSubfolder;
+            }
+            set
+            {
+                Properties.Settings.Default.SinglesSubfolder = value;
+                OnPropertyChanged("ImagesSubfolder");
+            }
+        }
 
         public int MaxQueueSize
         {
@@ -178,6 +203,19 @@ namespace PushPost.ViewModels
             {
                 Properties.Settings.Default.PostsPerPage = value;
                 OnPropertyChanged("PostsPerPage");
+            }
+        }
+
+        public string WebsiteName
+        {
+            get
+            {
+                return Properties.Settings.Default.WesbiteName;
+            }
+            set
+            {
+                Properties.Settings.Default.WesbiteName = value;
+                OnPropertyChanged("WebsiteName");
             }
         }
 

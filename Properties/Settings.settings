@@ -56,5 +56,14 @@
   &lt;string&gt;0&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="WesbiteName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">patricksears.ca</Value>
+    </Setting>
+    <Setting Name="SinglesSubfolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">single</Value>
+    </Setting>
+    <Setting Name="IncludeBlogLinks" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -27,6 +27,12 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
+        public bool IsSingle
+        {
+            get;
+            set;
+        }
+
         public string Title
         {
             get
@@ -39,11 +45,30 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
+        public List<string> Hrefs
+        {
+            get
+            {
+                return this.Header.HypertextReferences;
+            }
+            set
+            {
+                this.Header.HypertextReferences = value;
+            }
+        }
+
         public string FileName
         {
             get
             {
-                return Page.GenerateFilename(this.PageCategory, this.PageNumber);
+                if (IsSingle)
+                {
+                    return Page.GenerateFilename(this.Posts[0].UniqueID.ToString(), 0);
+                }
+                else
+                {
+                    return Page.GenerateFilename(this.PageCategory, this.PageNumber);
+                }
             }
         }
 
@@ -54,7 +79,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                return Path.Combine(PageCategory.ToString(), FileName);
+                return Path.Combine(Subfolder, FileName);
             }
         }
 
@@ -65,8 +90,21 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                return PageCategory.ToString();
+                if (IsSingle)
+                {
+                    return Properties.Settings.Default.SinglesSubfolder;
+                }
+                else
+                {
+                    return PageCategory.ToString();
+                }
             }
+        }
+
+        public string SiteName
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -77,18 +115,47 @@ namespace PushPost.Models.HtmlGeneration
         /// <returns>Returns a filename of the format: <example>blog_0001.html</example></returns>
         public static string GenerateFilename(NavCategory category, int pageNumber)
         {
-            return string.Format("{0}_p{1}.html", category.ToString(), pageNumber.ToString("D4"));
+            return GenerateFilename(category.ToString(), pageNumber);
+        }
+
+        /// <summary>
+        /// Builds a Page's filename.
+        /// </summary>
+        /// <param name="category">The category the Page resides in.</param>
+        /// <param name="pageNumber">The page number of the Page. Specify 0 page number
+        /// to get the filename for an individual posts' page.</param>
+        /// <returns>Returns a filename of the format: <example>blog_0001.html</example></returns>
+        public static string GenerateFilename(string category, int pageNumber)
+        {
+            if(pageNumber == 0) // single post in the page
+            {
+                return string.Format("{0}.html", category);
+            }
+            else
+            {
+                return string.Format("{0}_p{1}.html", category, pageNumber.ToString("D4"));
+            }
         }
         
         /// <summary>
         /// Builds a title for a Page.
         /// </summary>
-        /// <param name="category">The category the Page resides in.</param>
-        /// <param name="pageNumber">The page number of the Page.</param>
         /// <returns>Return a title of the format: <example>Blog (page 1)</example></returns>
-        public static string GenerateTitle(NavCategory category, int pageNumber)
+        public string GenerateTitle()
         {
-            return string.Format("{0} - page {1}", category.ToTitleString(), pageNumber);
+            if(IsSingle)
+            {
+                return string.Format("{0} - {1}", 
+                    this.SiteName, 
+                    this.Posts[0].Title);
+            }
+            else
+            {
+                return string.Format("{0} - {1}{2}", 
+                    this.SiteName, 
+                    this.PageCategory, 
+                    this.PageNumber.ToString("D2"));
+            }
         }
 
         public NavCategory PageCategory
@@ -169,10 +236,24 @@ namespace PushPost.Models.HtmlGeneration
             PrimaryColumnID = "primary-column";
             WrapperID       = "wrapper";
             FinalComment    = "This page was generated automatically by PushPost.";
-
-            //
-            // TODO_ Implement loading from cfg file
+            SiteName = Properties.Settings.Default.WesbiteName;
         }
+
+        public Page(List<Post> posts, Navigation upperNavigation, Breadcrumbs lowerNavigation) : this(string.Empty)
+        {
+            this.Posts              = posts;
+            this.UpperNavigation    = upperNavigation;
+            this.LowerNavigation    = lowerNavigation;
+
+            //this.IsSingle = Posts.Count > 1 ? false : true;
+        }
+
+        public Page(Post post, Navigation upperNavigation, Breadcrumbs lowerNavigation)
+            : this(new List<Post> { post }, upperNavigation, lowerNavigation)
+        {
+            this.IsSingle = true;
+        }
+
         #region Constructor overloads
         public Page(Head header):this(header.Title)
         {
@@ -236,7 +317,13 @@ namespace PushPost.Models.HtmlGeneration
                         w.WriteLine(this.UpperNavigation.Create());
                         w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
                         w.RenderBeginTag(HtmlTextWriterTag.Div);
-                            foreach (Post post in this.Posts) w.WriteLine(post.Create());
+                            foreach (Post post in this.Posts)
+                            {
+                                if (!this.IsSingle)
+                                    w.WriteLine(post.CreatePreview());
+                                else
+                                    w.WriteLine(post.Create());
+                            }
                         w.RenderEndTag();
 
                     w.RenderEndTag();
@@ -326,7 +413,8 @@ namespace PushPost.Models.HtmlGeneration
 
             Page tp = new Page(t1_Head, upNav, loNav, testPosts);
 
-            return tp.Create();
+            //return tp.Create();
+            return "Test harness currently broken.";
         }
     }
 

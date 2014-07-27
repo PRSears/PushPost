@@ -252,7 +252,8 @@ a.spacer:hover {
 }
 
 a.current {
-	font-weight: bold;
+	/*font-weight: bold;*/
+	border-bottom: 1px solid #000000;
 }
 
 a.current:hover {	

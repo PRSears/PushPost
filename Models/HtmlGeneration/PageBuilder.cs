@@ -45,6 +45,12 @@ namespace PushPost.Models.HtmlGeneration
             protected set;
         }
 
+        public Page[] SinglePostPages
+        {
+            get;
+            protected set;
+        }
+
         public PageBuilder()
         {
             this.PostsPerPage   = 10;
@@ -91,12 +97,13 @@ namespace PushPost.Models.HtmlGeneration
         /// in this.Posts. Stores generated Pages in this.Pages, then returns this.Pages.
         /// </summary>
         /// <returns>Newly generated Page list.</returns>
-        public virtual List<Page> CreatePages()
+        public virtual void CreatePages()
         {
-            Pages = new List<Page>();
-
             if (this.Posts.Length < 1)
-                return Pages;
+                return;
+
+            this.Pages = new List<Page>();
+            this.SinglePostPages = GenerateSingles();
 
             // for each category of Post of the Post(s) in this.Posts
             foreach(var post_batch in this.Posts.GroupBy(p => p.Category))
@@ -108,16 +115,35 @@ namespace PushPost.Models.HtmlGeneration
 
                 NavCategory peek = category_group.Peek().Category;
 
-                Pages.AddRange(GeneratePages(category_group, peek));
+                this.Pages.AddRange(GeneratePages(category_group, peek));
             }
 
-            return Pages;
         }
 
-        protected virtual List<Page> GeneratePages(Queue<Post> posts, NavCategory category)
+        protected virtual Page[] GenerateSingles()
+        {
+            Page[] singles = new Page[this.Posts.Length];
+
+            for(int i = 0; i < this.Posts.Length; i++)
+            {
+                singles[i] = new Page
+                    (
+                        Posts[i],
+                        new Navigation(Posts[i].Category),
+                        new Breadcrumbs()
+                    );
+                singles[i].Title = singles[i].GenerateTitle();
+                singles[i].Hrefs = this.Hrefs;
+            }
+
+            return singles;
+        }
+
+        protected virtual Page[] GeneratePages(Queue<Post> posts, NavCategory category)
         {
             Int16 requiredPages = (Int16)Math.Ceiling((double)posts.Count() / (double)this.PostsPerPage);
             Page[] generatedPages = new Page[requiredPages];
+
 
             for (int pageI = 1; pageI <= requiredPages; pageI++)
             {
@@ -127,18 +153,32 @@ namespace PushPost.Models.HtmlGeneration
 
                 generatedPages[pageI - 1] = new Page
                     (
-                        new Head(Page.GenerateTitle(category, pageI), this.Hrefs),
+                        newPosts,
                         new Navigation(category),
                         new Breadcrumbs
                             (
-                                MakeLinks(requiredPages, category), 
+                                MakeLinks(requiredPages, category),
                                 pageI
-                            ),
-                        newPosts
+                            )
                     );
+
+                generatedPages[pageI - 1].Title = generatedPages[pageI - 1].GenerateTitle();
+                generatedPages[pageI - 1].Hrefs = this.Hrefs;
+
+                //generatedPages[pageI - 1] = new Page
+                //    (
+                //        new Head(Page.GenerateTitle(category, pageI), this.Hrefs),
+                //        new Navigation(category),
+                //        new Breadcrumbs
+                //            (
+                //                MakeLinks(requiredPages, category), 
+                //                pageI
+                //            ),
+                //        newPosts
+                //    );
             }
 
-            return new List<Page>(generatedPages);
+            return generatedPages;
         }
         
         protected List<string> MakeLinks(int numPages, NavCategory category)
@@ -158,12 +198,17 @@ namespace PushPost.Models.HtmlGeneration
         /// <returns>True when saving succeeds.</returns>
         public bool SavePages(string outDirectoryPath)
         {
-            if (this.Pages == null)
+            if (this.Pages == null || this.SinglePostPages == null)
                 CreatePages();
+
+            Page[] allPages = new Page[this.Pages.Count + this.SinglePostPages.Length];
+
+            Array.Copy(this.Pages.ToArray(), 0, allPages, 0, this.Pages.Count);
+            Array.Copy(this.SinglePostPages, 0, allPages, this.Pages.Count, this.SinglePostPages.Length);
 
             try
             {
-                foreach (Page page in this.Pages)
+                foreach (Page page in allPages)
                 {
                     string subfolderPath = Path.Combine(
                         outDirectoryPath,

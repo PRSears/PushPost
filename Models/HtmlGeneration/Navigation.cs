@@ -88,6 +88,19 @@ namespace PushPost.Models.HtmlGeneration
                         writer.WriteLine(string.Empty);
                             for(int i = 0; i < Categories.Count; i++)
                             {
+                                if (!Properties.Settings.Default.IncludeBlogLinks &&
+                                    Categories[i].Equals(NavCategory.Blog))
+                                    continue; // skip Blog
+
+                                if(i > 0) // this isn't the first category
+                                {
+                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, "spacer");
+                                    writer.RenderBeginTag(HtmlTextWriterTag.A);
+                                        writer.Write("+");
+                                    writer.RenderEndTag();
+                                    writer.WriteLine(string.Empty);
+                                }
+
                                 writer.AddAttribute(HtmlTextWriterAttribute.Href, 
                                     @"../" + Categories[i].MainPageURL);
                                 if (Categories[i].Equals(this.CurrentCategory))
@@ -96,14 +109,6 @@ namespace PushPost.Models.HtmlGeneration
                                     writer.Write(Categories[i].Category.ToUpper());
                                 writer.RenderEndTag();
                                 writer.WriteLine(string.Empty);
-                                if(i < (Categories.Count - 1)) // there's still another category to be added
-                                {
-                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, "spacer");
-                                    writer.RenderBeginTag(HtmlTextWriterTag.A);
-                                        writer.Write("+");
-                                    writer.RenderEndTag();
-                                    writer.WriteLine(string.Empty);
-                                }
                             }
                         writer.RenderEndTag();
                     writer.RenderEndTag();

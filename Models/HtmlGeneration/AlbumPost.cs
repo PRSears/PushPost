@@ -80,6 +80,12 @@ namespace PushPost.Models.HtmlGeneration
             w.RenderEndTag();
         }
 
+        protected override void RenderPreviewBody(HtmlTextWriter w)
+        {
+            this.RenderBody(w);
+            Extender.Debugging.Debug.WriteMessage("Album previews not implemented.");
+        }
+
         protected override void RenderFooter(System.Web.UI.HtmlTextWriter w)
         {
             // no footers needed at the moment
