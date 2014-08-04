@@ -110,6 +110,7 @@
                     Margin="10,0,10,0"/>
                 <TextBox 
                     x:Name="CodeSnippetField"
+                    CaretBrush="White"
                     TabIndex="2"
                     Text="{Binding Code.Value, UpdateSourceTrigger=PropertyChanged}"
                     Grid.Row="3" Grid.Column="0"
@@ -202,6 +203,7 @@
                     FontSize="16"
                     Margin="10,0,10,0"/>
                 <TextBox 
+                    CaretBrush="White"
                     TabIndex="2"
                     Text="{Binding Footer.Value, UpdateSourceTrigger=PropertyChanged}"
                     Grid.Row="2" Grid.Column="0"

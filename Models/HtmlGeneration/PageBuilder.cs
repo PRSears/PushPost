@@ -164,18 +164,6 @@ namespace PushPost.Models.HtmlGeneration
 
                 generatedPages[pageI - 1].Title = generatedPages[pageI - 1].GenerateTitle();
                 generatedPages[pageI - 1].Hrefs = this.Hrefs;
-
-                //generatedPages[pageI - 1] = new Page
-                //    (
-                //        new Head(Page.GenerateTitle(category, pageI), this.Hrefs),
-                //        new Navigation(category),
-                //        new Breadcrumbs
-                //            (
-                //                MakeLinks(requiredPages, category), 
-                //                pageI
-                //            ),
-                //        newPosts
-                //    );
             }
 
             return generatedPages;

@@ -350,10 +350,6 @@ namespace PushPost.Models.HtmlGeneration
 
                     return RemoveEmptyLines(
                         formatter.Save().Replace("<br>", System.Environment.NewLine));
-
-                    //return  RemoveEmptyLines(
-                    //        formatter.Save().
-                    //        Replace("<br>", System.Environment.NewLine));
                 }
             }
         }

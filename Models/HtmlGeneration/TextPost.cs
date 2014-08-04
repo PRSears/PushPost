@@ -91,6 +91,16 @@ namespace PushPost.Models.HtmlGeneration
                     charCount += line.Length;
                 }
             }
+
+            w.RenderBeginTag(HtmlTextWriterTag.P);
+            w.Write(string.Format
+                (
+                    @" ... 
+<a href=""{0}""><i>[Full Post]</i></a>",
+                    this.TitlePath
+                ));
+            w.RenderEndTag();
+
             w.RenderEndTag();
         }
 

@@ -238,19 +238,6 @@ namespace PushPost.Models.HtmlGeneration
         /// </summary>
         public virtual string CreatePreview()
         {
-            Embedded.Footer expand = new Embedded.Footer();
-            expand.Name  = "__foot_expand";
-            expand.Value = string.Format
-                (
-                    @" ... 
-<a href=""{0}""><i>[Full Post]</i></a>",
-                    this.TitlePath
-                );
-
-            this.MainText += expand.Markup;
-
-            this.Footers.Add(expand);
-
             using(StringWriter buffer = new StringWriter())
             using(HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
