@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Web.UI;
+using Extender;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
@@ -95,7 +96,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                     html.RenderBeginTag(HtmlTextWriterTag.Code);
                     html.WriteLine(string.Empty);
 
-                    using (StringReader reader = new StringReader(this.Value))
+                    using (StringReader reader = new StringReader(this.Value.EscapeForHTML()))
                     {
                         while (reader.Peek() != -1)
                         {

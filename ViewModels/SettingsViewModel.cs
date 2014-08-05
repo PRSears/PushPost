@@ -77,6 +77,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool TidyHTML
+        {
+            get
+            {
+                return Properties.Settings.Default.TidyHTML;
+            }
+            set
+            {
+                Properties.Settings.Default.TidyHTML = value;
+                OnPropertyChanged("TidyHTML");
+            }
+        }
+
         public string DatabaseFilename
         {
             get

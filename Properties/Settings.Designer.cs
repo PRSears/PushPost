@@ -247,5 +247,17 @@ namespace PushPost.Properties {
                 this["IncludeBlogLinks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TidyHTML {
+            get {
+                return ((bool)(this["TidyHTML"]));
+            }
+            set {
+                this["TidyHTML"] = value;
+            }
+        }
     }
 }

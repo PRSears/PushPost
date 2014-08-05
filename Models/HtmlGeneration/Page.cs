@@ -338,18 +338,28 @@ namespace PushPost.Models.HtmlGeneration
 
                 w.WriteComment(FinalComment);
 
-                using (Document formatter = Document.FromString(buffer.ToString()))
+                if (Properties.Settings.Default.TidyHTML)
                 {
-                    formatter.ShowWarnings = false;
-                    formatter.Quiet = true;
-                    formatter.OutputHtml = true;
-                    formatter.IndentSpaces = 4;
-                    formatter.WrapAt = 116;
-                    formatter.IndentBlockElements = AutoBool.Auto;
-                    formatter.CleanAndRepair();
+                    using (Document formatter = Document.FromString(buffer.ToString()))
+                    {
+                        formatter.ShowWarnings = false;
+                        formatter.Quiet = true;
+                        formatter.OutputHtml = true;
+                        formatter.IndentSpaces = 4;
+                        formatter.WrapAt = 116;
+                        formatter.IndentBlockElements = AutoBool.Auto;
+                        formatter.CleanAndRepair();
 
-                    return RemoveEmptyLines(
-                        formatter.Save().Replace("<br>", System.Environment.NewLine));
+                        return RemoveEmptyLines(
+                            formatter.Save().Replace("<br>", System.Environment.NewLine));
+                    }
+                }
+                else
+                {
+                    return RemoveEmptyLines
+                        (
+                            buffer.ToString().Replace("<br>", System.Environment.NewLine)
+                        );
                 }
             }
         }

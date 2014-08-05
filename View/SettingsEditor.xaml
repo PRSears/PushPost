@@ -54,6 +54,9 @@
             <CheckBox IsChecked="{Binding IncludeBlogLinks, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="Include Blog category in navigation"/>
             </CheckBox>
+            <CheckBox IsChecked="{Binding TidyHTML, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock Text="Tidy HTML output"/>
+            </CheckBox>
             <Separator/>
 
             <Label Content="Max queue size"/>

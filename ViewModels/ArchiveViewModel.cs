@@ -370,6 +370,7 @@ It will be a pain in the ass to get them back afterward."))
             }
             catch (Exception e)
             {
+                System.Windows.Forms.MessageBox.Show(Extender.Debugging.Debug.CreateDebugText(e.Message, "error"));
                 Extender.Debugging.ExceptionTools.WriteExceptionText(e, true,
                     "Failed to submit posts to the databse.");
                 return;
