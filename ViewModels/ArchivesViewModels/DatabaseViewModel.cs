@@ -14,7 +14,6 @@ namespace PushPost.ViewModels.ArchivesViewModels
 {
     internal class DatabaseViewModel : ViewModel, IArchiveViewModel
     {
-        //public ObservableCollection<CheckablePost> 
 
         public string[] SearchFieldOptions
         {
@@ -107,7 +106,7 @@ namespace PushPost.ViewModels.ArchivesViewModels
             }
         }
         public ObservableCollection<CheckablePost> DisplayedPosts
-        {
+        {   
             get
             {
                 return _DisplayedPosts;
