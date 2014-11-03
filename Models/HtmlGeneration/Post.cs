@@ -363,13 +363,13 @@ namespace PushPost.Models.HtmlGeneration
             try
             {
 
-                // Attempt to determine Post implementation's type.
                 using (FileStream streamedPost = new FileStream(
                     filePath,
                     FileMode.Open,
                     FileAccess.Read,
                     FileShare.ReadWrite))
                 {
+                    // Attempt to determine Post implementation's type.
                     System.Xml.XmlReader r = System.Xml.XmlReader.Create(streamedPost);
 
                     r.MoveToContent();

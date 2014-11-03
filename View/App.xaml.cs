@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using PushPost.Properties;
+using System;
 using System.Windows;
 
 namespace PushPost
@@ -13,6 +9,8 @@ namespace PushPost
     /// </summary>
     public partial class App : Application
     {
+        private System.IO.StreamWriter LogStream;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -22,6 +20,30 @@ namespace PushPost
             System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty.OverrideMetadata(
                 typeof(System.Windows.Media.Animation.Timeline),
                 new FrameworkPropertyMetadata { DefaultValue = 5 });
+
+            //
+            // Redirect output from console / debugging to a text file on disc
+            if (Settings.Default.DEBUG && !string.IsNullOrWhiteSpace(Settings.Default.DebugLogPath))
+            {
+                LogStream = new System.IO.StreamWriter
+                (
+                    Settings.Default.DebugLogPath,
+                    true
+                );
+
+                LogStream.AutoFlush = true;
+
+                Console.SetOut(LogStream);
+
+                Extender.Debugging.Debug.WriteMessage
+                (
+                    "Application Startup.",
+                    "info"
+                );
+            }
         }
     }
 }
+
+// TODO Add support for multi-database-entry posts
+// TODO Add gallery support

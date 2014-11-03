@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace PushPost.View
 {
@@ -79,5 +80,11 @@ namespace PushPost.View
 
         public const UInt16 VK_LBUTTON = 0x01;
         #endregion
+
+        private void DisplayedPostsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListBox)
+                (sender as ListBox).UnselectAll();
+        }
     }
 }

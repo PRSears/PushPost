@@ -3,7 +3,6 @@ using Extender.WPF;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -18,8 +17,7 @@ namespace PushPost.ViewModels
             protected set;
         }
 
-        private ObservableCollection<CheckableResource> _ResourceCollection;
-        public ObservableCollection<CheckableResource> ResourceCollection
+        public ObservableCollection<Checkable<IResource>> ResourceCollection
         {
             get
             {
@@ -38,6 +36,10 @@ namespace PushPost.ViewModels
         public ICommand CopySelectedCommand     { get; private set; }
         public ICommand RefreshViewCommand      { get; private set; }
 
+        private const int RefreshInterval = 1111;
+        private System.Windows.Threading.DispatcherTimer _AutoRefreshTimer;
+        private ObservableCollection<Checkable<IResource>> _ResourceCollection;
+
         public ViewRefsViewModel(Post post)
         {
             this.Post = post;
@@ -49,24 +51,39 @@ namespace PushPost.ViewModels
             this.CopySelectedCommand    = new RelayCommand(() => this.CopySelected());
             this.RefreshViewCommand     = new RelayCommand(() => this.RefreshCollection());
 
-            this._AutoRefreshTimer          = new System.Timers.Timer(3500);
-            this._AutoRefreshTimer.Elapsed  +=_AutoRefreshTimer_Elapsed;
-            this._AutoRefreshTimer.Enabled  = true;
-            this._AutoRefreshTimer.Start();
-        }
-
-        private void _AutoRefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            this.RefreshCollection();
+            this._AutoRefreshTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval  = new System.TimeSpan(0, 0, 0, 0, RefreshInterval),
+                IsEnabled = true
+            };
+            this._AutoRefreshTimer.Tick += (s, e) => this.RefreshCollection();
         }
 
         public void RefreshCollection()
         {
-            _ResourceCollection = new ObservableCollection<CheckableResource>();
+            if(ResourceCollection == null)
+                ResourceCollection = new ObservableCollection<Checkable<IResource>>();
 
+            var resourceCollection = this.ResourceCollection.Select(checkable => checkable.Resource);
+
+            // Add any new resources in this.Post.Resources that are not in the 
+            // ResourceCollection listbox.
             foreach(IResource res in this.Post.Resources)
             {
-                ResourceCollection.Add(new CheckableResource(res));
+                if(!resourceCollection.Contains(res))
+                {
+                    ResourceCollection.Add(new Checkable<IResource>(res));
+                }
+            }
+
+            // Remove any resources that are in this.ResourceCollection but no longer
+            // appear in this.Post.Resources.
+            foreach(IResource res in resourceCollection)
+            {
+                if(!this.Post.Resources.Contains(res))
+                {
+                    ResourceCollection.RemoveAll(cr => cr.Resource.Equals(res));
+                }
             }
 
             OnPropertyChanged("ResourceCollection");
@@ -85,7 +102,7 @@ namespace PushPost.ViewModels
 
         public void SelectAll()
         {
-            foreach(CheckableResource res in ResourceCollection)
+            foreach(Checkable<IResource> res in ResourceCollection)
             {
                 res.IsChecked = true;
             }
@@ -93,7 +110,7 @@ namespace PushPost.ViewModels
 
         public void SelectNone()
         {
-            foreach(CheckableResource res in ResourceCollection)
+            foreach (Checkable<IResource> res in ResourceCollection)
             {
                 res.IsChecked = false;
             }
@@ -102,7 +119,7 @@ namespace PushPost.ViewModels
         public void CopySelected()
         {
             StringBuilder buffer = new StringBuilder();
-            foreach(CheckableResource res in ResourceCollection)
+            foreach (Checkable<IResource> res in ResourceCollection)
             {
                 if(res.IsChecked)
                 {
@@ -116,85 +133,6 @@ namespace PushPost.ViewModels
         public void OnClosing()
         {
             this._AutoRefreshTimer.Stop();
-            this._AutoRefreshTimer.Enabled = false;
-            this._AutoRefreshTimer.Dispose();
         }
-
-        private System.Timers.Timer _AutoRefreshTimer;
-    }
-
-    internal class CheckableResource : INotifyPropertyChanged
-    {
-        protected IResource _Resource;
-        protected bool _IsChecked;
-
-        public IResource Resource 
-        {
-            get
-            {
-                return _Resource;
-            }
-            set
-            {
-                _Resource = value;
-                OnPropertyChanged("Resource");
-            }
-        }
-
-        public bool IsChecked 
-        {
-            get
-            {
-                return _IsChecked;
-            }
-            set
-            {
-                _IsChecked = value;
-                OnPropertyChanged("IsChecked");
-            }
-        }
-
-        public string Display
-        {
-            get
-            {
-                return string.Format(@"+@({0}) => {1}",
-                    this.Resource.Name,
-                    this.Resource.Value);
-            }
-        }
-
-        public CheckableResource(IResource resource)
-        {
-            this.Resource   = resource;
-            this.IsChecked  = false;
-        }
-
-        public CheckableResource(IResource resource, bool isChecked)
-        {
-            this.Resource   = resource;
-            this.IsChecked  = isChecked;
-        }
-
-        public CheckableResource()
-        {
-
-        }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
     }
 }

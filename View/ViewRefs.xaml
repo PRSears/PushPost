@@ -7,7 +7,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <ListBox ItemsSource="{Binding ResourceCollection}"
+        <ListBox x:Name="ResourcesList"
+                 ItemsSource="{Binding ResourceCollection}"
                  Background="White"
                  Grid.Row="0" Grid.Column="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -18,7 +19,7 @@
                               HorizontalAlignment="Stretch"
                               Margin="10,10,10,0">
                         <TextBlock TextWrapping="Wrap"
-                                   Text="{Binding Display}"
+                                   Text="{Binding Resource.Display, UpdateSourceTrigger=PropertyChanged}"
                                    HorizontalAlignment="Stretch"/>
                     </CheckBox>
                 </DataTemplate>

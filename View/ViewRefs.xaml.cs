@@ -40,6 +40,9 @@ namespace PushPost.View
         {
             InitializeComponent();
             ViewModel = new ViewRefsViewModel(post);
+
+            // Prevent selection -- only allow check boxes
+            ResourcesList.SelectionChanged += (s, e) => ResourcesList.UnselectAll();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

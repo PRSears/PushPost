@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Extender;
-using Extender.WPF;
+﻿using Extender.WPF;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
@@ -22,6 +16,28 @@ namespace PushPost.ViewModels
             {
                 Properties.Settings.Default.DEBUG = value;
                 OnPropertyChanged("Debug");
+                OnPropertyChanged("DebugVisibility");
+            }
+        }
+
+        public string DebugFilePath
+        {
+            get
+            {
+                return Properties.Settings.Default.DebugLogPath;
+            }
+            set
+            {
+                Properties.Settings.Default.DebugLogPath = value;
+                OnPropertyChanged("DebugFilePath");
+            }
+        }
+
+        public System.Windows.Visibility DebugVisibility
+        {
+            get
+            {
+                return Debug ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
             }
         }
 
@@ -310,12 +326,5 @@ namespace PushPost.ViewModels
             else
                 return dialog.FileName;
         }            
-        
-        //var dialog = new CommonOpenFileDialog();
-        //dialog.IsFolderPicker = true;
-        //dialog.Title = "Select a folder to save the site in";
-
-        //CommonFileDialogResult r = dialog.ShowDialog();
-        //if (r != CommonFileDialogResult.Ok) return;
     }
 }

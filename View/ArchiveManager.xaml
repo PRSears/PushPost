@@ -7,12 +7,6 @@
         MinWidth="160" MinHeight="800" Icon="/PushPost;component/PushPost.ico">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:QueueViewModel}">
-            <!--<TextBlock Text="Queued Posts" 
-                FontSize="14" 
-                HorizontalAlignment="Left" 
-                Margin="20,0,0,0"
-                VerticalAlignment="Center"
-                Style="{DynamicResource LabelStyle}"/>-->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -23,7 +17,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding DisplayedPosts}"
+                <ListBox x:Name="Queue_DisplayedPostsListBox"
+                         ItemsSource="{Binding DisplayedPosts}"
+                         SelectionChanged="DisplayedPostsListBox_SelectionChanged"
                          Grid.Row="1" Grid.Column="0"
                          Margin="10,0,0,0"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -52,22 +48,24 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
-                    <ListBox ItemsSource="{Binding DisplayedPosts}"
-                             Grid.Row="1" Grid.Column="0"
-                             Margin="10,0,0,0"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             Background="#eff4f6">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding IsChecked}"
-                                          HorizontalAlignment="Stretch">
-                                            <TextBlock TextWrapping="Wrap" 
-                                               Text="{Binding Post}"
-                                               HorizontalAlignment="Stretch"/>
-                                        </CheckBox>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                    </ListBox>
+                <ListBox x:Name="Database_DisplayedPostsListBox"
+                         SelectionChanged="DisplayedPostsListBox_SelectionChanged"
+                         ItemsSource="{Binding DisplayedPosts}"
+                         Grid.Row="1" Grid.Column="0"
+                         Margin="10,0,0,0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Background="#eff4f6">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked}"
+                                    HorizontalAlignment="Stretch">
+                                    <TextBlock TextWrapping="Wrap" 
+                                        Text="{Binding Post}"
+                                        HorizontalAlignment="Stretch"/>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                </ListBox>
                 <StackPanel Orientation="Vertical"
                             VerticalAlignment="Bottom"
                             Grid.Row="1" Grid.Column="1"

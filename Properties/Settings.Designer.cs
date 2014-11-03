@@ -259,5 +259,17 @@ namespace PushPost.Properties {
                 this["TidyHTML"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("debug_log.txt")]
+        public string DebugLogPath {
+            get {
+                return ((string)(this["DebugLogPath"]));
+            }
+            set {
+                this["DebugLogPath"] = value;
+            }
+        }
     }
 }

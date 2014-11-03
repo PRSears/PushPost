@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using Extender;
+using System.IO;
 using System.Web.UI;
-using Extender;
 
 namespace PushPost.Models.HtmlGeneration.Embedded
 {
@@ -79,10 +79,12 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 // (adds a new line after) there is always an empty line above the code.
                 //  So to get the line number to correspond to the correct line we start 
                 // line numbering one line before.
-                return string.Format("{0} linenums:{1}",
-                    PreformatClass,
-                    (((LineNum - 1) > 0 ? (LineNum - 1) : LineNum)
-                    .ToString()));
+                return string.Format
+                    (
+                        "{0} linenums:{1}",
+                        PreformatClass,
+                        ((LineNum - 1) > 0 ? (LineNum - 1) : LineNum).ToString()
+                    );
             }
         }
 

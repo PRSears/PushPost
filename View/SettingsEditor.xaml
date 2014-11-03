@@ -264,9 +264,13 @@
             <TextBox Text="{Binding SinglesSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
 
             <CheckBox IsChecked="{Binding Debug, UpdateSourceTrigger=PropertyChanged}"
-                      Margin="0,262">
+                      Margin="0,242,0,0">
                 <TextBlock Text="Debug"/>
             </CheckBox>
+            <Label Content="Debug log file path"
+                   Visibility="{Binding DebugVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding DebugFilePath}"
+                     Visibility="{Binding DebugVisibility, UpdateSourceTrigger=PropertyChanged}"/>
 
         </StackPanel>
     </Grid>

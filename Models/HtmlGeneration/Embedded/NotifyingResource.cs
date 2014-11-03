@@ -122,5 +122,14 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         {
             return BitConverter.ToInt32(this.GetHashData(), 0);
         }
+
+
+        public virtual string Display
+        {
+            get
+            {
+                return CreateHTML();
+            }
+        }
     }
 }

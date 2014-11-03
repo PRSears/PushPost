@@ -422,6 +422,7 @@ namespace PushPost.Models.Database
             if (!_disposed)
             {
                 if (disposing)
+
                 {
                     // THOUGHT should I submit all pending operations before
                     //         disposal?
@@ -493,14 +494,13 @@ namespace PushPost.Models.Database
 
     public class DatabasePullException : System.Configuration.ConfigurationException
     {
-        public DatabasePullException(string criteria) :
-            base
-             (
-                 string.Format
-                     (
-                         "Post(s) with criteria [{0}] could not be found in the database, or its category could not be determined",
-                         criteria
-                     )
-             ) { }
+        public DatabasePullException(string criteria) : base
+            (
+                string.Format
+                (
+                    "Post(s) with criteria [{0}] could not be found in the database, or its category could not be determined",
+                    criteria
+                )
+            ) { }
     }
 }

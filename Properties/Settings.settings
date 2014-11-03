@@ -68,5 +68,8 @@
     <Setting Name="TidyHTML" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="DebugLogPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">debug_log.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
