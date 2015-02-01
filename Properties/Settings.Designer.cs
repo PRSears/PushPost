@@ -61,7 +61,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoInsertMarkup {
             get {
                 return ((bool)(this["AutoInsertMarkup"]));
@@ -97,7 +97,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("posts_(alpha0.2)_10.mdf")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Posts_Archive.mdf")]
         public string DBRelativeFilename {
             get {
                 return ((string)(this["DBRelativeFilename"]));
@@ -169,7 +169,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int PostsPerPage {
             get {
                 return ((int)(this["PostsPerPage"]));
@@ -238,7 +238,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool IncludeBlogLinks {
             get {
                 return ((bool)(this["IncludeBlogLinks"]));
@@ -269,6 +269,30 @@ namespace PushPost.Properties {
             }
             set {
                 this["DebugLogPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int PhotoPostsPerPage {
+            get {
+                return ((int)(this["PhotoPostsPerPage"]));
+            }
+            set {
+                this["PhotoPostsPerPage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Patrick")]
+        public string DefaultAuthor {
+            get {
+                return ((string)(this["DefaultAuthor"]));
+            }
+            set {
+                this["DefaultAuthor"] = value;
             }
         }
     }

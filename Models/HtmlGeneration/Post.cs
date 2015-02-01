@@ -122,8 +122,8 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                if(_Timestamp == null || _Timestamp.Equals(DateTime.MinValue))
-                    _Timestamp = new DateTime(Timestamp_Ticks);
+                if (_Timestamp == null)
+                    _Timestamp = DateTime.MinValue;
 
                 return _Timestamp;
             }
@@ -196,17 +196,45 @@ namespace PushPost.Models.HtmlGeneration
         }
 
         /// <summary>
+        /// Checks this Post's type against this.Category. If they are not compatible,
+        /// this.Category will be changed to match the Type.
+        /// </summary>
+        public void RecheckCategory()
+        {
+            Type current = this.Category.PostType;
+
+            if(!this.GetType().Equals(current))
+            {
+                NavCategory queried = NavCategory.AllCategories.FirstOrDefault
+                    (
+                        nc => nc.PostType.Equals(this.GetType())
+                    );
+
+                if (queried != null) this.Category = queried;
+                OnPropertyChanged("CategoryString");
+            }
+        }
+
+        public void QuietSetCategoryString(string value)
+        {
+            this._Category = NavCategory.TryParse(value);
+        }
+
+        /// <summary>
         /// Boolean switch to include/disclude HTML comments below the post
         /// as a separator.
         /// </summary>
         public bool IncludePostEndComments;
 
-        protected string HeaderClass;
-        protected string FooterClass;
-        protected string SubHeaderID;
-        protected string AuthorClass;
-        protected string   DateClass;
-        protected string  PostBodyID;
+        protected string       HeaderClass;
+        protected string       FooterClass;
+        protected string       SubHeaderID;
+        protected string       AuthorClass;
+        protected string         DateClass;
+        protected string        PostBodyID;
+        protected string FullPostLinkClass;
+
+        protected string FullPostLinkText;
 
         /// <summary>
         /// Number of character from the MainText to include in the posts' 
@@ -282,6 +310,7 @@ namespace PushPost.Models.HtmlGeneration
         abstract protected void RenderPreviewBody(HtmlTextWriter w);
         abstract protected void RenderFooter(HtmlTextWriter w);
         abstract protected void RenderComments(HtmlTextWriter w);
+        abstract public void ResetToTemplate();
         
         public virtual string ParsedMainText
         {
@@ -419,6 +448,9 @@ namespace PushPost.Models.HtmlGeneration
             AuthorClass             = "author";
             DateClass               = "date";
             PostBodyID              = "post-body";
+            FullPostLinkClass       = "fullpost-footnote";
+
+            FullPostLinkText        = "... [Full Post]";
 
             PreviewLength           = 250;
             IncludePostEndComments  = true;

@@ -291,11 +291,14 @@ namespace PushPost.Models.HtmlGeneration
 
 
         /// <summary>
-        /// Uses HtmlTextWriter to render this page with the content supplied by the it's properties.
+        /// Uses HtmlTextWriter to render this page with the content supplied by its properties.
         /// </summary>
         /// <returns>String containing all of this page's HTML.</returns>
         public virtual string Create()
         {
+            Extender.Debugging.Debug.WriteMessage("Page.Create() called. " + FileName);
+            Extender.Debugging.Debug.WriteMessage(string.Format("{0} posts being rendered.", Posts.Count.ToString()));
+
             using (StringWriter buffer = new StringWriter())
             using (HtmlTextWriter w = new HtmlTextWriter(buffer))
             {
@@ -319,10 +322,10 @@ namespace PushPost.Models.HtmlGeneration
                         w.RenderBeginTag(HtmlTextWriterTag.Div);
                             foreach (Post post in this.Posts)
                             {
-                                if (!this.IsSingle)
-                                    w.WriteLine(post.CreatePreview());
-                                else
+                                if (this.IsSingle || this.Posts.Count <= 1)
                                     w.WriteLine(post.Create());
+                                else
+                                    w.WriteLine(post.CreatePreview());
                             }
                         w.RenderEndTag();
 

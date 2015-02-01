@@ -128,6 +128,7 @@ namespace PushPost.Models.HtmlGeneration
                         }
                         for (int i = firstIndex; i <= finalIndex; i++)
                         {
+                            // TODO_ instead of setting font weight here, it should be given a seperate class so it can be changed in css
                             writer.AddAttribute(HtmlTextWriterAttribute.Href, Links_padded[i]);
                             if (i == CurrentPageIndex) writer.AddAttribute(HtmlTextWriterAttribute.Style, "font-weight:bold"); // bold the current page
                             writer.RenderBeginTag(HtmlTextWriterTag.A);

@@ -56,6 +56,7 @@ namespace PushPost.Models.HtmlGeneration
             this.PostsPerPage   = 10;
             this.Hrefs          = new List<string>();
 
+            // TOOD Load HRefs from config file
             Hrefs.Add("http://fonts.googleapis.com/css?family=Open+Sans:300");
             Hrefs.Add("../css/styles.css");
             //Hrefs.Add("https://google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css");
@@ -171,6 +172,10 @@ namespace PushPost.Models.HtmlGeneration
         
         protected List<string> MakeLinks(int numPages, NavCategory category)
         {
+            // Don't need navigation links if there's only one page
+            if (numPages <= 1)
+                return new List<string>(); 
+
             string[] links = new string[numPages];
             for (int i = 1; i <= numPages; i++)
                 links[i - 1] = Page.GenerateFilename(category, i);

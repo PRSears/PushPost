@@ -92,13 +92,13 @@ namespace PushPost.Models.HtmlGeneration
                 }
             }
 
+            w.AddAttribute(HtmlTextWriterAttribute.Class, base.FullPostLinkClass);
             w.RenderBeginTag(HtmlTextWriterTag.P);
-            w.Write(string.Format
-                (
-                    @" ... 
-<a href=""{0}""><i>[Full Post]</i></a>",
-                    this.TitlePath
-                ));
+                w.AddAttribute(HtmlTextWriterAttribute.Href, this.TitlePath);
+                w.RenderBeginTag(HtmlTextWriterTag.A);
+                    w.Write(FullPostLinkText);
+                w.RenderEndTag();
+
             w.RenderEndTag();
 
             w.RenderEndTag();
@@ -111,6 +111,8 @@ namespace PushPost.Models.HtmlGeneration
                 w.WriteLine(string.Empty);
                 w.WriteLine(footer);
             }
+            // TODO (?) Remove references to 'Full Post' and lower navigation when not neccessary
+            //          This is fixed, isn't it?
         }
 
         protected override void RenderComments(HtmlTextWriter w)
@@ -122,12 +124,25 @@ namespace PushPost.Models.HtmlGeneration
         public static Post TemplatePost()
         {
             TextPost newPost = new TextPost("Enter Title", DateTime.Now, "Enter Author", "Enter body text.");
-            newPost.Category = NavCategory.Blog;
+            newPost.Category = NavCategory.Code;
 
             return newPost;
         }
 
-        
+        public override void ResetToTemplate()
+        {
+            TextPost template = (TextPost)TemplatePost();
+
+            this.Title      = template.Title;
+            this.Author     = template.Author;
+            this.MainText   = template.MainText;
+            this.Timestamp  = template.Timestamp;
+            this.Category   = template.Category;
+
+            Footers         = new List<Embedded.Footer>();
+            Resources       = new List<Embedded.IResource>();
+            Tags            = new List<Embedded.Tag>();
+        }
 
         #region Debugging
         public static string TestHarness()

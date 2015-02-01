@@ -47,3 +47,4 @@ namespace PushPost
 
 // TODO Add support for multi-database-entry posts
 // TODO Add gallery support
+// TODO_ Clean up ResourceCommands.cs (switch over to RelayCommands)

@@ -1,15 +1,9 @@
 ﻿using Extender.Debugging;
 using Extender.WPF;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using System;
-using System.Linq;
 using System.IO;
-using System.Collections.Generic;
 using System.Windows.Input;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PushPost.ViewModels
 {
@@ -32,9 +26,10 @@ namespace PushPost.ViewModels
             {
                 return _Post;
             }
-            private set
+            set
             {
                 this._Post = value;
+                this._Post.PropertyChanged += Post_PropertyChanged;
                 OnPropertyChanged("Post");
             }
         }
@@ -55,6 +50,7 @@ namespace PushPost.ViewModels
         public ICommand SubmitPostCommand           { get; private set; }
         public ICommand QueuePostCommand            { get; private set; }
         public ICommand AddIResourceCommand         { get; private set; }
+        public ICommand AddPhotoCommand             { get; private set; }
         public ICommand AddFootnoteCommand          { get; private set; }
         public ICommand ManageTagsCommand           { get; private set; }
 
@@ -78,26 +74,26 @@ namespace PushPost.ViewModels
         {
             base.Initialize();
 
-            this._Post              = TextPost.TemplatePost();
+            this.Post               = TextPost.TemplatePost();
             this.ArchiveQueue       = new Models.Database.ArchiveQueue();
             this.WindowManager      = new WindowManager();
             this._LastAutosaveIndex = 0;
 
             // Post buttons' commands
             this.QueuePostCommand   = new RelayCommand
-                (
-                    () =>
-                        {
-                            this.ArchiveQueue.Enqueue(this.Post);
-                            this.Post = TextPost.TemplatePost();
-                        },
-                    () => !this.PostIsDefault
-                );
+            (
+                () =>
+                    {
+                        this.ArchiveQueue.Enqueue(this.Post);
+                        this.Post = TextPost.TemplatePost();
+                    },
+                () => !this.PostIsDefault
+            );
             this.SubmitPostCommand  = new RelayCommand
-                (
-                    () => this.SubmitNow(),
-                    () => !this.PostIsDefault
-                );
+            (
+                () => this.SubmitNow(),
+                () => !this.PostIsDefault
+            );
 
             // Menu toolbar commands
             this.ImportFromFileCommand      = new RelayCommand(() => this.ImportFromFile());
@@ -115,8 +111,16 @@ namespace PushPost.ViewModels
             this.ViewReferencesCommand      = new RelayCommand(
                 () => WindowManager.OpenWindow(new View.ViewRefs(this.Post)));
 
-            this.AddIResourceCommand        = new RelayFunction(
-                (parameter) => this.AddReference(parameter));
+            this.AddIResourceCommand        = new RelayFunction
+                (
+                    (parameter) => this.AddReference(parameter),
+                    () => !IsPhoto
+                );
+
+            this.AddPhotoCommand = new RelayCommand
+            (
+                () => this.AddReference(4)
+            );
 
             this.AddFootnoteCommand     = new RelayCommand(
                 () => this.AddReference(3)); 
@@ -131,7 +135,7 @@ namespace PushPost.ViewModels
                 () => System.Windows.Forms.MessageBox.Show("Not implemented."),
                 () => false);
 
-            this.Post.PropertyChanged       += PostMainText_Changed;
+            //this.Post.PropertyChanged       += Post_PropertyChanged; // subscribing in Post's setter instead
             this.AutosaveTimer.Tick         += AutosaveTimer_Tick;
             this.WindowManager.WindowClosed += WindowManager_WindowClosed;
             this.WindowManager.WindowOpened += WindowManager_WindowOpened;
@@ -159,9 +163,9 @@ namespace PushPost.ViewModels
         private void InitializeByType(Type type)
         {
             if      (type == typeof(TextPost))
-                _Post = TextPost.TemplatePost();
-            else if (type == typeof(AlbumPost))
-                _Post = AlbumPost.TemplatePost();
+                Post = TextPost.TemplatePost();
+            else if (type == typeof(PhotoPost))
+                Post = PhotoPost.TemplatePost();
             else
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
                 // Doesn't override the default _Post the parameterless constructor set.
@@ -170,9 +174,9 @@ namespace PushPost.ViewModels
         private void InitializeByCategory(NavCategory category)
         {
             if (category == NavCategory.Blog || category == NavCategory.Code || category == NavCategory.Contact)
-                _Post = TextPost.TemplatePost();
+                Post = TextPost.TemplatePost();
             else if (category == NavCategory.Photography)
-                _Post = AlbumPost.TemplatePost();
+                Post = PhotoPost.TemplatePost();
             else
                 Debug.WriteMessage("PostViewModel.InitPost encountered an unknown Post category.", "warn");
                 // Doesn't override the default _Post the parameterless constructor set.
@@ -184,6 +188,30 @@ namespace PushPost.ViewModels
             get
             {
                 return this.WindowManager.ChildOpen();
+            }
+        }
+
+        public bool IsPhoto
+        {
+            get
+            {
+                return this.Post.Category.Equals(NavCategory.Photography);
+            }
+        }
+
+        public System.Windows.Visibility AddResourceButtonsVisible
+        {
+            get
+            {
+                return IsPhoto ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
+            }
+        }
+
+        public System.Windows.Visibility AddPhotoButtonVisible
+        {
+            get
+            {
+                return IsPhoto ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
             }
         }
 
@@ -354,15 +382,19 @@ namespace PushPost.ViewModels
             this.AutosaveTimer.IsEnabled = false;
         }
 
-        private void PostMainText_Changed(
-            object sender,
-            System.ComponentModel.PropertyChangedEventArgs e)
+        private void Post_PropertyChanged(object sender,
+                                          System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "MainText")
             {
                 this.AutosaveTimer.IsEnabled = true;
                 this.AutosaveTimer.Stop();
                 this.AutosaveTimer.Start();
+            }
+            else if (e.PropertyName == "Category")
+            {
+                OnPropertyChanged("AddResourceButtonsVisible");
+                OnPropertyChanged("AddPhotoButtonVisible");
             }
         }
 

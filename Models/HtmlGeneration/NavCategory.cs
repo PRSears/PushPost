@@ -1,5 +1,5 @@
-﻿using System;
-using Extender;
+﻿using Extender;
+using System;
 
 namespace PushPost.Models.HtmlGeneration
 {
@@ -37,7 +37,7 @@ namespace PushPost.Models.HtmlGeneration
         { 
             get 
             { 
-                return new NavCategory("photography", typeof(AlbumPost)); 
+                return new NavCategory("photography", typeof(PhotoPost)); 
             } 
         }
         public static NavCategory Code
@@ -70,7 +70,9 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
-        public static NavCategory[] AllCategories = { Photography, Code, Contact, Blog };
+        // TODO think of a non-shitty way to load these from a file / user entered
+        //      has to correspond to a type of page to generate
+        public static NavCategory[] AllCategories = { Contact, Code, Blog, Photography };
 
         private NavCategory(string category, Type type)
         {
@@ -84,6 +86,8 @@ namespace PushPost.Models.HtmlGeneration
         }
 
         private NavCategory(string category) : this(category, null) { }
+
+        private NavCategory() : this("none") { }
         
         public static NavCategory Parse(string category)
         {
@@ -152,32 +156,15 @@ namespace PushPost.Models.HtmlGeneration
 
         public static Boolean operator ==(NavCategory a, NavCategory b)
         {
+            if (object.ReferenceEquals(null, a))
+                return object.ReferenceEquals(null, b);
+
             return a.Equals(b);
         }
 
         public static Boolean operator !=(NavCategory a, NavCategory b)
         {
             return !(a == b);
-        }
-
-        public static Boolean operator ==(NavCategory a, string b)
-        {
-            return a.Equals(b);
-        }
-
-        public static Boolean operator !=(NavCategory a, string b)
-        {
-            return !a.Equals(b);
-        }
-
-        public static Boolean operator ==(string a, NavCategory b)
-        {
-            return b.Equals(a);
-        }
-
-        public static Boolean operator !=(string a, NavCategory b)
-        {
-            return !b.Equals(a);
         }
     }
 }

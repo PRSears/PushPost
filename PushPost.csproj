@@ -76,7 +76,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\HtmlGeneration\Embedded\Photo.cs" />
     <Compile Include="Models\HtmlGeneration\Site.cs" />
+    <Compile Include="ViewModels\CreateRefViewModels\CreatePhotoViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewRefsViewModel.cs" />
     <Compile Include="View\About.xaml.cs">
@@ -144,7 +146,7 @@
     <Compile Include="Models\HtmlGeneration\Page.cs" />
     <Compile Include="Models\HtmlGeneration\PageBuilder.cs" />
     <Compile Include="Models\HtmlGeneration\Post.cs" />
-    <Compile Include="Models\HtmlGeneration\AlbumPost.cs" />
+    <Compile Include="Models\HtmlGeneration\PhotoPost.cs" />
     <Compile Include="Models\HtmlGeneration\NavCategory.cs" />
     <Compile Include="Models\HtmlGeneration\TextPost.cs" />
     <Compile Include="View\ArchiveManager.xaml.cs">
@@ -228,9 +230,7 @@
     <Resource Include="Models\_TestHTML\legacy\nf-images\nf_back.gif" />
     <Content Include="Models\_TestHTML\todo.html" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\ImageHandling\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

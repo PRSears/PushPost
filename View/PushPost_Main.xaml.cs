@@ -1,6 +1,8 @@
 ﻿using PushPost.ViewModels;
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace PushPost
 {
@@ -31,6 +33,49 @@ namespace PushPost
             this.ViewModel.RegisterCloseAction(() => this.Close());
 
             Title = string.Format("PushPost {0} - Post Builder", this.GetShortAssemblyVersion());
+
+            ViewModel.Post.PropertyChanged += ViewModel_Post_PropertyChanged;
+
+            // Fix binding not updating 
+            CategoryDropdown.SelectionChanged +=
+            (
+                (sender, e) =>
+                {
+                    try
+                    {
+                        ComboBox cb = sender as ComboBox;
+                        BindingOperations.GetBindingExpression(cb, ComboBox.SelectedValueProperty).UpdateTarget();
+                    }
+                    catch { }
+                }
+            );
+        }
+
+        protected void ViewModel_Post_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Category"))
+            {
+                if (ViewModel.Post.Category.PostType != ViewModel.Post.GetType())
+                {
+                    if (Extender.WPF.ConfirmationDialog.Show
+                        (
+                            "Change post type",
+                            "Changing the type of post will erase the current post.\n" +
+                            "Are you sure you want to continue?"
+                        ))
+                    {
+                        ViewModel.Post = (PushPost.Models.HtmlGeneration.Post)
+                            Activator.CreateInstance(ViewModel.Post.Category.PostType);
+                        ViewModel.Post.ResetToTemplate();
+
+                        ViewModel.Post.PropertyChanged += ViewModel_Post_PropertyChanged; // resubscribe
+                    }
+                    else
+                    {
+                        ViewModel.Post.QuietSetCategoryString((string)CategoryDropdown.SelectedValue);
+                    }
+                }
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

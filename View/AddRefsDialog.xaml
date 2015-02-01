@@ -186,7 +186,7 @@
                     Source="{Binding Image.Value}"/>
             </Grid>
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type vm:CreateFootViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -228,6 +228,56 @@
                 </TextBox>
             </Grid>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:CreatePhotoViewModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="155"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Text="Link to photo:"
+                    Grid.Row="0" Grid.Column="0"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+                <TextBox
+                    x:Name="LinkField"
+                    TabIndex="1"
+                    Grid.Row="0" Grid.Column="1"
+                    Text="{Binding Resource.Value, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{DynamicResource FlatTextFieldStyle}"
+                    FontSize="16"
+                    Margin="10,0,10,0"
+                    />
+                <TextBlock 
+                    Text="The reference name will be what appears as the image desciption."
+                    Grid.Row="1" Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    FontSize="12"
+                    Margin="10,0,10,0"
+                    />
+                <TextBlock 
+                    Text="The 'Link' field must link to the final location of the image (web)."
+                    Grid.Row="2" Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Style="{DynamicResource LabelStyle}"
+                    HorizontalAlignment="Left"
+                    FontSize="12"
+                    Margin="10,0,10,0"
+                    />
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
@@ -244,6 +294,7 @@
 
         <TextBlock
             Text="Reference type:"
+            IsEnabled="{Binding AllowTypeSelection, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="0" Grid.Column="0"
             Style="{DynamicResource LabelStyle}"
             FontSize="16"
@@ -251,6 +302,7 @@
             Margin="10,7,0,6"/>
         <ComboBox
             x:Name="RefTypeDropdown"
+            IsEnabled="{Binding AllowTypeSelection, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="0" Grid.Column="1"
             HorizontalAlignment="Stretch"
             Margin="10,6,10,5"

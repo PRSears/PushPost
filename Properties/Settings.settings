@@ -12,7 +12,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoInsertMarkup" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MaxQueueSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
@@ -21,7 +21,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DBRelativeFilename" Type="System.String" Scope="User">
-      <Value Profile="(Default)">posts_(alpha0.2)_10.mdf</Value>
+      <Value Profile="(Default)">Posts_Archive.mdf</Value>
     </Setting>
     <Setting Name="QueueFolderPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">queue</Value>
@@ -39,7 +39,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PostsPerPage" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
+      <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="ImagesSubfolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">images</Value>
@@ -63,13 +63,19 @@
       <Value Profile="(Default)">single</Value>
     </Setting>
     <Setting Name="IncludeBlogLinks" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="TidyHTML" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DebugLogPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">debug_log.txt</Value>
+    </Setting>
+    <Setting Name="PhotoPostsPerPage" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="DefaultAuthor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Patrick</Value>
     </Setting>
   </Settings>
 </SettingsFile>

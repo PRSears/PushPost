@@ -89,14 +89,15 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         }
 
         /// <summary>
-        /// { Link, Code, InlineImage, Footer }
+        /// { Link, Code, InlineImage, Footer, Photo }
         /// </summary>
         public static Type[] Types = new Type[]
         {
             typeof(Link),
             typeof(Code),
             typeof(InlineImage),
-            typeof(Footer)
+            typeof(Footer),
+            typeof(Photo)
         };
 
         public static Type GetType(string typeName)

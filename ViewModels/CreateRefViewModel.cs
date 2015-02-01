@@ -1,4 +1,5 @@
 ﻿using Extender.Debugging;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
@@ -6,7 +7,6 @@ using PushPost.ViewModels.CreateRefViewModels;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace PushPost.ViewModels
 {
@@ -57,6 +57,7 @@ namespace PushPost.ViewModels
         }
 
         public bool AutoInsertMarkup { get; set; }
+        public bool AllowTypeSelection { get; set; }
 
         public ICommand ViewCreateLinkCommand   { get; private set; }
         public ICommand ViewCreateCodeCommand   { get; private set; }
@@ -81,6 +82,7 @@ namespace PushPost.ViewModels
             ViewHistory         = new List<IRefViewModel>();
             ConfirmClose        = Properties.Settings.Default.CloseConfirmations;
             AutoInsertMarkup    = Properties.Settings.Default.AutoInsertMarkup;
+            AllowTypeSelection  = true;
 
             SwitchToView(initialType);
             this.PropertyChanged += SelectedResource_PropertyChanged;
@@ -212,6 +214,9 @@ namespace PushPost.ViewModels
             else if (typeOfView == typeof(Footer))
                 SwitchToFooterView();
 
+            else if (typeOfView == typeof(Photo))
+                SwitchToPhotoView();
+
             else
                 throw new ArgumentException("Provided Type is not supported.");
 
@@ -227,7 +232,8 @@ namespace PushPost.ViewModels
                 nextVM = new CreateLinkViewModel();
 
             CurrentView = nextVM;
-            //Subscribe();
+
+            AllowTypeSelection = true;
         }
 
         public void SwitchToCodeView()
@@ -239,7 +245,8 @@ namespace PushPost.ViewModels
                 nextVM = new CreateCodeViewModel();
 
             CurrentView = nextVM;
-            //Subscribe();
+
+            AllowTypeSelection = true;
         }
 
         public void SwitchToImageView()
@@ -251,7 +258,8 @@ namespace PushPost.ViewModels
                 nextVM = new CreateImageViewModel();
 
             CurrentView = nextVM;
-            //Subscribe();
+
+            AllowTypeSelection = true;
         }
 
         public void SwitchToFooterView()
@@ -263,6 +271,21 @@ namespace PushPost.ViewModels
                 nextVM = new CreateFootViewModel();
 
             CurrentView = nextVM;
+
+            AllowTypeSelection = true;
+        }
+
+        public void SwitchToPhotoView()
+        {
+            AddToHistory(CurrentView);
+            IRefViewModel nextVM = RetrieveFromHistory(typeof(CreatePhotoViewModel));
+
+            if (nextVM == null)
+                nextVM = new CreatePhotoViewModel();
+
+            CurrentView = nextVM;
+
+            AllowTypeSelection = false;
         }
 
         protected IRefViewModel RetrieveFromHistory(Type type)
