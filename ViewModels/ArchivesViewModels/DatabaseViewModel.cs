@@ -158,37 +158,45 @@ namespace PushPost.ViewModels.ArchivesViewModels
 
         public void ExecuteSearch()
         {
-            using (Archive db = new Archive())
+            try
             {
-                IEnumerable<Post> results = null;
+                using (Archive db = new Archive())
+                {
+                    IEnumerable<Post> results = null;
 
-                if (SearchWithDate && UseDateRange)
-                    results = db.TryPullPostsWhere(p => p.Timestamp.InRange(this.DateRange));
-                else if(SearchWithDate && !UseDateRange)
-                    results = db.TryPullPostsWhere(p => p.Timestamp.Date.Equals(this.SearchDateA.Date));
+                    if (SearchWithDate && UseDateRange)
+                        results = db.TryPullPostsWhere(p => p.Timestamp.InRange(this.DateRange));
+                    else if (SearchWithDate && !UseDateRange)
+                        results = db.TryPullPostsWhere(p => p.Timestamp.Date.Equals(this.SearchDateA.Date));
 
-                if (SearchWithDate && results == null) return;
+                    if (SearchWithDate && results == null) return;
 
-                if (SelectedSearchOption == SearchFieldOptions[0] && SearchField != string.Empty)
-                { // refine using Title
-                    if (results != null && results.Count() > 0)
-                        results = results.Where(p => p.Title.Contains(SearchField));
-                    else
-                        results = db.TryPullPostsWhere(p => p.Title.Contains(SearchField));
+                    if (SelectedSearchOption == SearchFieldOptions[0] && SearchField != string.Empty)
+                    { // refine using Title
+                        if (results != null && results.Count() > 0)
+                            results = results.Where(p => p.Title.Contains(SearchField));
+                        else
+                            results = db.TryPullPostsWhere(p => p.Title.Contains(SearchField));
+                    }
+                    else if (SelectedSearchOption == SearchFieldOptions[1] && SearchField != string.Empty)
+                    { // refine using Content
+                        if (results != null && results.Count() > 0)
+                            results = results.Where(p => p.MainText.Contains(SearchField));
+                        else
+                            results = db.TryPullPostsWhere(p => p.MainText.Contains(SearchField));
+                    }
+
+
+                    if (results == null)
+                        return;
+                    else RefreshCollection(new Queue<Post>(
+                        results.OrderByDescending(p => p.Timestamp)));
                 }
-                else if (SelectedSearchOption == SearchFieldOptions[1] && SearchField != string.Empty)
-                { // refine using Content
-                    if (results != null && results.Count() > 0)
-                        results = results.Where(p => p.MainText.Contains(SearchField));
-                    else
-                        results = db.TryPullPostsWhere(p => p.MainText.Contains(SearchField));
-                }
-
-
-                if (results == null)
-                    return;
-                else RefreshCollection(new Queue<Post>(
-                    results.OrderByDescending(p => p.Timestamp)));
+            }
+            catch (System.Data.SqlClient.SqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
             }
         }
 

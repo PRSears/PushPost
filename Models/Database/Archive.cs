@@ -70,6 +70,16 @@ namespace PushPost.Models.Database
                 return db.Tags;
             }
         }
+        public Table<Photo> PhotosTable
+        {
+            get
+            {
+                if (db == null)
+                    return null;
+
+                return db.Photos;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the Archive class for the database at the provided (relative) path.
@@ -129,6 +139,8 @@ namespace PushPost.Models.Database
 
         protected void CommitPost(PostTableLayer newPost, PostsDataContext database)
         {
+            // TODO Break post up if it's too long
+
             // Check to see if it already exists in the database.
             if (database.Posts.Where(p => p.UniqueID == newPost.UniqueID).Count() > 0)
                 return;
@@ -148,6 +160,13 @@ namespace PushPost.Models.Database
                 t.PostID = newPost.UniqueID;
                 t.ForceNewUniqueID();
                 database.Tags.InsertOnSubmit(t);
+            }
+            // Insert newPost's photos into the Photos table
+            foreach (Photo p in newPost.Photos)
+            {
+                p.PostID = newPost.UniqueID;
+                p.ForceNewUniqueID();
+                database.Photos.InsertOnSubmit(p);
             }
         }
 
@@ -292,8 +311,17 @@ namespace PushPost.Models.Database
             if (pulled == null)
                 throw new DatabasePullException(postID.ToString());
 
-            pulled.Footers  = db.Footnotes.Where(f => f.PostID.Equals(postID)).ToList();
-            pulled.Tags     = db.Tags.Where(t => t.PostID.Equals(postID)).ToList();
+            pulled.Footers  = db.Footnotes.Where(f => f.PostID.Equals(postID))
+                                          .ToList();
+
+            pulled.Tags     = db.Tags.Where(t => t.PostID.Equals(postID))
+                                     .ToList();
+
+            pulled.Resources.AddRange
+                (
+                    db.Photos.Where(p => p.PostID.Equals(postID))
+                             .ToList()
+                );
 
             return pulled;
         }
@@ -328,11 +356,17 @@ namespace PushPost.Models.Database
                 pulled[i] = queried[i].TryCreatePost();
                 if(pulled[i] != null)
                 {
-                    pulled[i].Footers = db.Footnotes.Where(
-                        f => f.PostID.Equals(pulled[i].UniqueID)).ToList();
+                    pulled[i].Footers   = db.Footnotes.Where(f => f.PostID.Equals(pulled[i].UniqueID))
+                                                      .ToList();
 
-                    pulled[i].Tags = db.Tags.Where(
-                        t => t.PostID.Equals(pulled[i].UniqueID)).ToList();
+                    pulled[i].Tags      = db.Tags.Where(t => t.PostID.Equals(pulled[i].UniqueID))
+                                                 .ToList();
+
+                    pulled[i].Resources.AddRange
+                        (
+                            db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
+                                     .ToList()
+                        );
                 }
             }
 
@@ -341,26 +375,10 @@ namespace PushPost.Models.Database
 
         public Post[] PullPostsWhere(Func<PostTableLayer, bool> query)
         {
-            var queried = db.Posts.Where(query).ToArray();
+            Post[] pulled = TryPullPostsWhere(query);
 
-            if (queried.Length < 1)
-                throw new DatabasePullException(query.ToString());
-
-            Post[] pulled = new Post[queried.Length];
-            for (int i = 0; i < pulled.Length; i++)
-            {
-                pulled[i] = queried[i].TryCreatePost();
-                if (pulled[i] != null)
-                {
-                    pulled[i].Footers = db.Footnotes.Where(
-                        f => f.PostID.Equals(pulled[i].UniqueID)).ToList();
-
-                    pulled[i].Tags = db.Tags.Where(
-                        t => t.PostID.Equals(pulled[i].UniqueID)).ToList();
-                }
-            }
-
-            return pulled;
+            if (pulled == null) throw new DatabasePullException(query.ToString());
+            else return pulled;
         }
         
         /// <summary>
@@ -395,7 +413,7 @@ namespace PushPost.Models.Database
 
             foreach(PostTableLayer layer in this.PostTable)
             {
-                dumped[i] = layer.TryCreatePost();
+                dumped[i] = this.PullPost(layer.UniqueID);
                 i++;
             }
 

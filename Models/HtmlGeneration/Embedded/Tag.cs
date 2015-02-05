@@ -50,7 +50,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             set
             {
                 _Text  = value;
-                _TagID = new Guid(this.GetHashData()); //rehash if Text changes
+                _TagID = new Guid(this.GetHashData()); //re-hash if Text changes
                 OnPropertyChanged("Text");
             }
         }

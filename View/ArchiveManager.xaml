@@ -269,7 +269,14 @@
                         Command="{Binding ReSearchDBCommand}"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>            
+                        Style="{DynamicResource FlatActionButtonStyle}"/>
+            <Button Width="130" Height="35"
+                        Content="Test Harness"
+                        Command="{Binding TestHarnessCommand}"
+                        Visibility="{Binding TestHarnessVisibility}"
+                        HorizontalAlignment="Left"
+                        Margin="10,10,10,0"
+                        Style="{DynamicResource FlatActionButtonStyle}"/>
             <Separator Margin="10,50,10,0"/>
             <Label Content="Generation commands"
                    FontSize="12"

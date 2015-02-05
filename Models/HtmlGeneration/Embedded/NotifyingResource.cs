@@ -14,7 +14,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <summary>
         /// Name of the reference for markup.
         /// </summary>
-        public string Name 
+        public virtual string Name 
         {
             get
             {
@@ -61,6 +61,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
         }
 
+        [Obsolete]
         public virtual void QuietSetResourceType(string newType)
         {
             _ResourceType = newType;

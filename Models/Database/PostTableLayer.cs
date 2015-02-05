@@ -132,6 +132,12 @@ namespace PushPost.Models.Database
             set;
         }
 
+        public List<PushPost.Models.HtmlGeneration.Embedded.Photo> Photos
+        {
+            get;
+            set;
+        }
+
         public PostTableLayer()
         {
             Title           = string.Empty;
@@ -142,6 +148,7 @@ namespace PushPost.Models.Database
 
             Footers     = new List<PushPost.Models.HtmlGeneration.Embedded.Footer>();
             Tags        = new List<PushPost.Models.HtmlGeneration.Embedded.Tag>();
+            Photos      = new List<PushPost.Models.HtmlGeneration.Embedded.Photo>();
         }
 
         public PostTableLayer(string title, string author, string mainText, DateTime timestamp, string category):this()
@@ -181,6 +188,8 @@ namespace PushPost.Models.Database
 
             this.Footers    = post.Footers;
             this.Tags       = post.Tags;
+            this.Photos     = post.Resources.OfType<PushPost.Models.HtmlGeneration.Embedded.Photo>()
+                                            .ToList();
         }
 
         public static PostTableLayer FromPost(Post post)
@@ -193,8 +202,13 @@ namespace PushPost.Models.Database
             constructed.PostCategory    = post.Category.ToString();
             constructed.MainText        = post.ParsedMainText;
 
-            constructed.Footers     = post.Footers;
-            constructed.Tags        = post.Tags;
+            constructed.Footers = post.Footers;
+            constructed.Tags    = post.Tags;
+            //constructed.Photos  = post.Resources.Where(r => r is PushPost.Models.HtmlGeneration.Embedded.Photo)
+            //                                    .Cast<PushPost.Models.HtmlGeneration.Embedded.Photo>()
+            //                                    .ToList();
+            constructed.Photos  = post.Resources.OfType<PushPost.Models.HtmlGeneration.Embedded.Photo>()
+                                                .ToList();
 
             return constructed;
         }
@@ -208,7 +222,11 @@ namespace PushPost.Models.Database
             post.MainText   = this.MainText;
 
             post.Footers    = this.Footers;
+
             post.Tags       = this.Tags;
+
+            if(this.Photos != null)
+                post.Resources.AddRange(this.Photos);
 
             post.ForceRefreshUniqueID();
         }
@@ -272,6 +290,9 @@ namespace PushPost.Models.Database
             post.Footers    = layer.Footers;
             post.Tags       = layer.Tags;
 
+            if (layer.Photos != null)
+                post.Resources.AddRange(layer.Photos);
+
             post.ForceRefreshUniqueID();
         }
 
@@ -285,9 +306,7 @@ namespace PushPost.Models.Database
             }
             else
             {
-                #region Updated
                 List<byte[]> blocks = new List<byte[]>();
-
 
                 blocks.Add(Encoding.Default.GetBytes(this.Title));
                 blocks.Add(Encoding.Default.GetBytes(this.Author));
@@ -296,18 +315,12 @@ namespace PushPost.Models.Database
                 blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
 
                 return Hashing.GenerateHashCode(blocks);
-                #endregion
             }
-            #region Original
-            //foreach (PushPost.Models.HtmlGeneration.Embedded.Footer footer in this.Footers)
-            //    blocks.Add(Encoding.Default.GetBytes(footer.Value));
-            //foreach (PushPost.Models.HtmlGeneration.Embedded.Tag tag in this.Tags)
-            //    blocks.Add(Encoding.Default.GetBytes(tag.Text));
-            //blocks.Add(Encoding.Default.GetBytes(this.Title));
-            //blocks.Add(Encoding.Default.GetBytes(this.Author));
-            //blocks.Add(Encoding.Default.GetBytes(this.MainText));
-            //blocks.Add(BitConverter.GetBytes(Timestamp.Ticks));
-            #endregion
+        }
+
+        public void ForceNewUniqueID()
+        {
+            _PostID = new Guid(this.GetHashData());
         }
 
         public override int GetHashCode()
@@ -330,7 +343,8 @@ namespace PushPost.Models.Database
                 this.Timestamp.Equals(b.Timestamp) &&
                 this.PostCategory.Equals(b.PostCategory) &&
                 (this.Footers.Except(b.Footers).ToList().Count == 0) &&
-                (this.Tags.Except(b.Tags).ToList().Count == 0)
+                (this.Tags.Except(b.Tags).ToList().Count == 0) &&
+                (this.Photos.Except(b.Photos).ToList().Count == 0)
             );
                 
         }

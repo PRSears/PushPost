@@ -169,7 +169,7 @@ namespace PushPost.ViewModels
             else
             {
                 this.Post.Resources.Add(CurrentView.Resource);
-                if (AutoInsertMarkup) this.Post.MainText += CurrentView.Resource.Markup;
+                if (AutoInsertMarkup && !(CurrentView.Resource is Photo)) this.Post.MainText += CurrentView.Resource.Markup;
             }
 
             CloseCommand.Execute(null);

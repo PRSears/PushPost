@@ -1,13 +1,12 @@
-﻿using Extender.Debugging;
+﻿using Extender;
+using Extender.Debugging;
 using Extender.WPF;
-using Extender;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Models.Database;
 using PushPost.Models.HtmlGeneration;
 using PushPost.ViewModels.ArchivesViewModels;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -78,6 +77,7 @@ namespace PushPost.ViewModels
         public ICommand ExportFromDBCommand     { get; private set; }
         public ICommand SearchDBCommand         { get; private set; }
         public ICommand ReSearchDBCommand       { get; private set; }
+        public ICommand TestHarnessCommand      { get; private set; }
         // Generation
         public ICommand GeneratePagesCommand    { get; private set; }
         public ICommand PreviewQueueCommand     { get; private set; }
@@ -87,6 +87,14 @@ namespace PushPost.ViewModels
         protected Models.Database.ArchiveQueue          ArchiveQueue;
         protected IArchiveViewModel[]                   _Tabs;
         protected IArchiveViewModel                     _Current;
+
+        public System.Windows.Visibility TestHarnessVisibility
+        {
+            get
+            {
+                return DEBUG ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+            }
+        }
 
         public bool QueueHasSelected
         {
@@ -156,6 +164,7 @@ namespace PushPost.ViewModels
                                                        () => this.Current is DatabaseViewModel);
             ReSearchDBCommand       = new RelayCommand(() => this.NextSearch(),
                                                        () => this.Current is DatabaseViewModel);
+            TestHarnessCommand      = new RelayCommand(() => this.TestHarness());
             // Generation
             GeneratePagesCommand    = new RelayCommand(() => this.GeneratePages());
             PreviewQueueCommand     = new RelayCommand
@@ -232,13 +241,21 @@ namespace PushPost.ViewModels
 It will be a pain in the ass to get them back afterward."))
                 return;
 
-            using (Archive db = new Archive())
+            try
             {
-                db.DeletePosts(Current.DisplayedPosts
-                                       .Where(cp => cp.IsChecked)
-                                       .Select(cp => cp.Post)
-                                       .ToArray());
-                db.SubmitChanges();
+                using (Archive db = new Archive())
+                {
+                    db.DeletePosts(Current.DisplayedPosts
+                                           .Where(cp => cp.IsChecked)
+                                           .Select(cp => cp.Post)
+                                           .ToArray());
+                    db.SubmitChanges();
+                }
+            }
+            catch (System.Data.SqlClient.SqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
             }
 
             Current.DisplayedPosts.RemoveAll(cp => cp.IsChecked);
@@ -382,6 +399,28 @@ It will be a pain in the ass to get them back afterward."))
 
         private bool DEBUG { get { return Properties.Settings.Default.DEBUG; } }
         private bool ConfirmBeforeRemoval { get { return Properties.Settings.Default.ConfirmBeforeRemove; } }
+
+        private void TestHarness()
+        {
+            System.Windows.Forms.MessageBox.Show("Test harness.");
+
+            using(Archive database = new Archive())
+            {
+                System.Text.StringBuilder msg = new System.Text.StringBuilder();
+
+                foreach(PostTableLayer post in database.PostTable)
+                    msg.AppendLine(post.ToString());
+
+                msg.Append(System.Environment.NewLine);
+
+                foreach (PushPost.Models.HtmlGeneration.Embedded.Photo photo in database.PhotosTable)
+                    msg.AppendLine(photo.ToString());
+
+                Extender.Debugging.NonBlockingConsole.WriteLine("\n========== TEST HARNESS ==========");
+                Extender.Debugging.NonBlockingConsole.WriteLine(msg.ToString());
+                Extender.Debugging.NonBlockingConsole.WriteLine("========== /TEST HARNESS ==========\n");
+            }
+        }
     }
 
     internal class CheckablePost : INotifyPropertyChanged

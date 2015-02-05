@@ -1,6 +1,5 @@
-﻿using System.Data.Linq;
-using PushPost.Models.HtmlGeneration;
-using PushPost.Models.HtmlGeneration.Embedded;
+﻿using PushPost.Models.HtmlGeneration.Embedded;
+using System.Data.Linq;
 
 
 namespace PushPost.Models.Database
@@ -10,6 +9,7 @@ namespace PushPost.Models.Database
         public Table<PostTableLayer> Posts;
         public Table<Footer> Footnotes;
         public Table<Tag> Tags;
+        public Table<Photo> Photos;
 
         public PostsDataContext(string ConnectionString):base(ConnectionString)
         {

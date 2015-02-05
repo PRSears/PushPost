@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Models.Database;
-using Extender;
-using Extender.Debugging;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
 
 namespace PushPost.Models.HtmlGeneration
 {
@@ -49,10 +42,18 @@ namespace PushPost.Models.HtmlGeneration
         /// </summary>
         public static void Create()
         {
-            using(Archive database = new Archive())
+            try
             {
-                Create(database.Dump());
-            }            
+                using (Archive database = new Archive())
+                {
+                    Create(database.Dump());
+                }
+            }
+            catch(System.Data.SqlClient.SqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show
+                    (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
+            }
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace PushPost.Models.HtmlGeneration
 
         public PhotoPost() : base()
         {
-            AlbumClass  = "photo-container";
+            AlbumClass  = "photo-container"; // TODO_ Load class IDs from a cfg file or implement a seperate settings panel for them.
             Category    = NavCategory.Photography;
         }
 
@@ -48,8 +48,8 @@ namespace PushPost.Models.HtmlGeneration
                 foreach(IResource r in this.Resources)
                 {
                     Photo photo;
-                    if (r is Photo)
-                        photo = (Photo)r;
+
+                    if (r is Photo) photo = (Photo)r;
                     else continue;
 
                     w.RenderBeginTag(HtmlTextWriterTag.Li);
@@ -83,6 +83,12 @@ namespace PushPost.Models.HtmlGeneration
                 }
             }
 
+            // TODO Decide how the preview appears:
+            //
+            //      1) Show the first photo only
+            //      2) Create a simple collage (maybe in a stack?)
+            //      3) Show all the photos, but smaller (seems stupid)
+
             List<IResource> photos = Resources.Where(r => (r is Photo))
                                               .ToList();
 
@@ -92,7 +98,7 @@ namespace PushPost.Models.HtmlGeneration
             w.RenderEndTag();
         }
 
-        protected override void RenderFooter(System.Web.UI.HtmlTextWriter w)
+        protected override void RenderFooter(HtmlTextWriter w)
         {
             // no footers needed at the moment
         }

@@ -33,6 +33,9 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("Post");
             }
         }
+        // TODO BugFix: category listbox does not get set to the correct category after a post is submitted.
+        // When a post is submitted the form stays in the same layout, for the same type of post as the last,
+        // but the category is reset to code regardless.
         public NavCategory[] CategoriesList
         {
             get
@@ -40,6 +43,7 @@ namespace PushPost.ViewModels
                 return NavCategory.AllCategories;
             }
         }
+
         public Models.Database.ArchiveQueue ArchiveQueue
         {
             get;

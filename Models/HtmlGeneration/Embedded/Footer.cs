@@ -40,7 +40,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <summary>
         /// Parent Post's Guid.
         /// </summary>
-        [Column]
+        [Column(Storage="_PostID")]
         public Guid PostID 
         {
             get
@@ -50,6 +50,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             set
             {
                 _PostID = value;
+                _UID = new Guid(this.GetHashData()); // re-hash if PostID changes
                 OnPropertyChanged("PostID");
             }
         }
@@ -66,8 +67,8 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
             set
             {
-                _Value = value;
-                OnPropertyChanged("Value");
+                base.Value = value;
+                _UID = new Guid(this.GetHashData()); // re-hash if value changes
             }
         }
 

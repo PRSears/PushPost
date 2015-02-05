@@ -111,7 +111,7 @@ namespace PushPost.Models.HtmlGeneration
                 w.WriteLine(string.Empty);
                 w.WriteLine(footer);
             }
-            // TODO (?) Remove references to 'Full Post' and lower navigation when not neccessary
+            // TODO_ (?) Remove references to 'Full Post' and lower navigation when not neccessary
             //          This is fixed, isn't it?
         }
 
