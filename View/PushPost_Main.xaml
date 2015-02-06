@@ -5,7 +5,7 @@
         Title="PushPost - Post Builder"  
         Width="900"
         Height="640"
-        MinWidth="779"
+        MinWidth="910"
         MinHeight="335" Icon="/PushPost;component/PushPost.ico">
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
@@ -143,7 +143,8 @@
                 x:Name="EnqueuePostButton"
                 Content="ENQUEUE POST"  
                 Style="{DynamicResource FlatActionButtonStyle}"
-                Command="{Binding QueuePostCommand}"/>
+                Command="{Binding QueuePostCommand}"
+                ToolTip="Note: The Post Queue does not work with Photo Posts."/>
             <Button 
                 x:Name="SubmitPostButton"
                 Content="SUBMIT POST"
@@ -162,20 +163,6 @@
             Grid.Row="4" Grid.Column="0" 
             Grid.ColumnSpan="2" 
             Stroke="#FFB4B4B4"/>
-        <Button 
-            Grid.Row="4" Grid.Column="0"
-            Content="add photo"
-            Command="{Binding AddPhotoCommand}"
-            CommandParameter="0"
-            Visibility="{Binding AddPhotoButtonVisible, UpdateSourceTrigger=PropertyChanged}"
-            Width="122" 
-            Foreground="#FF2E2E2E" 
-            BorderBrush="#FFB8B8B8" 
-            BorderThickness="1,0,0,0" 
-            Padding="3,0" 
-            Margin="10,0"
-            HorizontalAlignment="Left" VerticalAlignment="Center"
-            Style="{DynamicResource RefButtonStyle}" />
         <StackPanel 
             Grid.Row="4" Grid.Column="0" 
             Grid.ColumnSpan="2" 
@@ -184,10 +171,9 @@
             Margin="10,0">
             <Button 
                 x:Name="AddHrefButton"
-                Content="add href"
+                Content="add link"
                 Command="{Binding AddIResourceCommand}"
                 CommandParameter="0"
-                Visibility="{Binding AddResourceButtonsVisible, UpdateSourceTrigger=PropertyChanged}"
                 Width="122" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -200,7 +186,6 @@
                 Content="add code reference" 
                 Command="{Binding AddIResourceCommand}"
                 CommandParameter="1"
-                Visibility="{Binding AddResourceButtonsVisible, UpdateSourceTrigger=PropertyChanged}"
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -211,10 +196,9 @@
                 Style="{DynamicResource RefButtonStyle}" />
             <Button 
                 x:Name="AddImgButton"
-                Content="add image reference" 
+                Content="add inline image" 
                 Command="{Binding AddIResourceCommand}"
                 CommandParameter="2"
-                Visibility="{Binding AddResourceButtonsVisible, UpdateSourceTrigger=PropertyChanged}"
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 
@@ -227,6 +211,19 @@
                 x:Name="AddFootButton"
                 Content="add footnote" 
                 Command="{Binding AddFootnoteCommand}"
+                Width="120" 
+                Foreground="#FF2E2E2E" 
+                BorderBrush="#FFB8B8B8" 
+                BorderThickness="1,0,0,0" 
+                Padding="3,0" 
+                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                Margin="10,0,0,0"
+                Style="{DynamicResource RefButtonStyle}" />
+            <Button 
+                Content="add photo"
+                Command="{Binding AddPhotoCommand}"
+                CommandParameter="0"
+                Visibility="{Binding AddPhotoButtonVisible, UpdateSourceTrigger=PropertyChanged}"
                 Width="120" 
                 Foreground="#FF2E2E2E" 
                 BorderBrush="#FFB8B8B8" 

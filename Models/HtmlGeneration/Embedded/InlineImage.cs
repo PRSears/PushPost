@@ -91,6 +91,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
         public void Proccess()
         {
+            string originalPath = LocalPath;
             foreach(int size in Resizes)
             {
                 // Ensure directory exists
@@ -101,16 +102,20 @@ namespace PushPost.Models.HtmlGeneration.Embedded
 
                 // Ensure filename is unique
                 int v = 2;
-                string newValue = string.Empty;
+                //string newValue = string.Empty;
                 while(File.Exists(Fullname(size)))
                 {
-                    newValue = this.Value.InsertBeforeExtension(v.ToString("D3"));
+                    this._Value = this.Value.InsertBeforeExtension(string.Format
+                    (
+                        "_{0}",
+                        v++.ToString("D3"))
+                    );
                 }
 
-                if (!string.IsNullOrEmpty(newValue)) this._Value = newValue;
+                //if (!string.IsNullOrEmpty(newValue)) this._Value = newValue;
 
                 // Resize & save
-                using (Bitmap original = (Bitmap)Image.FromFile(LocalPath))
+                using (Bitmap original = (Bitmap)Image.FromFile(originalPath))
                 {
                     if      (size  < 0) continue;
                     else if (size == 0)

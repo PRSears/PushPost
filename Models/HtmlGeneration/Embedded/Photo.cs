@@ -94,9 +94,6 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             }
         }
 
-        /// <summary>
-        /// Alias of this.CreateHTML.
-        /// </summary>
         public override string ToString()
         {
             return string.Format

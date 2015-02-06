@@ -34,6 +34,13 @@ namespace PushPost
 
             Title = string.Format("PushPost {0} - Post Builder", this.GetShortAssemblyVersion());
 
+            // If the post object changes we have to resubscribe
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName.Equals("Post"))
+                    ViewModel.Post.PropertyChanged += ViewModel_Post_PropertyChanged;
+            };
+
             ViewModel.Post.PropertyChanged += ViewModel_Post_PropertyChanged;
 
             // Fix binding not updating 
@@ -72,7 +79,8 @@ namespace PushPost
                     }
                     else
                     {
-                        ViewModel.Post.QuietSetCategoryString((string)CategoryDropdown.SelectedValue);
+                        //ViewModel.Post.QuietSetCategoryString((string)CategoryDropdown.SelectedValue);
+                        ViewModel.Post.CategoryString = (string)CategoryDropdown.SelectedValue;
                     }
                 }
             }

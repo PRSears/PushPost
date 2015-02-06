@@ -33,9 +33,6 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("Post");
             }
         }
-        // TODO BugFix: category listbox does not get set to the correct category after a post is submitted.
-        // When a post is submitted the form stays in the same layout, for the same type of post as the last,
-        // but the category is reset to code regardless.
         public NavCategory[] CategoriesList
         {
             get
@@ -89,9 +86,9 @@ namespace PushPost.ViewModels
                 () =>
                     {
                         this.ArchiveQueue.Enqueue(this.Post);
-                        this.Post = TextPost.TemplatePost();
+                        this.Post.ResetToTemplate();
                     },
-                () => !this.PostIsDefault
+                () => (!this.PostIsDefault) && !(this.Post is PhotoPost)
             );
             this.SubmitPostCommand  = new RelayCommand
             (
@@ -117,8 +114,7 @@ namespace PushPost.ViewModels
 
             this.AddIResourceCommand        = new RelayFunction
                 (
-                    (parameter) => this.AddReference(parameter),
-                    () => !IsPhoto
+                    (parameter) => this.AddReference(parameter)
                 );
 
             this.AddPhotoCommand = new RelayCommand
@@ -203,14 +199,6 @@ namespace PushPost.ViewModels
             }
         }
 
-        public System.Windows.Visibility AddResourceButtonsVisible
-        {
-            get
-            {
-                return IsPhoto ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
-            }
-        }
-
         public System.Windows.Visibility AddPhotoButtonVisible
         {
             get
@@ -274,6 +262,10 @@ namespace PushPost.ViewModels
         {
             get
             {
+                // THOUGHT Since the default post changes depending on post type,
+                //         this should be handled differently.
+                //
+                //         
                 Post def = TextPost.TemplatePost();
                 return this.Post.Title == def.Title &&
                        this.Post.Author == def.Author &&
@@ -318,7 +310,7 @@ namespace PushPost.ViewModels
                     return;
                 }
 
-                this.Post = TextPost.TemplatePost();
+                this.Post.ResetToTemplate(); 
             }
         }
         public void ImportFromFile()
@@ -397,7 +389,6 @@ namespace PushPost.ViewModels
             }
             else if (e.PropertyName == "Category")
             {
-                OnPropertyChanged("AddResourceButtonsVisible");
                 OnPropertyChanged("AddPhotoButtonVisible");
             }
         }

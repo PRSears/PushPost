@@ -64,7 +64,8 @@ namespace PushPost.ViewModels
             if(ResourceCollection == null)
                 ResourceCollection = new ObservableCollection<Checkable<IResource>>();
 
-            var resourceCollection = this.ResourceCollection.Select(checkable => checkable.Resource);
+            var resourceCollection = this.ResourceCollection.Select(checkable => checkable.Resource)
+                                                            .ToList();
 
             // Add any new resources in this.Post.Resources that are not in the 
             // ResourceCollection listbox.
@@ -89,7 +90,7 @@ namespace PushPost.ViewModels
             OnPropertyChanged("ResourceCollection");
         }
 
-        public void RemoveSelected()
+        public void RemoveSelected() // TODO Add button to the GUI for this command
         {
             var selected = ResourceCollection.Where(r => r.IsChecked);
             foreach(var res in selected)

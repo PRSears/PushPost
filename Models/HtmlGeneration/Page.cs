@@ -33,6 +33,12 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
+        public bool IncludePrimaryColumn
+        {
+            get;
+            set;
+        }
+
         public string Title
         {
             get
@@ -236,7 +242,9 @@ namespace PushPost.Models.HtmlGeneration
             PrimaryColumnID = "primary-column";
             WrapperID       = "wrapper";
             FinalComment    = "This page was generated automatically by PushPost.";
-            SiteName = Properties.Settings.Default.WesbiteName;
+            SiteName        = Properties.Settings.Default.WesbiteName;
+
+            IncludePrimaryColumn = true;
         }
 
         public Page(List<Post> posts, Navigation upperNavigation, Breadcrumbs lowerNavigation) : this(string.Empty)
@@ -318,16 +326,21 @@ namespace PushPost.Models.HtmlGeneration
                     w.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         w.WriteLine(this.UpperNavigation.Create());
-                        w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
-                        w.RenderBeginTag(HtmlTextWriterTag.Div);
-                            foreach (Post post in this.Posts)
-                            {
-                                if (this.IsSingle || this.Posts.Count <= 1)
-                                    w.WriteLine(post.Create());
-                                else
-                                    w.WriteLine(post.CreatePreview());
-                            }
-                        w.RenderEndTag();
+                        if (IncludePrimaryColumn)
+                        {
+                            // <primary-column>
+                            w.AddAttribute(HtmlTextWriterAttribute.Id, this.PrimaryColumnID);
+                            w.RenderBeginTag(HtmlTextWriterTag.Div);
+                        }
+                        foreach (Post post in this.Posts)
+                        {
+                            if (this.IsSingle || (this.Posts.Count <= 1 && !(this.Posts[0] is PhotoPost)))
+                                w.WriteLine(post.Create());
+                            else
+                                w.WriteLine(post.CreatePreview());
+                        }
+                        if(IncludePrimaryColumn)
+                            w.RenderEndTag(); // </primary-column>
 
                     w.RenderEndTag();
                     // </Wrapper>

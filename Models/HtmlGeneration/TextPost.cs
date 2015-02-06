@@ -111,8 +111,6 @@ namespace PushPost.Models.HtmlGeneration
                 w.WriteLine(string.Empty);
                 w.WriteLine(footer);
             }
-            // TODO_ (?) Remove references to 'Full Post' and lower navigation when not neccessary
-            //          This is fixed, isn't it?
         }
 
         protected override void RenderComments(HtmlTextWriter w)
@@ -124,7 +122,9 @@ namespace PushPost.Models.HtmlGeneration
         public static Post TemplatePost()
         {
             TextPost newPost = new TextPost("Enter Title", DateTime.Now, "Enter Author", "Enter body text.");
-            newPost.Category = NavCategory.Code;
+            newPost.Category = NavCategory.Code; 
+            // THOUGHT Setting the nav category to code in the TextPost.TemplatePost()
+            //         like this might not be a very good idea.
 
             return newPost;
         }

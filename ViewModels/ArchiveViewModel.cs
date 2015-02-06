@@ -236,9 +236,12 @@ namespace PushPost.ViewModels
 
         public void RemoveFromDB()
         {
+            long selectedCount = Current.DisplayedPosts.LongCount(cp => cp.IsChecked);
+
             if (!ConfirmationDialog.Show("Confirm post deletion",
-                @"Are you sure you want to remove all selected posts from the DATABASE?
-It will be a pain in the ass to get them back afterward."))
+                string.Format(@"Are you sure you want to remove all ({0}) selected posts from the DATABASE?
+It will be a pain in the ass to get them back afterward.",
+                              selectedCount.ToString())))
                 return;
 
             try

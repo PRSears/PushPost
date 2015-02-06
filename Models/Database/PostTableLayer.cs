@@ -59,7 +59,7 @@ namespace PushPost.Models.Database
         }
 
         private string _MainText;
-        [Column(Storage = "_MainText")]
+        [Column(Storage = "_MainText", DbType = "NVARCHAR(MAX)")]
         public string MainText
         {
             get

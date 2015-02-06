@@ -129,12 +129,15 @@ namespace PushPost.Models.HtmlGeneration
             {
                 singles[i] = new Page
                     (
-                        Posts[i],
+                        this.Posts[i],
                         new Navigation(Posts[i].Category),
                         new Breadcrumbs()
                     );
                 singles[i].Title = singles[i].GenerateTitle();
                 singles[i].Hrefs = this.Hrefs;
+
+                if (this.Posts[i] is PhotoPost)
+                    singles[i].IncludePrimaryColumn = false; // Don't wrap photo albums in a column
             }
 
             return singles;
@@ -144,8 +147,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             Int16 requiredPages = (Int16)Math.Ceiling((double)posts.Count() / (double)this.PostsPerPage);
             Page[] generatedPages = new Page[requiredPages];
-
-
+            
             for (int pageI = 1; pageI <= requiredPages; pageI++)
             {
                 List<Post> newPosts = new List<Post>();

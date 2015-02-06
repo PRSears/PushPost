@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web.UI;
 
 namespace PushPost.Models.HtmlGeneration
@@ -30,6 +29,18 @@ namespace PushPost.Models.HtmlGeneration
             MainText = body;
         }
 
+        public override string Create()
+        {
+            using (StringWriter buffer = new StringWriter())
+            using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            {
+                RenderBody(writer);
+                RenderFooter(writer);
+                RenderComments(writer);
+
+                return buffer.ToString();
+            }
+        }
 
         protected override void RenderHeader(System.Web.UI.HtmlTextWriter w)
         {
@@ -44,14 +55,25 @@ namespace PushPost.Models.HtmlGeneration
             w.AddAttribute(HtmlTextWriterAttribute.Class, AlbumClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
 
-                w.RenderBeginTag(HtmlTextWriterTag.Ul);
+                this.RenderHeader(w); // Title header
+                using (StringReader reader = new StringReader(this.CleanedMainText)) // main text
+                {
+                    string line = string.Empty;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        w.RenderBeginTag(HtmlTextWriterTag.P);
+                        w.Write(line);
+                        w.RenderEndTag();
+                    }
+                }
+
+                w.RenderBeginTag(HtmlTextWriterTag.Ul); // image gallery
                 foreach(IResource r in this.Resources)
                 {
                     Photo photo;
 
                     if (r is Photo) photo = (Photo)r;
                     else continue;
-
                     w.RenderBeginTag(HtmlTextWriterTag.Li);
                         w.RenderBeginTag(HtmlTextWriterTag.P);
                         w.RenderBeginTag(HtmlTextWriterTag.Span);
@@ -59,7 +81,10 @@ namespace PushPost.Models.HtmlGeneration
                         w.RenderEndTag(); // </span>
                         w.RenderEndTag(); // </p>
 
-                        w.Write(photo.CreateHTML());
+                        w.AddAttribute(HtmlTextWriterAttribute.Href, photo.Value);
+                        w.RenderBeginTag(HtmlTextWriterTag.A); // <a>
+                            w.Write(photo.CreateHTML());
+                        w.RenderEndTag(); // </a>
 
                     w.RenderEndTag(); // </li>
                 }
@@ -71,7 +96,7 @@ namespace PushPost.Models.HtmlGeneration
         protected override void RenderPreviewBody(HtmlTextWriter w)
         {
             w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
-            w.RenderBeginTag(HtmlTextWriterTag.Div);
+            w.RenderBeginTag(HtmlTextWriterTag.Div); // <div>
             using (StringReader reader = new StringReader(this.ParsedMainText))
             {
                 string line = string.Empty;
@@ -83,19 +108,29 @@ namespace PushPost.Models.HtmlGeneration
                 }
             }
 
-            // TODO Decide how the preview appears:
-            //
-            //      1) Show the first photo only
-            //      2) Create a simple collage (maybe in a stack?)
-            //      3) Show all the photos, but smaller (seems stupid)
+            #region // Old idea of pulling image(s) from the album to use in the preview
+            //List<Photo> photos = Resources.OfType<Photo>()
+            //                              .ToList();
 
-            List<IResource> photos = Resources.Where(r => (r is Photo))
-                                              .ToList();
+            //if (photos.Count > 0)
+            //{
+            //    w.RenderBeginTag(HtmlTextWriterTag.P); // <p>
 
-            if(photos.Count > 0)
-                w.Write(photos[0].CreateHTML());
+            //    //foreach (Photo photo in photos)
+            //    //{
+            //        w.AddAttribute(HtmlTextWriterAttribute.Href, this.TitleLink);
+            //        w.RenderBeginTag(HtmlTextWriterTag.A); // <a>
 
-            w.RenderEndTag();
+            //        w.Write(photos[0].CreateHTML()); // Just use the first image for now
+
+            //        w.RenderEndTag(); // </a>
+            //    //}
+
+            //    w.RenderEndTag(); // </p>
+            //}
+            #endregion
+
+            w.RenderEndTag(); // </div PostBodyID>
         }
 
         protected override void RenderFooter(HtmlTextWriter w)
@@ -106,6 +141,31 @@ namespace PushPost.Models.HtmlGeneration
         {
             if (this.IncludePostEndComments)
                 w.WriteComment(" ********* End of photo post: " + Title + " ********* ");
+        }
+
+        private string CleanedMainText
+        {
+            get
+            {
+                System.Text.StringBuilder buffer = new System.Text.StringBuilder();
+                int pos = 0;
+
+                int i = this.ParsedMainText.IndexOf("<img");
+                int j;
+                while(i >= 0 && i > pos) // find an img tag
+                {
+                    j = this.ParsedMainText.IndexOf(">", i, this.ParsedMainText.Length - i);
+                    
+                    buffer.AppendLine(this.ParsedMainText.Substring(pos, i - pos));
+                    pos = j + 1;
+
+                    i = pos + this.ParsedMainText.Substring(pos).IndexOf("<img");
+                }
+
+                buffer.AppendLine(this.ParsedMainText.Substring(pos, this.ParsedMainText.Length - pos));
+
+                return buffer.ToString();
+            }
         }
 
         public static Post TemplatePost()

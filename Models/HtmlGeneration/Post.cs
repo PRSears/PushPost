@@ -257,12 +257,11 @@ namespace PushPost.Models.HtmlGeneration
 
                 return buffer.ToString();
             }
-
         }
 
         /// <summary>
-        /// Generates a preview of the post containing title, author, date and an excerpt of the 
-        /// first paragraph.
+        /// Generates a preview of the post containing title, author, 
+        /// date and an excerpt of the first paragraph.
         /// </summary>
         public virtual string CreatePreview()
         {
@@ -276,33 +275,6 @@ namespace PushPost.Models.HtmlGeneration
 
                 return buffer.ToString();
             }
-
-            #region obsolete...
-            //using (StringWriter buffer = new StringWriter())
-            //using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
-            //{
-            //    RenderHeader(writer);
-            //    writer.Write(writer.NewLine);
-
-            //    if (MainText.Length < PreviewLength)
-            //        PreviewLength = MainText.Length;
-
-            //    // Throw an image at the top from the Resources list (if present)
-            //    foreach(IResource resource in Resources)
-            //    {
-            //        if(resource is InlineImage)
-            //        {
-            //            writer.Write(resource.CreateHTML());
-            //            break;
-            //        }
-            //    }
-
-            //    string preview = ResourceManager.RemoveReferences(MainText.Substring(0, PreviewLength)); // grab the first x characters
-            //    writer.Write(preview);
-
-            //    return buffer.ToString();
-            //}
-            #endregion
         }
 
         abstract protected void RenderHeader(HtmlTextWriter w);
