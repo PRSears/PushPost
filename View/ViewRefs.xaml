@@ -8,7 +8,7 @@
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="74"/>
+            <RowDefinition Height="106"/>
         </Grid.RowDefinitions>
         <ListView x:Name="ResourcesList"
                  ItemsSource="{Binding ResourceCollection}"
@@ -47,30 +47,25 @@
                    FlowDirection="RightToLeft"
                    Grid.Row="1"
                    Margin="0,0,10,0">
-            <Button Width="100" Height="22"
-                        Content="Copy Markup"
-                        Command="{Binding CopyMarkupSelectedCommand}"
-                        HorizontalAlignment="Right"
-                        Margin="0, 0, 10, 10"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
-            <Button Width="100" Height="22"
-                        Content="Copy Value"
-                        Command="{Binding CopyValueSelectedCommand}"
-                        HorizontalAlignment="Right"
-                        Margin="0, 0, 10, 10"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
-            <Button Width="100" Height="22"
-                        Content="Copy HTML"
-                        Command="{Binding CopyHTMLSelectedCommand}"
-                        HorizontalAlignment="Right"
-                        Margin="0, 0, 10, 10"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
-            <Button Width="100" Height="22"
-                        Content="Remove Selected"
-                        Command="{Binding RemoveSelectedCommand}"
-                        HorizontalAlignment="Right"
-                        Margin="0, 0, 10, 10"
-                        Style="{DynamicResource FlatActionButtonStyle}"/>
+            <WrapPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource FlatActionButtonStyle}">
+                    <Setter Property="Width" Value="100"/>
+                    <Setter Property="Height" Value="22"/>
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="Margin" Value="0,0,10,10"/>
+                </Style>
+            </WrapPanel.Resources>
+            <Button Content="Copy Markup"
+                    Command="{Binding CopyMarkupSelectedCommand}"/>
+            <Button Content="Copy Value"
+                    Command="{Binding CopyValueSelectedCommand}"/>
+            <Button Content="Copy HTML"
+                    Command="{Binding CopyHTMLSelectedCommand}"/>
+            <Button Content="Remove Selected"
+                    Command="{Binding RemoveSelectedCommand}"/>
+            <Button Content="Expand Selected"
+                    Command="{Binding ExpandSelectedCommand}"
+                    ToolTip="Replaces all references to the selected resources in the post."/>
         </WrapPanel>
     </Grid>
 </Window>

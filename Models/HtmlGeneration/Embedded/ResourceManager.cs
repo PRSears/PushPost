@@ -147,7 +147,17 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 if (resources == null)
                     Debug.WriteMessage("resources is null, no references can be expanded.", DEBUG, "warn");
                 else if (expand && resources.Count > 0)
-                    parsed += GetResourceByName(reference, resources).CreateHTML();
+                {
+                    IResource nextReferenced = GetResourceByName(reference, resources);
+                    if (nextReferenced != null)
+                    {
+                        parsed += nextReferenced.CreateHTML();
+                    }
+                    else // there was a reference that isn't included in the resources list
+                    {
+                        parsed += string.Format(@"+@({0})", reference); // put it back in
+                    }
+                }
                 // chop off everything BEFORE the final ')'
                 remainingText = remainingText.Substring(i + 1); 
             }

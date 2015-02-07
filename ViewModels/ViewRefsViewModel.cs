@@ -33,6 +33,7 @@ namespace PushPost.ViewModels
         public ICommand SelectAllCommand            { get; private set; }
         public ICommand SelectNoneCommand           { get; private set; }
         public ICommand RemoveSelectedCommand       { get; private set; }
+        public ICommand ExpandSelectedCommand       { get; private set; }
         public ICommand CopyMarkupSelectedCommand   { get; private set; }
         public ICommand CopyValueSelectedCommand    { get; private set; }
         public ICommand CopyHTMLSelectedCommand     { get; private set; }
@@ -91,6 +92,21 @@ namespace PushPost.ViewModels
                         this.Post.Resources.Remove(resource.Resource);
 
                     ResourceCollection.RemoveAll(cr => cr.IsChecked);
+                },
+                () => HasSelected
+            );
+
+            this.ExpandSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    Post.MainText = ResourceManager.ExpandReferences
+                        (
+                            Post.MainText,
+                            ResourceCollection.Where(cr => cr.IsChecked)
+                                              .Select(cr => cr.Resource)
+                                              .ToList()
+                        );
                 },
                 () => HasSelected
             );
