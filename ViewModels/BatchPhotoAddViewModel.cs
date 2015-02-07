@@ -1,6 +1,7 @@
 ﻿using Extender.WPF;
 using PushPost.Models.HtmlGeneration.Embedded;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -11,6 +12,8 @@ namespace PushPost.ViewModels
     {
         #region boxed properties
         private ObservableCollection<PhotoControl> _PhotoControls;
+        private bool _ResizeToggle;
+        private string _ResizeTo;
         #endregion
         public ObservableCollection<PhotoControl> PhotoControls
         {
@@ -35,12 +38,41 @@ namespace PushPost.ViewModels
         public ICommand CancelCommand   { get; protected set; }
 
         public string DefaultImageDescription { get; set; }
+        public bool ResizeToggle
+        {
+            get
+            {
+                return Properties.Settings.Default.ResizePhotosOnSubmit;
+            }
+            set
+            {
+                Properties.Settings.Default.ResizePhotosOnSubmit = value;
+                OnPropertyChanged("ResizeToggle");
+                OnPropertyChanged("ResizeTo");
+            }
+        }
+
+        public int ResizeTo
+        {
+            get
+            {
+                return ResizeToggle ? Properties.Settings.Default.DefaultPhotoSize :
+                                      0;
+            }
+            set
+            {
+                Properties.Settings.Default.DefaultPhotoSize = value;
+
+                OnPropertyChanged("ResizeTo");
+            }
+        }
 
         public BatchPhotoAddViewModel(PushPost.Models.HtmlGeneration.Post parentPost)
         {
             ParentPost              = parentPost;
             DefaultImageDescription = "Enter a description";
             PhotoControls           = new ObservableCollection<PhotoControl>();
+
 
             AddMoreCommand = new RelayCommand
             (
@@ -51,7 +83,7 @@ namespace PushPost.ViewModels
             (
                 () =>
                 {
-                    // TODOh Process images to output folder
+                    CopyAndOrganize();
 
                     this.ParentPost.Resources.AddRange
                     (
@@ -95,6 +127,19 @@ namespace PushPost.ViewModels
                         ));
                 }
             }
+        }
+
+        protected void CopyAndOrganize()
+        {
+            ImageProcessor processor = new ImageProcessor
+            (
+                Path.Combine(Properties.Settings.Default.SiteExportFolder,
+                             Properties.Settings.Default.PhotosSubfolder),
+                new int[] { ResizeTo }
+            );
+
+            processor.MakeFinalPathRelative = true;
+            processor.Organize(PhotoControls.Select(pc => pc.Photo));
         }
 
         public void AddPhotoControl(Photo photo)

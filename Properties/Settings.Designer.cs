@@ -305,5 +305,41 @@ namespace PushPost.Properties {
                 this["DefaultToBatchPhotoAdd"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("gallery")]
+        public string PhotosSubfolder {
+            get {
+                return ((string)(this["PhotosSubfolder"]));
+            }
+            set {
+                this["PhotosSubfolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ResizePhotosOnSubmit {
+            get {
+                return ((bool)(this["ResizePhotosOnSubmit"]));
+            }
+            set {
+                this["ResizePhotosOnSubmit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DefaultPhotoSize {
+            get {
+                return ((int)(this["DefaultPhotoSize"]));
+            }
+            set {
+                this["DefaultPhotoSize"] = value;
+            }
+        }
     }
 }

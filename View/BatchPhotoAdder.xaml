@@ -81,6 +81,28 @@
                    Background="#e0e0e0"
                    VerticalAlignment="Center"
                    LastChildFill="False">
+            
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="Gray"/>
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Background" Value="#e9e9e9"/>
+                    <Setter Property="BorderBrush" Value="#2e2e2e"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                    <Setter Property="Foreground" Value="#2e2e2e"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="0,0,10,10"/>
+                    <Setter Property="Foreground" Value="#2e2e2e"/>
+                    <Setter Property="FontSize" Value="12"/>
+                </Style>
+                <Style TargetType="Label">
+                    <Setter Property="Margin" Value="0,0,0,0"/>
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="FontSize" Value="10"/>
+                </Style>
+            </DockPanel.Resources>
+            
             <Button Style="{StaticResource LargeControlButton}"
                     Command="{Binding AddMoreCommand}"
                     Content="Add More Photos..."
@@ -89,6 +111,21 @@
                     Command="{Binding SubmitCommand}"
                     Content="Submit to Post"
                     DockPanel.Dock="Left"/>
+
+            <StackPanel Orientation="Vertical"
+                        DockPanel.Dock="Left">
+                <CheckBox IsChecked="{Binding ResizeToggle}"
+                          Margin="10,5,0,0">
+                    <TextBlock Text="Resize photos on submit"/>
+                </CheckBox>
+                <TextBox Width="50"
+                         Text="{Binding ResizeTo}"
+                         IsEnabled="{Binding ResizeToggle}"
+                         HorizontalContentAlignment="Center"
+                         HorizontalAlignment="Left"
+                         Margin="10,5,0,0"/>
+            </StackPanel>
+
             <Button Style="{StaticResource LargeControlButton}"
                     Command="{Binding CancelCommand}"
                     Content="Cancel"

@@ -254,11 +254,16 @@
                 </Style>
             </StackPanel.Resources>
 
-            
-            <Label Content="(Web) Inline images subfolder "/>
+
+            <Label Content="Inline images subfolder "/>
             <TextBox Text="{Binding ImagesSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Content="Browse..."
                     Command="{Binding BrowseImagesFolderCommand}"/>
+            
+            <Label Content="Photo gallery subfolder "/>
+            <TextBox Text="{Binding PhotosSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Browse..."
+                    Command="{Binding BrowsePhotosFolderCommand}"/>
 
             <Label Content="Website name "/>
             <TextBox Text="{Binding WebsiteName, UpdateSourceTrigger=PropertyChanged}"/>

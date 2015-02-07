@@ -209,6 +209,20 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("ImagesSubfolder");
             }
         }
+
+        public string PhotosSubfolder
+        {
+            get
+            {
+                return Properties.Settings.Default.PhotosSubfolder;
+            }
+            set
+            {
+                Properties.Settings.Default.PhotosSubfolder = value;
+                OnPropertyChanged("PhotosSubfolder");
+            }
+        }
+
         public string SinglesSubfolder
         {
             get
@@ -266,6 +280,7 @@ namespace PushPost.ViewModels
         public ICommand BrowsePreviewsFolderCommand     { get; private set; }
         public ICommand BrowseAutosaveFolderCommand     { get; private set; }
         public ICommand BrowseImagesFolderCommand       { get; private set; }
+        public ICommand BrowsePhotosFolderCommand       { get; private set; }
 
         public SettingsViewModel()
         {
@@ -274,6 +289,7 @@ namespace PushPost.ViewModels
             BrowsePreviewsFolderCommand = new RelayCommand(() => this.ChangePreviewsFolder());
             BrowseAutosaveFolderCommand = new RelayCommand(() => this.ChangeAutosaveFolder());
             BrowseImagesFolderCommand   = new RelayCommand(() => this.ChangeImagesFolder());
+            BrowsePhotosFolderCommand   = new RelayCommand(() => this.ChangePhotosFolder());
         }
 
         public void ChangeImagesFolder()
@@ -284,6 +300,16 @@ namespace PushPost.ViewModels
                 return;
             else 
                 this.ImagesSubfolder = result;            
+        }
+
+        public void ChangePhotosFolder()
+        {
+            string result = ShowFolderSelectDialog("photo gallery");
+
+            if (string.IsNullOrWhiteSpace(result))
+                return;
+            else
+                this.PhotosSubfolder = result;
         }
 
         public void ChangeSiteFolder()

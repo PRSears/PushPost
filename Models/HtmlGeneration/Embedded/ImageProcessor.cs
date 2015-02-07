@@ -22,14 +22,21 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             set;
         }
 
+        public bool MakeFinalPathRelative
+        {
+            get;
+            set;
+        }
+
         public ImageProcessor(string outDirectory) :
             this(outDirectory, new int[] { 0 })
         { }
 
         public ImageProcessor(string outDirectory, int[] resizes)
         {
-            this.OutputDirectory = outDirectory;
-            this.Resizes = resizes;
+            this.OutputDirectory        = outDirectory;
+            this.Resizes                = resizes;
+            this.MakeFinalPathRelative  = false;
         }
 
         public ImageProcessor(string outDirectory, System.Collections.Specialized.StringCollection resizes) :
@@ -50,7 +57,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <returns>Returns the number of successfully organized images.</returns>
         public int Organize(List<InlineImage> images)
         {
-            return OrganizeGeneric(images.Cast<IResource>().ToList());
+            return OrganizeGeneric(images.Cast<IResource>().ToArray());
         }
 
         /// <summary>
@@ -61,10 +68,21 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <returns>Returns the number of successfully organized images.</returns>
         public int Organize(List<Photo> images)
         {
-            return OrganizeGeneric(images.Cast<IResource>().ToList());
+            return OrganizeGeneric(images.Cast<IResource>().ToArray());
         }
 
-        protected int OrganizeGeneric(List<IResource> images)
+        /// <summary>
+        /// Resizes, copies, and organizes all photos in the provided 
+        /// list to this.OutputDirectory.
+        /// </summary>
+        /// <param name="images">List of photos to be organized.</param>
+        /// <returns>Returns the number of successfully organized images.</returns>
+        public int Organize(IEnumerable<Photo> images)
+        {
+            return OrganizeGeneric(images.Cast<IResource>().ToArray());
+        }
+
+        protected int OrganizeGeneric(IResource[] images)
         {
             int imagesOrganized = 0;
 
@@ -115,13 +133,15 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                         }
                     }
                 }
-                
+                                
                 // Change the path to point to one of the new organized images.
                 img.Value = Extender.IO.Paths.MakeRelativePath
                     (
                         OutputDirectory, 
                         GenerateNewImagePath(img.Value, Resizes[0])
                     );
+
+                if(MakeFinalPathRelative) img.Value = img.Value.Insert(0, @"..\");
             }
 
             return imagesOrganized;

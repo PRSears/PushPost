@@ -64,7 +64,7 @@ namespace PushPost
             {
                 if (ViewModel.Post.Category.PostType != ViewModel.Post.GetType())
                 {
-                    if (Extender.WPF.ConfirmationDialog.Show
+                    if (ViewModel.PostIsDefault || Extender.WPF.ConfirmationDialog.Show
                         (
                             "Change post type",
                             "Changing the type of post will erase the current post.\n" +
