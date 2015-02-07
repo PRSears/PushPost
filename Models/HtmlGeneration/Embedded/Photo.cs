@@ -82,6 +82,8 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             _PostID = PostID;
         }
 
+        public Photo(string name, string link) : this(name, link, Guid.Empty) { }
+
         public override string CreateHTML()
         {
             using(StringWriter buffer = new StringWriter())

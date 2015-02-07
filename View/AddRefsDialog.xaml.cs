@@ -1,7 +1,6 @@
 ﻿using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.ViewModels;
-using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;

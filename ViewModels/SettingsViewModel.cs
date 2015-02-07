@@ -54,6 +54,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool DefaultToBatchPhotoAdd
+        {
+            get
+            {
+                return Properties.Settings.Default.DefaultToBatchPhotoAdd;
+            }
+            set
+            {
+                Properties.Settings.Default.DefaultToBatchPhotoAdd = value;
+                OnPropertyChanged("DefaultToBatchPhotoAdd");
+            }
+        }
+
         public bool AutoInsertMarkup
         {
             get

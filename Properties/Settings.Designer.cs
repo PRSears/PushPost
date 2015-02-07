@@ -61,7 +61,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AutoInsertMarkup {
             get {
                 return ((bool)(this["AutoInsertMarkup"]));
@@ -157,7 +157,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\patrick\\Desktop\\output")]
         public string SiteExportFolder {
             get {
                 return ((string)(this["SiteExportFolder"]));
@@ -195,12 +195,10 @@ namespace PushPost.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>480</string>
-  <string>600</string>
   <string>775</string>
-  <string>1080</string>
+  <string>480</string>
+  <string>900</string>
   <string>1440</string>
-  <string>1600</string>
   <string>0</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection ImageSizes {
@@ -293,6 +291,18 @@ namespace PushPost.Properties {
             }
             set {
                 this["DefaultAuthor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DefaultToBatchPhotoAdd {
+            get {
+                return ((bool)(this["DefaultToBatchPhotoAdd"]));
+            }
+            set {
+                this["DefaultToBatchPhotoAdd"] = value;
             }
         }
     }

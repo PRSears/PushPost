@@ -236,6 +236,7 @@
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="155"/>
@@ -275,6 +276,15 @@
                     HorizontalAlignment="Left"
                     FontSize="12"
                     Margin="10,0,10,0"
+                    />
+                <Button
+                    Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Style="{StaticResource FlatActionButtonStyle}"
+                    Width="160" Height="22"
+                    HorizontalAlignment="Left"
+                    Margin="10,0,10,0"
+                    Content="SWITCH TO BATCH MODE"
+                    Command="{Binding SwitchToBatchModeCommand}"
                     />
             </Grid>
         </DataTemplate>

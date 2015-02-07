@@ -34,7 +34,6 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                // HACK forces an ID to get created if it doesn't exist.
                 if (_PostID == null || _PostID.Equals(Guid.Empty))
                     _PostID = new Guid(GetHashData()); 
                 return _PostID;

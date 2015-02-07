@@ -6,7 +6,8 @@
         Width="900"
         Height="640"
         MinWidth="910"
-        MinHeight="335" Icon="/PushPost;component/PushPost.ico">
+        MinHeight="335" 
+        Icon="/PushPost;component/PushPost.ico">
     <Grid Background="#e4e4e4">
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>

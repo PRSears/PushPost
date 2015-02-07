@@ -2,11 +2,10 @@
 
 namespace PushPost.ViewModels.CreateRefViewModels
 {
-    // TODOh Create a batch photo add
-    // TODOh Create options for pointing to web, or using relative local files
-
     public class CreatePhotoViewModel : IRefViewModel
     {
+        public System.Windows.Input.ICommand SwitchToBatchModeCommand { get; set; }
+
         public NotifyingResource Resource
         {
             get;

@@ -139,8 +139,6 @@ namespace PushPost.Models.Database
 
         protected void CommitPost(PostTableLayer newPost, PostsDataContext database)
         {
-            // TODO Break post up if it's too long
-
             // Check to see if it already exists in the database.
             if (database.Posts.Where(p => p.UniqueID == newPost.UniqueID).Count() > 0)
                 return;
@@ -439,12 +437,8 @@ namespace PushPost.Models.Database
         {
             if (!_disposed)
             {
-                if (disposing)
-
+                if(disposing)
                 {
-                    // THOUGHT should I submit all pending operations before
-                    //         disposal?
-                    //         No, probabaly not. Would lead to unexpected behaviour
                     db.Dispose();
                 }
                 _disposed = true;

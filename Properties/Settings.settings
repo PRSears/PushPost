@@ -12,7 +12,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoInsertMarkup" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="MaxQueueSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
@@ -36,7 +36,7 @@
       <Value Profile="(Default)">autosaved_{0}.xml</Value>
     </Setting>
     <Setting Name="SiteExportFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">C:\Users\patrick\Desktop\output</Value>
     </Setting>
     <Setting Name="PostsPerPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
@@ -47,12 +47,10 @@
     <Setting Name="ImageSizes" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;480&lt;/string&gt;
-  &lt;string&gt;600&lt;/string&gt;
   &lt;string&gt;775&lt;/string&gt;
-  &lt;string&gt;1080&lt;/string&gt;
+  &lt;string&gt;480&lt;/string&gt;
+  &lt;string&gt;900&lt;/string&gt;
   &lt;string&gt;1440&lt;/string&gt;
-  &lt;string&gt;1600&lt;/string&gt;
   &lt;string&gt;0&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
@@ -76,6 +74,9 @@
     </Setting>
     <Setting Name="DefaultAuthor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Patrick</Value>
+    </Setting>
+    <Setting Name="DefaultToBatchPhotoAdd" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

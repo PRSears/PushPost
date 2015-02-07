@@ -6,6 +6,7 @@ using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.ViewModels.CreateRefViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels
@@ -29,7 +30,7 @@ namespace PushPost.ViewModels
             }
         }
 
-        public IRefViewModel _CurrentView;
+        private IRefViewModel _CurrentView;
         public IRefViewModel CurrentView 
         {
             get
@@ -133,7 +134,7 @@ namespace PushPost.ViewModels
             }
         }
 
-        public string Save()
+        public string Save() // 'ADD' button
         {
             if(CurrentView is CreateImageViewModel)
             {
@@ -151,7 +152,18 @@ namespace PushPost.ViewModels
                     } while (string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder));
                 }
 
-                (CurrentView as CreateImageViewModel).Image.Proccess();
+                string imgSubfolder = Path.Combine
+                (
+                    Properties.Settings.Default.SiteExportFolder,
+                    Properties.Settings.Default.ImagesSubfolder
+                );
+
+                ImageProcessor.OrganizeImage
+                (
+                    (CurrentView as CreateImageViewModel).Image,
+                    imgSubfolder,
+                    Properties.Settings.Default.ImageSizes
+                );
             }
 
             if (this.Post == null)

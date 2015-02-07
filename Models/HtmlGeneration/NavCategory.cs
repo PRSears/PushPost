@@ -70,7 +70,7 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
-        // TODO think of a non-shitty way to load these from a file / user entered
+        // TODO_ think of a non-shitty way to load these from a file / user entered
         //      has to correspond to a type of page to generate
         public static NavCategory[] AllCategories = { Contact, Code, Blog, Photography };
 

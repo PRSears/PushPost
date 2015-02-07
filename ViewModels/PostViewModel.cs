@@ -103,23 +103,35 @@ namespace PushPost.ViewModels
             this.CreateSiteCommand          = new RelayCommand(() => Site.Create());
 
             // New window commands
-            this.EditSettingsCommand        = new RelayCommand(
-                () => WindowManager.OpenWindow(new View.SettingsEditor()));
+            this.EditSettingsCommand = new RelayCommand
+            (
+                () => WindowManager.OpenWindow(new View.SettingsEditor())
+            );
 
-            this.OpenArchiveManagerCommand  = new RelayCommand(
-                () => WindowManager.OpenWindow(new View.ArchiveManager(this.ArchiveQueue)));
+            this.OpenArchiveManagerCommand = new RelayCommand
+            (
+                () => WindowManager.OpenWindow(new View.ArchiveManager(this.ArchiveQueue))
+            );
 
-            this.ViewReferencesCommand      = new RelayCommand(
-                () => WindowManager.OpenWindow(new View.ViewRefs(this.Post)));
+            this.ViewReferencesCommand = new RelayCommand
+            (
+                () => WindowManager.OpenWindow(new View.ViewRefs(this.Post))
+            );
 
-            this.AddIResourceCommand        = new RelayFunction
-                (
-                    (parameter) => this.AddReference(parameter)
-                );
+            this.AddIResourceCommand = new RelayFunction
+            (
+                (parameter) => this.AddReference(parameter)
+            );
 
             this.AddPhotoCommand = new RelayCommand
             (
-                () => this.AddReference(4)
+                () =>
+                {
+                    if (Properties.Settings.Default.DefaultToBatchPhotoAdd)
+                        WindowManager.OpenWindow(new View.BatchPhotoAdder(this.Post));
+                    else
+                        this.AddReference(4);
+                }
             );
 
             this.AddFootnoteCommand     = new RelayCommand(
@@ -264,8 +276,6 @@ namespace PushPost.ViewModels
             {
                 // THOUGHT Since the default post changes depending on post type,
                 //         this should be handled differently.
-                //
-                //         
                 Post def = TextPost.TemplatePost();
                 return this.Post.Title == def.Title &&
                        this.Post.Author == def.Author &&
@@ -286,9 +296,29 @@ namespace PushPost.ViewModels
             if (startIndex < 0)
                 startIndex = 0;
 
-            this.WindowManager.OpenWindow(new View.AddRefsDialog(this.Post, startIndex));
+            View.AddRefsDialog newDialog = new View.AddRefsDialog(this.Post, startIndex);
 
+            // If this dialog if for a photo, we have to set the SwitchToBatchModeCommand 
+            // from here so this.WindowManager can be used, and the PostView is the parent
+            // of all the correct windows.
+            if(newDialog.DataContext is ViewModels.CreateRefViewModel) // I'm sorry.
+            {
+                if((newDialog.DataContext as ViewModels.CreateRefViewModel).CurrentView is ViewModels.CreateRefViewModels.CreatePhotoViewModel) // ... really, I am.
+                {
+                    CreateRefViewModels.CreatePhotoViewModel vm = (CreateRefViewModels.CreatePhotoViewModel)(newDialog.DataContext as CreateRefViewModel).CurrentView; // Please don't hate me.
+                    vm.SwitchToBatchModeCommand = new RelayCommand(() => this.OpenBatchPhotoAdd(newDialog));
+                }
+            }
+
+            this.WindowManager.OpenWindow(newDialog);
+            
             return true;
+        }
+
+        protected void OpenBatchPhotoAdd(View.AddRefsDialog addRefsDialog)
+        {
+            WindowManager.CloseChild(addRefsDialog);
+            WindowManager.OpenWindow(new View.BatchPhotoAdder(this.Post));
         }
 
         public void SubmitNow()

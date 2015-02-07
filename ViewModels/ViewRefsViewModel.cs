@@ -30,11 +30,14 @@ namespace PushPost.ViewModels
             }
         }
 
-        public ICommand SelectAllCommand        { get; private set; }
-        public ICommand SelectNoneCommand       { get; private set; }
-        public ICommand RemoveSelectedCommand   { get; private set; }
-        public ICommand CopySelectedCommand     { get; private set; }
-        public ICommand RefreshViewCommand      { get; private set; }
+        public ICommand SelectAllCommand            { get; private set; }
+        public ICommand SelectNoneCommand           { get; private set; }
+        public ICommand RemoveSelectedCommand       { get; private set; }
+        public ICommand CopyMarkupSelectedCommand   { get; private set; }
+        public ICommand CopyValueSelectedCommand    { get; private set; }
+        public ICommand CopyHTMLSelectedCommand     { get; private set; }
+        public ICommand EditSelectedCommand         { get; private set; }
+        public ICommand RefreshViewCommand          { get; private set; }
 
         private const int RefreshInterval = 1111;
         private System.Windows.Threading.DispatcherTimer _AutoRefreshTimer;
@@ -45,11 +48,7 @@ namespace PushPost.ViewModels
             this.Post = post;
             this.RefreshCollection();
 
-            this.SelectAllCommand       = new RelayCommand(() => this.SelectAll());
-            this.SelectNoneCommand      = new RelayCommand(() => this.SelectNone());
-            this.RemoveSelectedCommand  = new RelayCommand(() => this.RemoveSelected());
-            this.CopySelectedCommand    = new RelayCommand(() => this.CopySelected());
-            this.RefreshViewCommand     = new RelayCommand(() => this.RefreshCollection());
+            this.InitializeCommands();
 
             this._AutoRefreshTimer = new System.Windows.Threading.DispatcherTimer
             {
@@ -57,6 +56,116 @@ namespace PushPost.ViewModels
                 IsEnabled = true
             };
             this._AutoRefreshTimer.Tick += (s, e) => this.RefreshCollection();
+        }
+
+        protected void InitializeCommands()
+        {
+            this.SelectAllCommand = new RelayCommand
+            (
+                () =>
+                {
+                    foreach (Checkable<IResource> res in ResourceCollection)
+                        res.IsChecked = true;
+                },
+                () => ResourceCollection.Count > 0
+            );
+
+            this.SelectNoneCommand = new RelayCommand
+            (
+                () =>
+                {
+                    foreach (Checkable<IResource> res in ResourceCollection)
+                        res.IsChecked = false;
+                },
+                () => HasSelected
+            );
+
+            this.RemoveSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    var selected = ResourceCollection.Where(r => r.IsChecked)
+                                                     .ToArray();
+
+                    foreach (var resource in selected)
+                        this.Post.Resources.Remove(resource.Resource);
+
+                    ResourceCollection.RemoveAll(cr => cr.IsChecked);
+                },
+                () => HasSelected
+            );
+
+            this.CopyMarkupSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    StringBuilder buffer = new StringBuilder();
+
+                    foreach (var checkable in ResourceCollection.Where(cr => cr.IsChecked))
+                        buffer.Append(string.Format(@"+@({0}) ", checkable.Resource.Name));
+
+                    if (buffer.Length > 0)
+                        System.Windows.Clipboard.SetText(buffer.ToString());
+                },
+                () => HasSelected
+            );
+
+            this.CopyValueSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    StringBuilder buffer = new StringBuilder();
+
+                    foreach (var checkable in ResourceCollection.Where(cr => cr.IsChecked))
+                        buffer.AppendLine(checkable.Resource.Value);
+
+                    if (buffer.Length > 0)
+                        System.Windows.Clipboard.SetText(buffer.ToString());
+                },
+                () => HasSelected
+            );
+
+            this.CopyHTMLSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    StringBuilder buffer = new StringBuilder();
+
+                    foreach (var checkable in ResourceCollection.Where(cr => cr.IsChecked))
+                        buffer.AppendLine(checkable.Resource.CreateHTML());
+
+                    if (buffer.Length > 0)
+                        System.Windows.Clipboard.SetText(buffer.ToString());
+                },
+                () => HasSelected
+            );
+
+            this.EditSelectedCommand = new RelayCommand
+            (
+                () =>
+                {
+                    throw new System.NotImplementedException();
+                },
+                () => HasSelected
+            );
+
+            this.RefreshViewCommand = new RelayCommand
+            (
+                () => RefreshCollection()
+            );
+        }
+
+        public bool HasSelected
+        {
+            get
+            {
+                foreach(Checkable<IResource> res in ResourceCollection) 
+                {
+                    if (res.IsChecked) return true;
+                }
+
+                return false;
+            }
         }
 
         public void RefreshCollection()
@@ -88,47 +197,6 @@ namespace PushPost.ViewModels
             }
 
             OnPropertyChanged("ResourceCollection");
-        }
-
-        public void RemoveSelected() // TODO Add button to the GUI for this command
-        {
-            var selected = ResourceCollection.Where(r => r.IsChecked);
-            foreach(var res in selected)
-            {
-                this.Post.Resources.Remove(res.Resource);
-            }
-
-            ResourceCollection.RemoveAll(r => r.IsChecked);
-        }
-
-        public void SelectAll()
-        {
-            foreach(Checkable<IResource> res in ResourceCollection)
-            {
-                res.IsChecked = true;
-            }
-        }
-
-        public void SelectNone()
-        {
-            foreach (Checkable<IResource> res in ResourceCollection)
-            {
-                res.IsChecked = false;
-            }
-        }
-
-        public void CopySelected()
-        {
-            StringBuilder buffer = new StringBuilder();
-            foreach (Checkable<IResource> res in ResourceCollection)
-            {
-                if(res.IsChecked)
-                {
-                    buffer.Append(string.Format(@"+@({0}) ", res.Resource.Name));
-                }
-            }
-
-            System.Windows.Clipboard.SetText(buffer.ToString());
         }
 
         public void OnClosing()

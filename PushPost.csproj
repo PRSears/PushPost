@@ -76,13 +76,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\HtmlGeneration\Embedded\ImageProcessor.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\Photo.cs" />
     <Compile Include="Models\HtmlGeneration\Site.cs" />
+    <Compile Include="ViewModels\BatchPhotoAddViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreatePhotoViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewRefsViewModel.cs" />
     <Compile Include="View\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BatchPhotoAdder.xaml.cs">
+      <DependentUpon>BatchPhotoAdder.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SettingsEditor.xaml.cs">
       <DependentUpon>SettingsEditor.xaml</DependentUpon>
@@ -99,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ArchiveManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\BatchPhotoAdder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -107,29 +107,7 @@ namespace PushPost.Models.HtmlGeneration
                     w.RenderEndTag();
                 }
             }
-
-            #region // Old idea of pulling image(s) from the album to use in the preview
-            //List<Photo> photos = Resources.OfType<Photo>()
-            //                              .ToList();
-
-            //if (photos.Count > 0)
-            //{
-            //    w.RenderBeginTag(HtmlTextWriterTag.P); // <p>
-
-            //    //foreach (Photo photo in photos)
-            //    //{
-            //        w.AddAttribute(HtmlTextWriterAttribute.Href, this.TitleLink);
-            //        w.RenderBeginTag(HtmlTextWriterTag.A); // <a>
-
-            //        w.Write(photos[0].CreateHTML()); // Just use the first image for now
-
-            //        w.RenderEndTag(); // </a>
-            //    //}
-
-            //    w.RenderEndTag(); // </p>
-            //}
-            #endregion
-
+            
             w.RenderEndTag(); // </div PostBodyID>
         }
 

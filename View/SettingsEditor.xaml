@@ -51,6 +51,9 @@
             <CheckBox IsChecked="{Binding ConfirmBeforeRemove, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="Confirm before removal from queue"/>
             </CheckBox>
+            <CheckBox IsChecked="{Binding DefaultToBatchPhotoAdd, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock Text="Use batch photo adder"/>
+            </CheckBox>
             <CheckBox IsChecked="{Binding IncludeBlogLinks, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="Include Blog category in navigation"/>
             </CheckBox>

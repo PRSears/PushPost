@@ -11,7 +11,6 @@ namespace PushPost.Models.Database
 {
     public class ArchiveQueue : INotifyPropertyChanged
     {
-        //private FileSystemWatcher QueueWatcher;
         public event QueueChangedEventHandler QueueChanged;
 
         /// <summary>
@@ -47,6 +46,7 @@ namespace PushPost.Models.Database
         protected void OnQueueChanged()
         {
             QueueChangedEventHandler handler = QueueChanged;
+
             if (handler != null)
                 handler(this);
         }
