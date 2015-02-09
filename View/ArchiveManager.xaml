@@ -273,7 +273,8 @@
             <Button Width="130" Height="35"
                         Content="Test Harness"
                         Command="{Binding TestHarnessCommand}"
-                        Visibility="{Binding TestHarnessVisibility}"
+                        IsEnabled="False"
+                        Visibility="Hidden"
                         HorizontalAlignment="Left"
                         Margin="10,10,10,0"
                         Style="{DynamicResource FlatActionButtonStyle}"/>

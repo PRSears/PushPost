@@ -232,7 +232,6 @@ namespace PushPost.Models.HtmlGeneration
         protected string         DateClass;
         protected string        PostBodyID;
         protected string FullPostLinkClass;
-
         protected string FullPostLinkText;
 
         /// <summary>
@@ -287,7 +286,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                if (MainText.Equals(string.Empty))
+                if (string.IsNullOrWhiteSpace(this.MainText))
                     return string.Empty;
 
                 return ResourceManager.ExpandReferences(MainText, Resources);

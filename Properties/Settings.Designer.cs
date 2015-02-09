@@ -157,7 +157,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\patrick\\Desktop\\output")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SiteExportFolder {
             get {
                 return ((string)(this["SiteExportFolder"]));
@@ -284,7 +284,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Patrick")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Patrick Sears")]
         public string DefaultAuthor {
             get {
                 return ((string)(this["DefaultAuthor"]));

@@ -197,6 +197,7 @@ namespace PushPost.ViewModels.ArchivesViewModels
             {
                 System.Windows.Forms.MessageBox.Show
                     (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
+                ExceptionTools.WriteExceptionText(e, true);
             }
         }
 

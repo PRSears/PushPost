@@ -131,6 +131,9 @@ namespace PushPost.ViewModels
 
         protected void CopyAndOrganize()
         {
+            if (!PushPost.Models.HtmlGeneration.Site.CheckSiteExportFolder())
+                return; // cancel
+
             ImageProcessor processor = new ImageProcessor
             (
                 Path.Combine(Properties.Settings.Default.SiteExportFolder,

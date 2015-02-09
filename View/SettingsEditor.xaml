@@ -271,8 +271,8 @@
             <Label Content="Single post pages subfolder "/>
             <TextBox Text="{Binding SinglesSubfolder, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <CheckBox IsChecked="{Binding Debug, UpdateSourceTrigger=PropertyChanged}"
-                      Margin="0,242,0,0">
+            <Separator Margin="0,20,0,10"/>
+            <CheckBox IsChecked="{Binding Debug, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="Debug"/>
             </CheckBox>
             <Label Content="Debug log file path"

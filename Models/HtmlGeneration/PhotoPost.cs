@@ -97,7 +97,7 @@ namespace PushPost.Models.HtmlGeneration
         {
             w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
             w.RenderBeginTag(HtmlTextWriterTag.Div); // <div>
-            using (StringReader reader = new StringReader(this.ParsedMainText))
+            using (StringReader reader = new StringReader(this.LinkifiedMainText))
             {
                 string line = string.Empty;
                 while ((line = reader.ReadLine()) != null)
@@ -120,27 +120,64 @@ namespace PushPost.Models.HtmlGeneration
             if (this.IncludePostEndComments)
                 w.WriteComment(" ********* End of photo post: " + Title + " ********* ");
         }
+        
+        /// <summary>
+        /// Returns the main text, with all img tags wrapped in a link to this post's main (single) file. 
+        /// </summary>
+        public string LinkifiedMainText
+        {
+            get
+            {
+                string parsedMainText = this.ParsedMainText;
 
+                System.Text.StringBuilder buffer = new System.Text.StringBuilder();
+                int pos = 0;
+
+                int i = parsedMainText.IndexOf("<img");
+                int j;
+                while(i >= 0 && i > pos)
+                {
+                    j = parsedMainText.IndexOf(">", i, parsedMainText.Length - i);
+                    buffer.Append(parsedMainText.Substring(pos, i - pos));
+                    buffer.Append(string.Format(@"<a href=""{0}"">", this.TitlePath));
+                    buffer.Append(parsedMainText.Substring(i, j - i));
+                    buffer.Append(@"</a>");
+
+                    pos = j + 1;
+                    i = pos + parsedMainText.Substring(pos).IndexOf("<img");
+                }
+
+                buffer.Append(parsedMainText.Substring(pos, parsedMainText.Length - pos));
+
+                return buffer.ToString();
+            }
+        }
+        
+        /// <summary>
+        /// Returns the main text with all img tags removed.
+        /// </summary>
         private string CleanedMainText
         {
             get
             {
+                string parsedMainText = this.ParsedMainText;
+
                 System.Text.StringBuilder buffer = new System.Text.StringBuilder();
                 int pos = 0;
 
-                int i = this.ParsedMainText.IndexOf("<img");
+                int i = parsedMainText.IndexOf("<img");
                 int j;
                 while(i >= 0 && i > pos) // find an img tag
                 {
-                    j = this.ParsedMainText.IndexOf(">", i, this.ParsedMainText.Length - i);
+                    j = parsedMainText.IndexOf(">", i, parsedMainText.Length - i);
                     
-                    buffer.AppendLine(this.ParsedMainText.Substring(pos, i - pos));
+                    buffer.Append(parsedMainText.Substring(pos, i - pos));
                     pos = j + 1;
 
-                    i = pos + this.ParsedMainText.Substring(pos).IndexOf("<img");
+                    i = pos + parsedMainText.Substring(pos).IndexOf("<img");
                 }
 
-                buffer.AppendLine(this.ParsedMainText.Substring(pos, this.ParsedMainText.Length - pos));
+                buffer.Append(parsedMainText.Substring(pos, parsedMainText.Length - pos));
 
                 return buffer.ToString();
             }

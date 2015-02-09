@@ -231,7 +231,7 @@ namespace PushPost.Models.HtmlGeneration
             }
             catch(Exception e)
             {
-                Debug.WriteMessage("Failed to save pages to " + outDirectoryPath, "warn");
+                Debug.WriteMessage("Failed to save pages to " + outDirectoryPath, "error");
                 ExceptionTools.WriteExceptionText(e, true);
 
                 return false;

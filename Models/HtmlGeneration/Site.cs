@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Extender.Debugging;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Models.Database;
 using System.IO;
 
@@ -53,6 +54,7 @@ namespace PushPost.Models.HtmlGeneration
             {
                 System.Windows.Forms.MessageBox.Show
                     (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
+                ExceptionTools.WriteExceptionText(e, true);
             }
         }
 
@@ -97,6 +99,50 @@ namespace PushPost.Models.HtmlGeneration
         public static void Preview(Post post)
         {
             Preview(new Post[] { post });
+        }
+
+        public static bool CheckSiteExportFolder()
+        {
+            if(string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder))
+            {
+                System.Windows.Forms.MessageBox.Show("You need to select a folder " +
+                    "to create the site in before an image can be added.");
+
+                int pesterings = 0;
+                while(!SelectSiteExportFolder() && pesterings < 3)
+                {
+                    pesterings++;
+                }
+
+                if (pesterings > 2 || string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder))
+                    return false;
+            }
+
+            return Directory.Exists(Properties.Settings.Default.SiteExportFolder);
+        }
+
+        /// <summary>
+        /// Prompts the user to select a folder to export the site into.
+        /// </summary>
+        /// <returns>Returns true if a folder was successfully set by the user. False otherwise.</returns>
+        public static bool SelectSiteExportFolder()
+        {
+            var dialog = new CommonOpenFileDialog();
+
+            dialog.IsFolderPicker = true;
+            dialog.Title = string.Format("Select a folder to export the site into");
+
+            CommonFileDialogResult r = dialog.ShowDialog();
+            if (r != CommonFileDialogResult.Ok)
+            {
+                Debug.WriteMessage("User failed to select a SiteExportFolder.", "warn");
+                return false;
+            }
+            else
+            {
+                Properties.Settings.Default.SiteExportFolder = dialog.FileName;
+                return true;
+            }
         }
     }
 }

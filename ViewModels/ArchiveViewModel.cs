@@ -51,18 +51,8 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("SelectedTabIndex");
             }
         }
-        //public ObservableCollection<CheckablePost> CheckablePostCollection
-        //{
-        //    get
-        //    {
-        //        return _CheckablePostCollection;
-        //    }
-        //    set
-        //    {
-        //        _CheckablePostCollection = value;
-        //        OnPropertyChanged("QueuedPosts");
-        //    }
-        //}
+
+        //TODOh Create a way to retrieve individual photo objects from the database for use in another post. 
 
         // Selection
         public ICommand SelectAllCommand        { get; private set; }
@@ -259,6 +249,7 @@ It will be a pain in the ass to get them back afterward.",
             {
                 System.Windows.Forms.MessageBox.Show
                     (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
+                ExceptionTools.WriteExceptionText(e, true);
             }
 
             Current.DisplayedPosts.RemoveAll(cp => cp.IsChecked);

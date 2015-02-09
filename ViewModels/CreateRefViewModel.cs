@@ -1,5 +1,4 @@
 ﻿using Extender.Debugging;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using PushPost.Commands;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
@@ -64,7 +63,6 @@ namespace PushPost.ViewModels
         public ICommand ViewCreateCodeCommand   { get; private set; }
         public ICommand ViewCreateFootCommand   { get; private set; }
         public ICommand ViewCreateImageCommand  { get; private set; }
-
         public ICommand SaveRefCommand { get; private set; }
         public ICommand CancelRefCommand { get; private set; }
         
@@ -138,19 +136,8 @@ namespace PushPost.ViewModels
         {
             if(CurrentView is CreateImageViewModel)
             {
-                if(string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder))
-                {
-                    System.Windows.Forms.MessageBox.Show("You need to select a folder " +
-                        "to create the site in before an image can be added.");
-
-                    int count = 0;
-                    do
-                    {
-                        if ((count++) > 2) return string.Empty; // cancel
-
-                        Properties.Settings.Default.SiteExportFolder = SelectSiteExportFolder();
-                    } while (string.IsNullOrWhiteSpace(Properties.Settings.Default.SiteExportFolder));
-                }
+                if (!Site.CheckSiteExportFolder())
+                    return string.Empty;
 
                 string imgSubfolder = Path.Combine
                 (
@@ -186,20 +173,6 @@ namespace PushPost.ViewModels
 
             CloseCommand.Execute(null);
             return CurrentView.Resource.Markup;
-        }
-
-        private string SelectSiteExportFolder()
-        {
-            var dialog = new CommonOpenFileDialog();
-
-            dialog.IsFolderPicker = true;
-            dialog.Title = string.Format("Select a folder to export the site into");
-
-            CommonFileDialogResult r = dialog.ShowDialog();
-            if (r != CommonFileDialogResult.Ok)
-                return string.Empty;
-            else
-                return dialog.FileName;
         }
 
         public bool CanSwitchViews

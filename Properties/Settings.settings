@@ -36,7 +36,7 @@
       <Value Profile="(Default)">autosaved_{0}.xml</Value>
     </Setting>
     <Setting Name="SiteExportFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\patrick\Desktop\output</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PostsPerPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
@@ -73,7 +73,7 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="DefaultAuthor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Patrick</Value>
+      <Value Profile="(Default)">Patrick Sears</Value>
     </Setting>
     <Setting Name="DefaultToBatchPhotoAdd" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

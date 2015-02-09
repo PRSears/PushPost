@@ -89,29 +89,31 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             foreach (IResource img in images)
             {
                 string originalLocation = img.Value;
+                int version = 1;
+
                 foreach (int size in Resizes)
                 {
                     // Make sure the directory is there
-                    if (!EnsureDirectory(originalLocation, size))
+                    if (!EnsureDirectory(size))
                     {
                         Debug.WriteMessage
                         (
                             string.Format("There was a problem creating the directory '{0}'",
-                                GetNewImageDirectory(originalLocation, size)),
+                                GetNewImageDirectory(size)),
                             "warn"
                         );
                         continue;
                     }
 
                     // Find a unique filename
-                    int version = 1;
-                    while (File.Exists(GenerateNewImagePath(originalLocation, size)))
+                    while (File.Exists(GenerateNewImagePath(originalLocation, size, version)))
                     {
-                        img.Value = img.Value.InsertBeforeExtension(string.Format
-                            (
-                                "_{0}",
-                                (++version).ToString("D3")
-                            ));
+                        //img.Value = img.Value.InsertBeforeExtension(string.Format
+                        //    (
+                        //        "_{0}",
+                        //        (++version).ToString("D3")
+                        //    ));
+                        version++;
                     }
 
                     // Resize and save to new location(s)
@@ -120,14 +122,14 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                         if (size < 0) continue;
                         else if (size == 0)
                         {
-                            original.Save(GenerateNewImagePath(originalLocation, size));
+                            original.Save(GenerateNewImagePath(originalLocation, size, version));
                             imagesOrganized++;
                         }
                         else
                         {
                             using (Bitmap resized = original.ResizeToLongEdge(size))
                             {
-                                resized.Save(GenerateNewImagePath(originalLocation, size));
+                                resized.Save(GenerateNewImagePath(originalLocation, size, version));
                                 imagesOrganized++;
                             }
                         }
@@ -138,7 +140,7 @@ namespace PushPost.Models.HtmlGeneration.Embedded
                 img.Value = Extender.IO.Paths.MakeRelativePath
                     (
                         OutputDirectory, 
-                        GenerateNewImagePath(img.Value, Resizes[0])
+                        GenerateNewImagePath(img.Value, Resizes[0], version)
                     );
 
                 if(MakeFinalPathRelative) img.Value = img.Value.Insert(0, @"..\");
@@ -147,12 +149,12 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return imagesOrganized;
         }
 
-        protected bool EnsureDirectory(string origPath, int forSize)
+        protected bool EnsureDirectory(int forSize)
         {
             try
             {
-                if (!Directory.Exists(GetNewImageDirectory(origPath, forSize)))
-                    Directory.CreateDirectory(GetNewImageDirectory(origPath, forSize));
+                if (!Directory.Exists(GetNewImageDirectory(forSize)))
+                    Directory.CreateDirectory(GetNewImageDirectory(forSize));
             }
             catch
             {
@@ -169,8 +171,33 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// <param name="origPath">Path of the original file to be organized.</param>
         /// <param name="forSize">The size of the organized image. Used for sorting into a subdirectory.</param>
         /// <returns>Full path of the new location for the image of specified size.</returns>
-        public string GenerateNewImagePath(string origPath, int forSize)
+        public string GenerateNewImagePath(string origPath, int forSize, int versionNumber)
         {
+            string size;
+
+            if (forSize == 0) size = "orig";
+            else if (forSize < 0) throw new ArgumentException("Invalid size value. Size cannot be less than 0.");
+            else size = forSize.ToString();
+
+            string o = Path.Combine
+            (
+                OutputDirectory,
+                size,
+                Path.GetFileName(origPath)
+                    .InsertBeforeExtension(string.Format("_{0}", versionNumber))
+            );
+
+            Debug.WriteMessage(o);
+
+            return o;
+        }
+
+        /// <param name="origPath">Path of the original file to be organized.</param>
+        /// <param name="forSize">The size of the organized image. Used for sorting into a subdirectory.</param>
+        /// <returns>Gets the directory component of the path of the new location of the image of specified size.</returns>
+        public string GetNewImageDirectory(int forSize)
+        {
+            //return (new FileInfo(GenerateNewImagePath(origPath, forSize)).DirectoryName);
             string size;
 
             if (forSize == 0) size = "orig";
@@ -180,17 +207,8 @@ namespace PushPost.Models.HtmlGeneration.Embedded
             return Path.Combine
             (
                 OutputDirectory,
-                size,
-                Path.GetFileName(origPath)
+                size
             );
-        }
-
-        /// <param name="origPath">Path of the original file to be organized.</param>
-        /// <param name="forSize">The size of the organized image. Used for sorting into a subdirectory.</param>
-        /// <returns>Gets the directory component of the path of the new location of the image of specified size.</returns>
-        public string GetNewImageDirectory(string origPath, int forSize)
-        {
-            return (new FileInfo(GenerateNewImagePath(origPath, forSize)).DirectoryName);
         }
 
         /// <summary>
