@@ -52,6 +52,8 @@ namespace PushPost.Models.HtmlGeneration
             StringBuilder build = new StringBuilder();
 
             build.AppendLine(@"<head>");
+
+            build.AppendLine(@"<meta http-equiv=""Content-Type"" content=""text/html;charset=utf-8"" />");
             build.AppendLine("\t<title>" + this.Title + @"</title>");
 
             foreach (string href in this.HypertextReferences)

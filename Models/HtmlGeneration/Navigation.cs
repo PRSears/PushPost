@@ -75,15 +75,15 @@ namespace PushPost.Models.HtmlGeneration
             using (StringWriter buffer = new StringWriter())
             using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-bar");
+                writer.AddAttribute(HtmlTextWriterAttribute.Id, NavigationBarID);
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                    writer.AddAttribute(HtmlTextWriterAttribute.Id, "header-center");
+                    writer.AddAttribute(HtmlTextWriterAttribute.Id, HeaderCentererID);
                     writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "logo-image");
+                        writer.AddAttribute(HtmlTextWriterAttribute.Id, LogoImageID);
                         writer.RenderBeginTag(HtmlTextWriterTag.Div);
                         writer.RenderEndTag();
 
-                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-links");
+                        writer.AddAttribute(HtmlTextWriterAttribute.Id, NavigationLinksID);
                         writer.RenderBeginTag(HtmlTextWriterTag.Div);
                         writer.WriteLine(string.Empty);
                             for(int i = 0; i < Categories.Count; i++)
@@ -94,7 +94,7 @@ namespace PushPost.Models.HtmlGeneration
 
                                 if(i > 0) // this isn't the first category
                                 {
-                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, "spacer");
+                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, SpacerClass);
                                     writer.RenderBeginTag(HtmlTextWriterTag.A);
                                         writer.Write("+");
                                     writer.RenderEndTag();
@@ -104,7 +104,7 @@ namespace PushPost.Models.HtmlGeneration
                                 writer.AddAttribute(HtmlTextWriterAttribute.Href, 
                                     @"../" + Categories[i].MainPageURL);
                                 if (Categories[i].Equals(this.CurrentCategory))
-                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, "current");
+                                    writer.AddAttribute(HtmlTextWriterAttribute.Class, CurrentSelectedCatClass);
                                 writer.RenderBeginTag(HtmlTextWriterTag.A);
                                     writer.Write(Categories[i].Category.ToUpper());
                                 writer.RenderEndTag();
@@ -117,6 +117,13 @@ namespace PushPost.Models.HtmlGeneration
                 return buffer.ToString();
             }
         }
+
+        public static string LogoImageID                = "logo-image";
+        public static string SpacerClass                = "spacer";
+        public static string NavigationBarID            = "navigation-bar";
+        public static string HeaderCentererID           = "header-center";
+        public static string NavigationLinksID          = "navigation-links";
+        public static string CurrentSelectedCatClass    = "current";
 
         public override bool Equals(object obj)
         {

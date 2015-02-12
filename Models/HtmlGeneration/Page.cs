@@ -228,6 +228,17 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
+        public string CopyrightClass { get; set; }
+        public string CopyrightContent
+        {
+            get
+            {
+                return string.Format("Copyright &copy; {0} {1}.  All rights reserved.",
+                    Properties.Settings.Default.DefaultAuthor,
+                    DateTime.Now.Year.ToString());
+            }
+        }
+
         public Page
             (
                 string title, 
@@ -241,6 +252,7 @@ namespace PushPost.Models.HtmlGeneration
             Posts           = new List<Post>();
             PrimaryColumnID = "primary-column";
             WrapperID       = "wrapper";
+            CopyrightClass  = "copyright";
             FinalComment    = "This page was generated automatically by PushPost.";
             SiteName        = Properties.Settings.Default.WesbiteName;
 
@@ -344,10 +356,21 @@ namespace PushPost.Models.HtmlGeneration
                         if(IncludePrimaryColumn)
                             w.RenderEndTag(); // </primary-column>
 
+
                     w.RenderEndTag();
                     // </Wrapper>
 
+                    // Copyright
+                    w.AddAttribute(HtmlTextWriterAttribute.Class, CopyrightClass);
+                    w.RenderBeginTag(HtmlTextWriterTag.Div);
+                    w.RenderBeginTag(HtmlTextWriterTag.Span);
+                        w.WriteLine(CopyrightContent);
+                    w.RenderEndTag();
+                    w.RenderEndTag();
+
                     w.WriteLine(this.LowerNavigation.Create());
+
+                    
                 w.RenderEndTag();
                 // </body>
 
@@ -363,6 +386,8 @@ namespace PushPost.Models.HtmlGeneration
                         formatter.ShowWarnings = false;
                         formatter.Quiet = true;
                         formatter.OutputHtml = true;
+                        formatter.CharacterEncoding = EncodingType.Utf8;
+                        formatter.OutputCharacterEncoding = EncodingType.Utf8;
                         formatter.IndentSpaces = 4;
                         formatter.WrapAt = 116;
                         formatter.IndentBlockElements = AutoBool.Auto;

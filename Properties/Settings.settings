@@ -90,5 +90,8 @@
     <Setting Name="DefaultImageDescription" Type="System.String" Scope="User">
       <Value Profile="(Default)">Enter a description</Value>
     </Setting>
+    <Setting Name="TempFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">temp</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

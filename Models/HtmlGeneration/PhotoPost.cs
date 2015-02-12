@@ -9,6 +9,8 @@ namespace PushPost.Models.HtmlGeneration
 {
     public class PhotoPost : Post
     {
+        public int ThumbnailSize            { get; set; }
+
         public string AlbumClass            { get; set; }
         public string AlbumThumbnailClass   { get; set; }
         public string DescriptionSpanClass  { get; set; }
@@ -16,12 +18,17 @@ namespace PushPost.Models.HtmlGeneration
         public string PhotoHeaderClass      { get; set; }
         public string ImageIDFormat         { get; set; }
 
-        public string StartButtonClass      { get; set; }
-        public string BackSpanClass         { get; set; }
-        public string ForwardSpanClass      { get; set; }
-        public string StartButtonText       { get; set; }
-        public string BackButtonText        { get; set; }
-        public string ForwardButtonText     { get; set; }
+        public bool   AnimateStartButton        { get; set; }
+        public string AnimatedClass             { get; set; }
+        public string ThumbnailContainerClass   { get; set; }
+        public string StartButtonClass          { get; set; }
+        public string ToTopButtonClass          { get; set; }
+        public string BackSpanClass             { get; set; }
+        public string ForwardSpanClass          { get; set; }
+        public string StartButtonText           { get; set; }
+        public string ToTopButtonText           { get; set; }
+        public string BackButtonText            { get; set; }
+        public string ForwardButtonText         { get; set; }
 
         protected string DefaultImageDescription
         {
@@ -31,8 +38,12 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
+        //TODOh think of a way to edit photo objects from the db to attach to new / multiple posts
+
         public PhotoPost() : base()
         {
+            ThumbnailSize           = 250;
+
             AlbumClass              = "photo-container"; // TODO_ Load class IDs from a cfg file or implement a seperate settings panel for them.
             AlbumThumbnailClass     = "album-thumbnail";
             DescriptionSpanClass    = "description";
@@ -43,12 +54,18 @@ namespace PushPost.Models.HtmlGeneration
             WrapperClass            = "photo-wrapper";
             ImageIDFormat           = "image-{0}";
 
+            ThumbnailContainerClass = "thumbnail-container";
             StartButtonClass        = "start-button";
+            ToTopButtonClass        = "totop-button";
             BackSpanClass           = "photo-navL";
             ForwardSpanClass        = "photo-navR";
-            StartButtonText         = "tap to start";
+            StartButtonText         = "tap to start the gallery";
+            ToTopButtonText         = "return to the top";
             BackButtonText          = @"&lt;";
             ForwardButtonText       = @"&gt;";
+
+            AnimateStartButton      = true;
+            AnimatedClass           = "animated bounceInDown";
 
             Category = NavCategory.Photography;
         }
@@ -101,19 +118,38 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderBody(System.Web.UI.HtmlTextWriter w)
         {
+            Photo[] photos = this.Resources.OfType<Photo>().ToArray();
+            List<string> thumbPaths = CreateThumbnails();
+
             w.AddAttribute(HtmlTextWriterAttribute.Class, this.PhotoHeaderClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
-            this.RenderHeader(w); // Title header
-            using (StringReader reader = new StringReader(this.CleanedMainText)) // main text
-            {
-                string line = string.Empty;
-                while ((line = reader.ReadLine()) != null)
+                this.RenderHeader(w); // Title header
+                using (StringReader reader = new StringReader(this.CleanedMainText)) // main text
                 {
-                    w.RenderBeginTag(HtmlTextWriterTag.P);
-                    w.Write(line);
+                    string line = string.Empty;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        w.RenderBeginTag(HtmlTextWriterTag.P);
+                        w.Write(line);
+                        w.RenderEndTag();
+                    }
+                }
+                w.AddAttribute(HtmlTextWriterAttribute.Class, ThumbnailContainerClass); // thumbnails
+                w.RenderBeginTag(HtmlTextWriterTag.Div);
+                for (int i = 0; i < photos.Length; i++)
+                {
+                    // match thumbnail to photo
+                    string match = thumbPaths.FirstOrDefault
+                    (
+                        thumb => thumb.Contains(Path.GetFileName(photos[i].Value))
+                    );
+
+                    w.AddAttribute(HtmlTextWriterAttribute.Href, string.Format(ImageIDFormat, i).Insert(0, @"#"));
+                    w.RenderBeginTag(HtmlTextWriterTag.A);
+                        w.Write(string.Format(@"<img src=""{0}"">", match));
                     w.RenderEndTag();
                 }
-            }
+                w.RenderEndTag();
             w.RenderEndTag();            
 
             w.AddAttribute(HtmlTextWriterAttribute.Class, AlbumClass);
@@ -123,6 +159,7 @@ namespace PushPost.Models.HtmlGeneration
                 w.AddAttribute(HtmlTextWriterAttribute.Class, StartButtonClass);
                 w.RenderBeginTag(HtmlTextWriterTag.Div);
                     w.RenderBeginTag(HtmlTextWriterTag.Span);
+                        w.AddAttribute(HtmlTextWriterAttribute.Class, AnimatedClass);
                         w.AddAttribute(HtmlTextWriterAttribute.Href, string.Format(ImageIDFormat, 0).Insert(0, @"#"));
                         w.RenderBeginTag(HtmlTextWriterTag.A);
                             w.Write(StartButtonText);
@@ -131,7 +168,6 @@ namespace PushPost.Models.HtmlGeneration
                 w.RenderEndTag();
 
                 w.RenderBeginTag(HtmlTextWriterTag.Ul); // image gallery
-                Photo[] photos = this.Resources.OfType<Photo>().ToArray();
                 for(int i = 0; i < photos.Length; i++)
                 {
                     w.AddAttribute(HtmlTextWriterAttribute.Id, string.Format(ImageIDFormat, i));
@@ -173,6 +209,17 @@ namespace PushPost.Models.HtmlGeneration
                                 w.RenderEndTag();
                             w.RenderEndTag();
                         }
+
+                        // To Top button
+                        w.AddAttribute(HtmlTextWriterAttribute.Class, ToTopButtonClass);
+                        w.RenderBeginTag(HtmlTextWriterTag.Div);
+                            w.RenderBeginTag(HtmlTextWriterTag.Span);
+                                w.AddAttribute(HtmlTextWriterAttribute.Href, Navigation.NavigationBarID.Insert(0, "#"));
+                                w.RenderBeginTag(HtmlTextWriterTag.A);
+                                    w.Write(ToTopButtonText);
+                                w.RenderEndTag();
+                            w.RenderEndTag();
+                        w.RenderEndTag();
 
                     w.RenderEndTag(); // </li>
                 }
@@ -329,6 +376,21 @@ namespace PushPost.Models.HtmlGeneration
             }
 
             return imgTags;
+        }
+
+        protected List<string> CreateThumbnails()
+        {
+            ImageProcessor processor = new ImageProcessor
+            (
+                Path.Combine(Properties.Settings.Default.SiteExportFolder,
+                             Properties.Settings.Default.PhotosSubfolder),
+                new int[] { ThumbnailSize }
+            );
+
+            processor.UpdateOriginalValue = false;
+            processor.MakeFinalPathRelative = true;
+
+            return processor.Organize(this.Resources.OfType<Photo>());
         }
 
         public static Post TemplatePost()
