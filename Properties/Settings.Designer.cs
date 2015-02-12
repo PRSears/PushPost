@@ -341,5 +341,17 @@ namespace PushPost.Properties {
                 this["DefaultPhotoSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Enter a description")]
+        public string DefaultImageDescription {
+            get {
+                return ((string)(this["DefaultImageDescription"]));
+            }
+            set {
+                this["DefaultImageDescription"] = value;
+            }
+        }
     }
 }

@@ -211,33 +211,6 @@
     <Content Include="libtidy.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Models\_TestHTML\blog_p0001.html" />
-    <Content Include="Models\_TestHTML\blog_p0002.html" />
-    <Content Include="Models\_TestHTML\cba.patricksears.ca\download.html" />
-    <Content Include="Models\_TestHTML\code.html" />
-    <Content Include="Models\_TestHTML\css\gallery.css" />
-    <Content Include="Models\_TestHTML\css\styles.css" />
-    <Content Include="Models\_TestHTML\gallery.html" />
-    <Content Include="Models\_TestHTML\gallery_2.html" />
-    <Content Include="Models\_TestHTML\gallery_3.html" />
-    <Content Include="Models\_TestHTML\generated_page.html" />
-    <Resource Include="Models\_TestHTML\img\logo.png" />
-    <Content Include="Models\_TestHTML\index.html" />
-    <Resource Include="Models\_TestHTML\legacy\background.jpg" />
-    <Content Include="Models\_TestHTML\legacy\cba.html" />
-    <Content Include="Models\_TestHTML\legacy\css\ff.css" />
-    <Resource Include="Models\_TestHTML\legacy\images\bg_tile.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\contact.png" />
-    <Resource Include="Models\_TestHTML\legacy\images\logo.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\nav_grad_dark.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\nav_grad_light.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\shadow_left.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\shadow_right.jpg" />
-    <Resource Include="Models\_TestHTML\legacy\images\test.jpg" />
-    <Content Include="Models\_TestHTML\legacy\index.html" />
-    <Resource Include="Models\_TestHTML\legacy\nf-images\Freewebhosting.gif" />
-    <Resource Include="Models\_TestHTML\legacy\nf-images\nf_back.gif" />
-    <Content Include="Models\_TestHTML\todo.html" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -49,6 +49,11 @@ namespace PushPost.Models.HtmlGeneration
             get;
             set;
         }
+
+        public string CopyrightClass            { get; set; }
+        public string NavigationBarBottomClass  { get; set; }
+        public string NavigationLinksClass      { get; set; }
+
                 
         /// <summary>
         /// Constructs a new Breadcrumbs generator object.
@@ -64,6 +69,10 @@ namespace PushPost.Models.HtmlGeneration
             CurrentPageIndex    = currentIndex;
             DisplayLinksNum     = 9;            // default to showing links to 9 pages
             Copyright           = copyright;
+
+            CopyrightClass              = "copyright";
+            NavigationBarBottomClass    = "navigation-bar-bottom";
+            NavigationLinksClass        = "navigation-links";
         }
 
         /// <summary>
@@ -105,18 +114,16 @@ namespace PushPost.Models.HtmlGeneration
             using (StringWriter buffer = new StringWriter())
             using (HtmlTextWriter writer = new HtmlTextWriter(buffer))
             {
-                //writer.AddAttribute(HtmlTextWriterAttribute.Id, "primary-column");
-                //writer.RenderBeginTag(HtmlTextWriterTag.Div);
                     if(this.Copyright != "")
                     {
-                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "copyright");
+                        writer.AddAttribute(HtmlTextWriterAttribute.Class, CopyrightClass);
                         writer.RenderBeginTag(HtmlTextWriterTag.Div);
                             writer.Write(this.Copyright);
                         writer.RenderEndTag();
                     }
-                    writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-bar-bottom");
+                    writer.AddAttribute(HtmlTextWriterAttribute.Class, NavigationBarBottomClass);
                     writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                        writer.AddAttribute(HtmlTextWriterAttribute.Id, "navigation-links");
+                        writer.AddAttribute(HtmlTextWriterAttribute.Class, NavigationLinksClass);
                         writer.RenderBeginTag(HtmlTextWriterTag.Div);
                         if (CurrentPageIndex > 1)
                         {

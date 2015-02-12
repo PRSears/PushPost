@@ -225,14 +225,15 @@ namespace PushPost.Models.HtmlGeneration
         /// </summary>
         public bool IncludePostEndComments;
 
-        protected string       HeaderClass;
-        protected string       FooterClass;
-        protected string       SubHeaderID;
-        protected string       AuthorClass;
-        protected string         DateClass;
-        protected string        PostBodyID;
-        protected string FullPostLinkClass;
-        protected string FullPostLinkText;
+        public string       HeaderClass;
+        public string       FooterClass;
+        public string    SubHeaderClass;
+        public string       AuthorClass;
+        public string         DateClass;
+        public string     PostBodyClass;
+        public string FullPostLinkClass;
+        public string      WrapperClass;
+        public string  FullPostLinkText;
 
         /// <summary>
         /// Number of character from the MainText to include in the posts' 
@@ -414,10 +415,10 @@ namespace PushPost.Models.HtmlGeneration
 
             HeaderClass             = "post-title";
             FooterClass             = "footer";
-            SubHeaderID             = "sub-header";
+            SubHeaderClass          = "sub-header";
             AuthorClass             = "author";
             DateClass               = "date";
-            PostBodyID              = "post-body";
+            PostBodyClass           = "post-body";
             FullPostLinkClass       = "fullpost-footnote";
 
             FullPostLinkText        = "... [Full Post]";

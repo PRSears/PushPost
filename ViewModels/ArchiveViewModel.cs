@@ -51,9 +51,7 @@ namespace PushPost.ViewModels
                 OnPropertyChanged("SelectedTabIndex");
             }
         }
-
-        //TODOh Create a way to retrieve individual photo objects from the database for use in another post. 
-
+        
         // Selection
         public ICommand SelectAllCommand        { get; private set; }
         public ICommand SelectNoneCommand       { get; private set; }

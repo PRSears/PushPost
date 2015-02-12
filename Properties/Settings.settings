@@ -87,5 +87,8 @@
     <Setting Name="DefaultPhotoSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="DefaultImageDescription" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Enter a description</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

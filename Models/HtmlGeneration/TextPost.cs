@@ -12,7 +12,10 @@ namespace PushPost.Models.HtmlGeneration
     public partial class TextPost : Post
     {
         public TextPost()
-            : base() { }
+            : base() 
+        {
+            WrapperClass = "text-wrapper";
+        }
 
         public TextPost(string title, DateTime timestamp, string author)
             : this()
@@ -35,7 +38,7 @@ namespace PushPost.Models.HtmlGeneration
             w.Write(this.TitleLink);
             w.RenderEndTag();
 
-            w.AddAttribute(HtmlTextWriterAttribute.Id, base.SubHeaderID);
+            w.AddAttribute(HtmlTextWriterAttribute.Class, base.SubHeaderClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
                 w.Write("by ");
                 w.AddAttribute(HtmlTextWriterAttribute.Class, base.AuthorClass);
@@ -57,7 +60,7 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderBody(HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
+            w.AddAttribute(HtmlTextWriterAttribute.Class, base.PostBodyClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
             using (StringReader reader = new StringReader(this.ParsedMainText))
             {
@@ -74,7 +77,7 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderPreviewBody(HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
+            w.AddAttribute(HtmlTextWriterAttribute.Class, base.PostBodyClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
             using (StringReader reader = new StringReader(this.ParsedMainText))
             {
@@ -85,7 +88,7 @@ namespace PushPost.Models.HtmlGeneration
                     if (charCount > PreviewLength) break;
 
                     w.RenderBeginTag(HtmlTextWriterTag.P);
-                    w.Write(line);
+                        w.Write(line);
                     w.RenderEndTag();
 
                     charCount += line.Length;

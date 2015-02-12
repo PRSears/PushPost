@@ -323,6 +323,8 @@ namespace PushPost.Models.HtmlGeneration
                     
                     // <wrapper>
                     w.AddAttribute(HtmlTextWriterAttribute.Id, WrapperID);
+                    if (!string.IsNullOrWhiteSpace(this.Posts.FirstOrDefault().WrapperClass) && IsSingle)
+                        w.AddAttribute(HtmlTextWriterAttribute.Class, this.Posts.FirstOrDefault().WrapperClass);
                     w.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         w.WriteLine(this.UpperNavigation.Create());

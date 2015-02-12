@@ -262,6 +262,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public int PhotoPostsPerPage
+        {
+            get
+            {
+                return Properties.Settings.Default.PhotoPostsPerPage;
+            }
+            set
+            {
+                Properties.Settings.Default.PhotoPostsPerPage = value;
+                OnPropertyChanged("PhotoPostsPerPage");
+            }
+        }
+
         public string WebsiteName
         {
             get

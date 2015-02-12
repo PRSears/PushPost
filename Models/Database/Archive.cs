@@ -316,10 +316,10 @@ namespace PushPost.Models.Database
                                      .ToList();
 
             pulled.Resources.AddRange
-                (
-                    db.Photos.Where(p => p.PostID.Equals(postID))
-                             .ToList()
-                );
+            (
+                db.Photos.Where(p => p.PostID.Equals(postID))
+                            .ToList()
+            );
 
             return pulled;
         }

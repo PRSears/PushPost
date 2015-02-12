@@ -19,7 +19,13 @@ namespace PushPost.Models.HtmlGeneration
             set;
         }
 
-        public int PostsPerPage
+        public int TextPostsPerPage
+        {
+            get;
+            set;
+        }
+
+        public int PhotoPostsPerPage
         {
             get;
             set;
@@ -53,14 +59,22 @@ namespace PushPost.Models.HtmlGeneration
 
         public PageBuilder()
         {
-            this.PostsPerPage   = 10;
-            this.Hrefs          = new List<string>();
+            if (Properties.Settings.Default.PostsPerPage > 0)
+                this.TextPostsPerPage = Properties.Settings.Default.PostsPerPage;
+            else
+                this.TextPostsPerPage = 10; // fallback
 
-            // TOOD Load HRefs from config file
-            Hrefs.Add("http://fonts.googleapis.com/css?family=Open+Sans:300");
+            if (Properties.Settings.Default.PhotoPostsPerPage > 0)
+                this.PhotoPostsPerPage = Properties.Settings.Default.PhotoPostsPerPage;
+            else
+                this.TextPostsPerPage = 10; // fallback
+
+            this.Hrefs            = new List<string>();
+
+            // TODO Load HRefs from config file
+            Hrefs.Add("http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800,300italic,400italic,600,600italic,800italic");
+            Hrefs.Add("http://fonts.googleapis.com/css?family=Droid+Sans+Mono");
             Hrefs.Add("../css/styles.css");
-            //Hrefs.Add("https://google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css");
-            //Hrefs.Add("../css/gallery.css");
         }
         #region constructor overloads
         public PageBuilder(Post[] posts)
@@ -83,13 +97,13 @@ namespace PushPost.Models.HtmlGeneration
         public PageBuilder(Post[] posts, List<string> hrefs, int postsPerPage)
             : this(posts, hrefs)
         {
-            this.PostsPerPage = postsPerPage;
+            this.TextPostsPerPage = postsPerPage;
         }
 
         public PageBuilder(Post[] posts, int postsPerPage)
             : this(posts)
         {
-            this.PostsPerPage = postsPerPage;
+            this.TextPostsPerPage = postsPerPage;
         }
         #endregion
 
@@ -145,13 +159,23 @@ namespace PushPost.Models.HtmlGeneration
 
         protected virtual Page[] GeneratePages(Queue<Post> posts, NavCategory category)
         {
-            Int16 requiredPages = (Int16)Math.Ceiling((double)posts.Count() / (double)this.PostsPerPage);
+            //
+            // THOUGHT I could have a PostsPerPage property in the Post object itself, that way any class 
+            //         inheriting from it can overwrite as necessary. 
+            //
+            //         Could just do posts.Peek().PostsPerPage; 
+            
+
+            // pick how many posts to use on one page based on the first post in the queue
+            int postsPerPage = posts.Peek() is TextPost ? this.TextPostsPerPage : this.PhotoPostsPerPage;
+
+            Int16 requiredPages = (Int16)Math.Ceiling((double)posts.Count() / (double)postsPerPage);
             Page[] generatedPages = new Page[requiredPages];
             
             for (int pageI = 1; pageI <= requiredPages; pageI++)
             {
                 List<Post> newPosts = new List<Post>();
-                for (int spaceRemaining = this.PostsPerPage; (spaceRemaining > 0) && (posts.Count() > 0); spaceRemaining--)
+                for (int spaceRemaining = postsPerPage; (spaceRemaining > 0) && (posts.Count() > 0); spaceRemaining--)
                     newPosts.Add(posts.Dequeue());
 
                 generatedPages[pageI - 1] = new Page
@@ -159,10 +183,10 @@ namespace PushPost.Models.HtmlGeneration
                         newPosts,
                         new Navigation(category),
                         new Breadcrumbs
-                            (
-                                MakeLinks(requiredPages, category),
-                                pageI
-                            )
+                        (
+                            MakeLinks(requiredPages, category),
+                            pageI
+                        )
                     );
 
                 generatedPages[pageI - 1].Title = generatedPages[pageI - 1].GenerateTitle();

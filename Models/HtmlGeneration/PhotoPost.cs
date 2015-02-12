@@ -2,18 +2,55 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.UI;
 
 namespace PushPost.Models.HtmlGeneration
 {
     public class PhotoPost : Post
     {
-        protected string AlbumClass;
+        public string AlbumClass            { get; set; }
+        public string AlbumThumbnailClass   { get; set; }
+        public string DescriptionSpanClass  { get; set; }
+        public string OverlayClass          { get; set; }
+        public string PhotoHeaderClass      { get; set; }
+        public string ImageIDFormat         { get; set; }
+
+        public string StartButtonClass      { get; set; }
+        public string BackSpanClass         { get; set; }
+        public string ForwardSpanClass      { get; set; }
+        public string StartButtonText       { get; set; }
+        public string BackButtonText        { get; set; }
+        public string ForwardButtonText     { get; set; }
+
+        protected string DefaultImageDescription
+        {
+            get
+            {
+                return Properties.Settings.Default.DefaultImageDescription;
+            }
+        }
 
         public PhotoPost() : base()
         {
-            AlbumClass  = "photo-container"; // TODO_ Load class IDs from a cfg file or implement a seperate settings panel for them.
-            Category    = NavCategory.Photography;
+            AlbumClass              = "photo-container"; // TODO_ Load class IDs from a cfg file or implement a seperate settings panel for them.
+            AlbumThumbnailClass     = "album-thumbnail";
+            DescriptionSpanClass    = "description";
+            FullPostLinkText        = "... [Full Album]";
+            PostBodyClass           = "photo-post-body";
+            PhotoHeaderClass        = "photo-header";
+            OverlayClass            = "dark-overlay";
+            WrapperClass            = "photo-wrapper";
+            ImageIDFormat           = "image-{0}";
+
+            StartButtonClass        = "start-button";
+            BackSpanClass           = "photo-navL";
+            ForwardSpanClass        = "photo-navR";
+            StartButtonText         = "tap to start";
+            BackButtonText          = @"&lt;";
+            ForwardButtonText       = @"&gt;";
+
+            Category = NavCategory.Photography;
         }
 
         public PhotoPost(string title, DateTime timestamp, string author) : this()
@@ -42,6 +79,18 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
+        public override string CreatePreview()
+        {
+            using(StringWriter buffer = new StringWriter())
+            using(HtmlTextWriter writer = new HtmlTextWriter(buffer))
+            {
+                RenderPreviewBody(writer);
+                RenderComments(writer);
+
+                return buffer.ToString();
+            }
+        }
+
         protected override void RenderHeader(System.Web.UI.HtmlTextWriter w)
         {
             w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
@@ -52,39 +101,78 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderBody(System.Web.UI.HtmlTextWriter w)
         {
+            w.AddAttribute(HtmlTextWriterAttribute.Class, this.PhotoHeaderClass);
+            w.RenderBeginTag(HtmlTextWriterTag.Div);
+            this.RenderHeader(w); // Title header
+            using (StringReader reader = new StringReader(this.CleanedMainText)) // main text
+            {
+                string line = string.Empty;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    w.RenderBeginTag(HtmlTextWriterTag.P);
+                    w.Write(line);
+                    w.RenderEndTag();
+                }
+            }
+            w.RenderEndTag();            
+
             w.AddAttribute(HtmlTextWriterAttribute.Class, AlbumClass);
             w.RenderBeginTag(HtmlTextWriterTag.Div);
 
-                this.RenderHeader(w); // Title header
-                using (StringReader reader = new StringReader(this.CleanedMainText)) // main text
-                {
-                    string line = string.Empty;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        w.RenderBeginTag(HtmlTextWriterTag.P);
-                        w.Write(line);
+                // start button
+                w.AddAttribute(HtmlTextWriterAttribute.Class, StartButtonClass);
+                w.RenderBeginTag(HtmlTextWriterTag.Div);
+                    w.RenderBeginTag(HtmlTextWriterTag.Span);
+                        w.AddAttribute(HtmlTextWriterAttribute.Href, string.Format(ImageIDFormat, 0).Insert(0, @"#"));
+                        w.RenderBeginTag(HtmlTextWriterTag.A);
+                            w.Write(StartButtonText);
                         w.RenderEndTag();
-                    }
-                }
+                    w.RenderEndTag();
+                w.RenderEndTag();
 
                 w.RenderBeginTag(HtmlTextWriterTag.Ul); // image gallery
-                foreach(IResource r in this.Resources)
+                Photo[] photos = this.Resources.OfType<Photo>().ToArray();
+                for(int i = 0; i < photos.Length; i++)
                 {
-                    Photo photo;
-
-                    if (r is Photo) photo = (Photo)r;
-                    else continue;
+                    w.AddAttribute(HtmlTextWriterAttribute.Id, string.Format(ImageIDFormat, i));
                     w.RenderBeginTag(HtmlTextWriterTag.Li);
-                        w.RenderBeginTag(HtmlTextWriterTag.P);
+
+                    //navigation
+                    if(i > 0)
+                    {
+                        w.AddAttribute(HtmlTextWriterAttribute.Class, BackSpanClass);
                         w.RenderBeginTag(HtmlTextWriterTag.Span);
-                            w.Write(photo.Name);
+                            w.AddAttribute(HtmlTextWriterAttribute.Href, string.Format(ImageIDFormat, i - 1).Insert(0, @"#"));
+                            w.RenderBeginTag(HtmlTextWriterTag.A);
+                                w.Write(BackButtonText);
+                            w.RenderEndTag();
+                        w.RenderEndTag();
+                    }
+
+                        w.RenderBeginTag(HtmlTextWriterTag.P);
+                        w.AddAttribute(HtmlTextWriterAttribute.Class, DescriptionSpanClass);
+                        w.RenderBeginTag(HtmlTextWriterTag.Span);
+                            if(!photos[i].Name.Equals(DefaultImageDescription))
+                                w.Write(photos[i].Name);
                         w.RenderEndTag(); // </span>
                         w.RenderEndTag(); // </p>
 
-                        w.AddAttribute(HtmlTextWriterAttribute.Href, photo.Value);
+                        w.AddAttribute(HtmlTextWriterAttribute.Href, photos[i].Value);
                         w.RenderBeginTag(HtmlTextWriterTag.A); // <a>
-                            w.Write(photo.CreateHTML());
+                        w.Write(photos[i].CreateHTML());
                         w.RenderEndTag(); // </a>
+
+                        //navigation
+                        if (i < photos.Length - 1)
+                        {
+                            w.AddAttribute(HtmlTextWriterAttribute.Class, ForwardSpanClass);
+                            w.RenderBeginTag(HtmlTextWriterTag.Span);
+                                w.AddAttribute(HtmlTextWriterAttribute.Href, string.Format(ImageIDFormat, i + 1).Insert(0, @"#"));
+                                w.RenderBeginTag(HtmlTextWriterTag.A);
+                                    w.Write(ForwardButtonText);
+                                w.RenderEndTag();
+                            w.RenderEndTag();
+                        }
 
                     w.RenderEndTag(); // </li>
                 }
@@ -95,20 +183,55 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderPreviewBody(HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, base.PostBodyID);
-            w.RenderBeginTag(HtmlTextWriterTag.Div); // <div>
-            using (StringReader reader = new StringReader(this.LinkifiedMainText))
-            {
-                string line = string.Empty;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    w.RenderBeginTag(HtmlTextWriterTag.P);
-                    w.Write(line);
+            // <div class=PostBodyClass>
+            w.AddAttribute(HtmlTextWriterAttribute.Class, this.PostBodyClass);
+            w.RenderBeginTag(HtmlTextWriterTag.Div);
+                // <div class=AlbumThumbnailClass
+                w.AddAttribute(HtmlTextWriterAttribute.Class, this.AlbumThumbnailClass);
+                w.RenderBeginTag(HtmlTextWriterTag.Div);
+
+
+                    if(GetImgTags().Count > 0)
+                    {
+                        w.WriteLine(GetImgTags().First());
+                    }
+
+                    // <div class="Overlay">
+                    w.AddAttribute(HtmlTextWriterAttribute.Class, this.OverlayClass);
+                    w.RenderBeginTag(HtmlTextWriterTag.Div);
+
+                    // forcing the <a> tag to exist the way I need
+                    w.WriteLine(string.Format(@"<a href=""{0}""><span>.</span></a>", this.TitlePath));
+
+                    // </div class="overlay">
                     w.RenderEndTag();
-                }
-            }
-            
-            w.RenderEndTag(); // </div PostBodyID>
+
+
+                    // <h2 id=UniqueID>
+                    w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
+                    w.RenderBeginTag(HtmlTextWriterTag.H2);
+                        w.Write(this.Title);
+                    // </h2>
+                    w.RenderEndTag();
+
+                    using (StringReader reader = new StringReader(this.CleanedMainText))
+                    {
+                        string nextLine = string.Empty;
+                        while((nextLine = reader.ReadLine()) != null)
+                        {
+                            // <p>
+                            w.RenderBeginTag(HtmlTextWriterTag.P);
+                            w.Write(nextLine);
+                            // </p>
+                            w.RenderEndTag();
+                        }
+                    }
+
+
+                // </div class=AlbumThumbnailClass>
+                w.RenderEndTag();
+            // </div class=PostBodyClass>
+            w.RenderEndTag();
         }
 
         protected override void RenderFooter(HtmlTextWriter w)
@@ -135,7 +258,7 @@ namespace PushPost.Models.HtmlGeneration
 
                 int i = parsedMainText.IndexOf("<img");
                 int j;
-                while(i >= 0 && i > pos)
+                while(i >= 0 && i >= pos)
                 {
                     j = parsedMainText.IndexOf(">", i, parsedMainText.Length - i);
                     buffer.Append(parsedMainText.Substring(pos, i - pos));
@@ -167,7 +290,7 @@ namespace PushPost.Models.HtmlGeneration
 
                 int i = parsedMainText.IndexOf("<img");
                 int j;
-                while(i >= 0 && i > pos) // find an img tag
+                while(i >= 0 && i >= pos) // find an img tag
                 {
                     j = parsedMainText.IndexOf(">", i, parsedMainText.Length - i);
                     
@@ -181,6 +304,31 @@ namespace PushPost.Models.HtmlGeneration
 
                 return buffer.ToString();
             }
+        }
+
+        /// <summary>
+        /// Searches this.ParsedMainText for any image tags and returns each as an element in an array.
+        /// </summary>
+        private List<string> GetImgTags()
+        {
+            string parsedMainText = this.ParsedMainText;
+            List<string> imgTags = new List<string>();
+
+            int pos = 0;
+            int i = parsedMainText.IndexOf("<img");
+            int j;
+            while(i >= 0 && i >= pos)
+            {
+                j = parsedMainText.IndexOf(">", i, parsedMainText.Length - i);
+
+                if (j >= 0)
+                    imgTags.Add(parsedMainText.Substring(i, j - i));
+
+                pos = j + 1;
+                i = pos + parsedMainText.Substring(pos).IndexOf("<img");
+            }
+
+            return imgTags;
         }
 
         public static Post TemplatePost()

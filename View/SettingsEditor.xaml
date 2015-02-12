@@ -67,8 +67,13 @@
                      Width="50"
                      HorizontalAlignment="Left"
                      Margin="8,0,10,10"/>
-            <Label Content="Posts per page"/>
+            <Label Content="Text posts per page"/>
             <TextBox Text="{Binding PostsPerPage, UpdateSourceTrigger=PropertyChanged}"
+                     Width="50"
+                     HorizontalAlignment="Left"
+                     Margin="8,0,10,10"/>
+            <Label Content="Photo posts per page"/>
+            <TextBox Text="{Binding PhotoPostsPerPage, UpdateSourceTrigger=PropertyChanged}"
                      Width="50"
                      HorizontalAlignment="Left"
                      Margin="8,0,10,10"/>

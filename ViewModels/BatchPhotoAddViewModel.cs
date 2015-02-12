@@ -12,8 +12,6 @@ namespace PushPost.ViewModels
     {
         #region boxed properties
         private ObservableCollection<PhotoControl> _PhotoControls;
-        private bool _ResizeToggle;
-        private string _ResizeTo;
         #endregion
         public ObservableCollection<PhotoControl> PhotoControls
         {
@@ -37,7 +35,13 @@ namespace PushPost.ViewModels
         public ICommand SubmitCommand   { get; protected set; }
         public ICommand CancelCommand   { get; protected set; }
 
-        public string DefaultImageDescription { get; set; }
+        public string DefaultImageDescription
+        {
+            get
+            {
+                return Properties.Settings.Default.DefaultImageDescription;
+            }
+        }
         public bool ResizeToggle
         {
             get
@@ -70,7 +74,6 @@ namespace PushPost.ViewModels
         public BatchPhotoAddViewModel(PushPost.Models.HtmlGeneration.Post parentPost)
         {
             ParentPost              = parentPost;
-            DefaultImageDescription = "Enter a description";
             PhotoControls           = new ObservableCollection<PhotoControl>();
 
 

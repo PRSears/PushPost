@@ -30,9 +30,11 @@ namespace PushPost.Models.HtmlGeneration
                 Properties.Settings.Default.Save();
             }
 
-            PageBuilder site = new PageBuilder(
+            PageBuilder site = new PageBuilder
+            (
                 posts,
-                Properties.Settings.Default.PostsPerPage);
+                Properties.Settings.Default.PostsPerPage
+            );
 
             site.CreatePages();
             site.SavePages(exportFolder);
