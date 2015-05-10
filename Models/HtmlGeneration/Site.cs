@@ -30,14 +30,21 @@ namespace PushPost.Models.HtmlGeneration
                 Properties.Settings.Default.Save();
             }
 
-            PageBuilder site = new PageBuilder
+            Extender.WPF.BusySplash.Show
             (
-                posts,
-                Properties.Settings.Default.PostsPerPage
-            );
+                () =>
+                {
+                    PageBuilder site = new PageBuilder
+                    (
+                        posts,
+                        Properties.Settings.Default.PostsPerPage
+                    );
 
-            site.CreatePages();
-            site.SavePages(exportFolder);
+                    site.CreatePages();
+                    site.SavePages(exportFolder);
+                },
+                @"/img/working.png"
+            );
         }
 
         /// <summary>
@@ -82,14 +89,24 @@ namespace PushPost.Models.HtmlGeneration
                 Properties.Settings.Default.Save();
             }
 
-            PageBuilder previewer = new PageBuilder(posts);
+            string firstFilePath = string.Empty;
 
-            previewer.CreatePages();
-            previewer.SavePages(previewFolder);
+            Extender.WPF.BusySplash.Show
+            (
+                () =>
+                {
+                    PageBuilder previewer = new PageBuilder(posts);
 
-            string firstFilePath = Path.Combine(
-                previewFolder,
-                previewer.Pages[0].FullName);
+                    previewer.CreatePages();
+                    previewer.SavePages(previewFolder);
+                    firstFilePath = Path.Combine
+                    (
+                        previewFolder,
+                        previewer.Pages[0].FullName
+                    );
+                },
+                @"/img/working.png"
+            );
 
             System.Diagnostics.Process browserProc = new System.Diagnostics.Process();
 

@@ -78,9 +78,11 @@ namespace PushPost.Models.HtmlGeneration
         {
             Category    = category;
             PostType    = type;
-            MainPageURL = System.IO.Path.Combine(
+            MainPageURL = System.IO.Path.Combine
+            (
                 Category,
-                Page.GenerateFilename(this, 1));
+                Page.GenerateFilename(this, 1)
+            );
 
             //Category.ToLower() + ".html";
         }

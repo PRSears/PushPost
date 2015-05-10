@@ -1,11 +1,10 @@
 ﻿using Extender.Debugging;
-using PushPost.Commands;
+using Extender.WPF;
 using PushPost.Models.HtmlGeneration;
 using PushPost.Models.HtmlGeneration.Embedded;
 using PushPost.ViewModels.CreateRefViewModels;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels
@@ -63,8 +62,8 @@ namespace PushPost.ViewModels
         public ICommand ViewCreateCodeCommand   { get; private set; }
         public ICommand ViewCreateFootCommand   { get; private set; }
         public ICommand ViewCreateImageCommand  { get; private set; }
-        public ICommand SaveRefCommand { get; private set; }
-        public ICommand CancelRefCommand { get; private set; }
+        public ICommand SaveRefCommand          { get; private set; }
+        public ICommand CancelRefCommand        { get; private set; }
         
         public CreateRefViewModel() : this(typeof(Link)) { }
 
@@ -86,14 +85,38 @@ namespace PushPost.ViewModels
             SwitchToView(initialType);
             this.PropertyChanged += SelectedResource_PropertyChanged;
 
-            SaveRefCommand      = new SaveRefCommand(this);
-            CancelRefCommand    = new CancelRefCommand(this);
+            SaveRefCommand      = new RelayCommand
+            (
+                () => this.Save(),
+                () => this.CanSave
+            );
+            CancelRefCommand    = new RelayCommand
+            (
+                () => this.Cancel()
+            );
 
-            ViewCreateLinkCommand   = new ViewCreateLinkCommand(this);
-            ViewCreateCodeCommand   = new ViewCreateCodeCommand(this);
-            ViewCreateFootCommand   = new ViewCreateFootCommand(this);
-            ViewCreateImageCommand  = new ViewCreateImageCommand(this);
+            ViewCreateLinkCommand   = new RelayCommand
+            (
+                () => this.SwitchToLinkView(),
+                () => this.CanSwitchViews
+            );
+            ViewCreateCodeCommand   = new RelayCommand
+            (
+                () => this.SwitchToCodeView(),
+                () => this.CanSwitchViews
+            );
+            ViewCreateImageCommand  = new RelayCommand
+            (
+                () => this.SwitchToImageView(),
+                () => this.CanSwitchViews
+            );
+            ViewCreateFootCommand   = new RelayCommand
+            (
+                () => this.SwitchToFooterView(),
+                () => this.CanSwitchViews
+            );
         }
+
 
         public CreateRefViewModel(Post post, Type initialType)
             : this(initialType)
@@ -126,9 +149,8 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return
-                    (!string.IsNullOrEmpty(CurrentView.Resource.Name)) &&
-                    (!string.IsNullOrEmpty(CurrentView.Resource.Value));
+                return  (!string.IsNullOrEmpty(CurrentView.Resource.Name)) &&
+                        (!string.IsNullOrEmpty(CurrentView.Resource.Value));
             }
         }
 
@@ -139,16 +161,9 @@ namespace PushPost.ViewModels
                 if (!Site.CheckSiteExportFolder())
                     return string.Empty;
 
-                string imgSubfolder = Path.Combine
-                (
-                    Properties.Settings.Default.SiteExportFolder,
-                    Properties.Settings.Default.ImagesSubfolder
-                );
-
-                ImageProcessor.OrganizeImage
+                ImgProcessor.OrganizeImage
                 (
                     (CurrentView as CreateImageViewModel).Image,
-                    imgSubfolder,
                     Properties.Settings.Default.ImageSizes
                 );
             }
@@ -162,7 +177,7 @@ namespace PushPost.ViewModels
                 catch (Exception e)
                 {
                     ExceptionTools.WriteExceptionText(e, true);
-                    return string.Empty;
+                    throw e;
                 }
             }
             else

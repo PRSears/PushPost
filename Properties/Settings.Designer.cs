@@ -224,7 +224,7 @@ namespace PushPost.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("single")]
+        [global::System.Configuration.DefaultSettingValueAttribute("p")]
         public string SinglesSubfolder {
             get {
                 return ((string)(this["SinglesSubfolder"]));
@@ -363,6 +363,18 @@ namespace PushPost.Properties {
             }
             set {
                 this["TempFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoReplaceImages {
+            get {
+                return ((bool)(this["AutoReplaceImages"]));
+            }
+            set {
+                this["AutoReplaceImages"] = value;
             }
         }
     }

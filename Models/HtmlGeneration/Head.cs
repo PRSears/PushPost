@@ -49,6 +49,8 @@ namespace PushPost.Models.HtmlGeneration
         public string Create()
         {
             // HACK should use HtmlTextWriter instead of this abomination
+            // TODOh Headers should be loaded from a reference file.
+            //       Simple .txt file would do, each entry on a seperate line
             StringBuilder build = new StringBuilder();
 
             build.AppendLine(@"<head>");

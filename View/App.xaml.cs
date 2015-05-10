@@ -44,5 +44,3 @@ namespace PushPost
         }
     }
 }
-
-// TODO_ Clean up ResourceCommands.cs (switch over to RelayCommands)

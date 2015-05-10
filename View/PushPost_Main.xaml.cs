@@ -53,7 +53,7 @@ namespace PushPost
                         ComboBox cb = sender as ComboBox;
                         BindingOperations.GetBindingExpression(cb, ComboBox.SelectedValueProperty).UpdateTarget();
                     }
-                    catch { }
+                    catch { } 
                 }
             );
         }
@@ -76,6 +76,9 @@ namespace PushPost
                         ViewModel.Post.ResetToTemplate();
 
                         ViewModel.Post.PropertyChanged += ViewModel_Post_PropertyChanged; // resubscribe
+
+                        // Force correct selected category
+                        CategoryDropdown.SelectedIndex = Array.IndexOf(ViewModel.CategoriesList, ViewModel.Post.Category);
                     }
                     else
                     {

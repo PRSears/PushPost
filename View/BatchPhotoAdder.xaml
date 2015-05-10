@@ -36,16 +36,22 @@
             <Setter Property="Height" Value="50"/>
             <Setter Property="Margin" Value="0, 10, 0, 0"/>
             <Setter Property="Background" Value="#cdcdcd"/>
-        </Style>    
+        </Style>
         <Style x:Key="LargeControlButton" TargetType="{x:Type Button}"
                BasedOn="{StaticResource ControlButton}">
-            <Setter Property="Width" Value="120"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Margin" Value="10,10,0,10"/>
+        </Style>
+        <Style x:Key="LargerControlButton" TargetType="{x:Type Button}"
+               BasedOn="{StaticResource ControlButton}">
+            <Setter Property="Width" Value="155"/>
             <Setter Property="Margin" Value="10,10,0,10"/>
         </Style>
     </Window.Resources>
     <Grid>        
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Hidden"
@@ -62,7 +68,8 @@
                                 <Image Width="100" Height="100"
                                        Stretch="UniformToFill"
                                        Source="{Binding Photo.Value}"
-                                       Margin="10, 0, 0, 0"/>
+                                       Margin="10, 0, 0, 0"
+                                       ToolTip="{Binding Photo.Value}"/>
                                 <Button Style="{StaticResource ControlButton}"
                                         Command="{Binding ChangeSourceCommand}"
                                         Content="change..."
@@ -79,7 +86,8 @@
         
         <DockPanel Grid.Row="1" Grid.Column="0" 
                    Background="#e0e0e0"
-                   VerticalAlignment="Center"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch"
                    LastChildFill="False">
             
             <DockPanel.Resources>
@@ -101,36 +109,45 @@
                     <Setter Property="Foreground" Value="Gray"/>
                     <Setter Property="FontSize" Value="10"/>
                 </Style>
-            </DockPanel.Resources>
-            
-            <Button Style="{StaticResource LargeControlButton}"
-                    Command="{Binding AddMoreCommand}"
-                    Content="Add More Photos..."
-                    DockPanel.Dock="Left"/>
-            <Button Style="{StaticResource LargeControlButton}"
-                    Command="{Binding SubmitCommand}"
-                    Content="Submit to Post"
-                    DockPanel.Dock="Left"/>
+            </DockPanel.Resources>  
 
-            <StackPanel Orientation="Vertical"
-                        DockPanel.Dock="Left">
-                <CheckBox IsChecked="{Binding ResizeToggle}"
-                          Margin="10,5,0,0">
-                    <TextBlock Text="Resize photos on submit"/>
-                </CheckBox>
-                <TextBox Width="50"
-                         Text="{Binding ResizeTo}"
-                         IsEnabled="{Binding ResizeToggle}"
-                         HorizontalContentAlignment="Center"
-                         HorizontalAlignment="Left"
-                         Margin="10,5,0,0"/>
-            </StackPanel>
+            <TextBox Width="75"
+                     Text="{Binding ResizeTo}"
+                     IsEnabled="{Binding ResizeToggle}"
+                     HorizontalContentAlignment="Center"
+                     HorizontalAlignment="Left"
+                     Margin="10,10,15,0"
+                     DockPanel.Dock="Right"
+                     ToolTip="Resize longest edge to..."/>
+            <CheckBox IsChecked="{Binding ResizeToggle}"
+                      Margin="10,10,10,0"
+                      VerticalAlignment="Center"
+                      DockPanel.Dock="Right">
+                <TextBlock Text="Resize photos"/>
+            </CheckBox>
+        </DockPanel>
 
+        <DockPanel Grid.Row="2" Grid.Column="0" 
+                   Background="#e0e0e0"
+                   VerticalAlignment="Center"
+                   LastChildFill="False">
             <Button Style="{StaticResource LargeControlButton}"
                     Command="{Binding CancelCommand}"
                     Content="Cancel"
                     Margin="10"
                     DockPanel.Dock="Right"/>
+            <Button Style="{StaticResource LargeControlButton}"
+                    Command="{Binding SubmitCommand}"
+                    Content="OK"
+                    DockPanel.Dock="Right"/>
+            <Button Style="{StaticResource LargerControlButton}"
+                    Command="{Binding AddMoreCommand}"
+                    Content="Add photos from file..."
+                    DockPanel.Dock="Left"/>
+            <Button Style="{StaticResource LargerControlButton}"
+                    Command="{Binding AddFromURLCommand}"
+                    Content="Add photos from web..."
+                    DockPanel.Dock="Left"/>
         </DockPanel>
     </Grid>
 </Window>

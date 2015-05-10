@@ -1,11 +1,6 @@
-﻿using System;
-using PushPost.Commands;
-using Extender.Debugging;
+﻿using PushPost.Models.HtmlGeneration.Embedded;
+using System;
 using System.Windows.Input;
-using System.Collections.Generic;
-using PushPost.Models.HtmlGeneration.Embedded;
-using PushPost.Models.HtmlGeneration;
-using PushPost.ViewModels.CreateRefViewModels;
 
 namespace PushPost.ViewModels.CreateRefViewModels
 {
@@ -55,7 +50,11 @@ namespace PushPost.ViewModels.CreateRefViewModels
         {
             Initialize();
 
-            BrowseForImageCommand = new BrowseForImageCommand(this);
+            BrowseForImageCommand = new Extender.WPF.RelayCommand
+            (
+                () => this.OpenFileBrowser(),
+                () => this.CanOpenFileBrowser
+            );
         }
 
         public void Initialize()

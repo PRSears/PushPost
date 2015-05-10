@@ -69,7 +69,7 @@ namespace PushPost.Models.HtmlGeneration
             {
                 if (IsSingle)
                 {
-                    return Page.GenerateFilename(this.Posts[0].UniqueID.ToString(), 0);
+                    return Page.GenerateFilename(Posts[0].ShortID, 0);
                 }
                 else
                 {
@@ -157,10 +157,10 @@ namespace PushPost.Models.HtmlGeneration
             }
             else
             {
-                return string.Format("{0} - {1}{2}", 
+                return string.Format("{0} - {1} page {2}", 
                     this.SiteName, 
                     this.PageCategory, 
-                    this.PageNumber.ToString("D2"));
+                    this.PageNumber.ToString());
             }
         }
 
@@ -400,9 +400,9 @@ namespace PushPost.Models.HtmlGeneration
                 else
                 {
                     return RemoveEmptyLines
-                        (
-                            buffer.ToString().Replace("<br>", System.Environment.NewLine)
-                        );
+                    (
+                        buffer.ToString().Replace("<br>", System.Environment.NewLine)
+                    );
                 }
             }
         }

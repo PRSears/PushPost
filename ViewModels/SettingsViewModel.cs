@@ -119,6 +119,19 @@ namespace PushPost.ViewModels
             }
         }
 
+        public bool AutoReplaceImages
+        {
+            get
+            {
+                return Properties.Settings.Default.AutoReplaceImages;
+            }
+            set
+            {
+                Properties.Settings.Default.AutoReplaceImages = value;
+                OnPropertyChanged("AutoReplaceImages");
+            }
+        }
+
         public string DatabaseFilename
         {
             get

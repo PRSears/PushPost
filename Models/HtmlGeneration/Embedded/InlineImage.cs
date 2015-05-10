@@ -27,7 +27,15 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         /// </summary>
         public override string CreateHTML()
         {
-            return string.Format
+            // Make sure the path points up a directory
+            if (LocalPath.StartsWith(@"..\"))
+                return string.Format
+                (
+                    @"<img src=""{0}""/>",
+                    LocalPath
+                );
+            else
+                return string.Format
                 (
                     @"<img src=""..\{0}""/>",
                     LocalPath

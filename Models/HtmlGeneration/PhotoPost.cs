@@ -38,7 +38,7 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
-        //TODOh think of a way to edit photo objects from the db to attach to new / multiple posts
+        //TODO think of a way to edit photo objects from the db to attach to new / multiple posts
 
         public PhotoPost() : base()
         {
@@ -110,7 +110,7 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderHeader(System.Web.UI.HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
+            w.AddAttribute(HtmlTextWriterAttribute.Id, this.ShortID);
             w.RenderBeginTag(HtmlTextWriterTag.H1);
             w.Write(this.TitleLink);
             w.RenderEndTag();
@@ -255,7 +255,7 @@ namespace PushPost.Models.HtmlGeneration
 
 
                     // <h2 id=UniqueID>
-                    w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
+                    w.AddAttribute(HtmlTextWriterAttribute.Id, this.ShortID);
                     w.RenderBeginTag(HtmlTextWriterTag.H2);
                         w.Write(this.Title);
                     // </h2>
@@ -380,17 +380,26 @@ namespace PushPost.Models.HtmlGeneration
 
         protected List<string> CreateThumbnails()
         {
-            ImageProcessor processor = new ImageProcessor
-            (
-                Path.Combine(Properties.Settings.Default.SiteExportFolder,
-                             Properties.Settings.Default.PhotosSubfolder),
-                new int[] { ThumbnailSize }
-            );
+            ImgProcessor processor  = new ImgProcessor(ThumbnailSize);
+            processor.Move          = false;
 
-            processor.UpdateOriginalValue = false;
-            processor.MakeFinalPathRelative = true;
+            List<string> paths      = processor.Organize(this.Resources.OfType<Photo>());
 
-            return processor.Organize(this.Resources.OfType<Photo>());
+            for (int i = 0; i < paths.Count; i++)
+            {
+                paths[i] = Extender.IO.Paths.MakeRelativePath
+                (
+                    Path.Combine
+                    (
+                        Properties.Settings.Default.SiteExportFolder,
+                        Properties.Settings.Default.PhotosSubfolder
+                    ),
+                    paths[i]
+                )
+                .Insert(0, @"..\");
+            }
+
+            return paths;
         }
 
         public static Post TemplatePost()

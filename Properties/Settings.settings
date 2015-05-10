@@ -58,7 +58,7 @@
       <Value Profile="(Default)">patricksears.ca</Value>
     </Setting>
     <Setting Name="SinglesSubfolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">single</Value>
+      <Value Profile="(Default)">p</Value>
     </Setting>
     <Setting Name="IncludeBlogLinks" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -92,6 +92,9 @@
     </Setting>
     <Setting Name="TempFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">temp</Value>
+    </Setting>
+    <Setting Name="AutoReplaceImages" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

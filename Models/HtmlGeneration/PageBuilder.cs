@@ -179,15 +179,15 @@ namespace PushPost.Models.HtmlGeneration
                     newPosts.Add(posts.Dequeue());
 
                 generatedPages[pageI - 1] = new Page
+                (
+                    newPosts,
+                    new Navigation(category),
+                    new Breadcrumbs
                     (
-                        newPosts,
-                        new Navigation(category),
-                        new Breadcrumbs
-                        (
-                            MakeLinks(requiredPages, category),
-                            pageI
-                        )
-                    );
+                        MakeLinks(requiredPages, category),
+                        pageI
+                    )
+                );
 
                 generatedPages[pageI - 1].Title = generatedPages[pageI - 1].GenerateTitle();
                 generatedPages[pageI - 1].Hrefs = this.Hrefs;
@@ -257,6 +257,25 @@ namespace PushPost.Models.HtmlGeneration
             {
                 Debug.WriteMessage("Failed to save pages to " + outDirectoryPath, "error");
                 ExceptionTools.WriteExceptionText(e, true);
+
+                var result = System.Windows.Forms.MessageBox.Show
+                (
+                    string.Format
+                    (
+                        "PushPost's PageBuilder encountered an exception.\n" + 
+                        "{0}\n{1}\n\n---\n" + 
+                        "Choosing abort will cause the program to terminate. " + 
+                        "Retry and ignore will both leave the program " + 
+                        "functional, but the SavePages command will not continue.", 
+                        e.Message, 
+                        e.StackTrace
+                    ),
+                    "Exception",
+                    System.Windows.Forms.MessageBoxButtons.AbortRetryIgnore
+                );
+
+                if (result.Equals(System.Windows.Forms.DialogResult.Abort))
+                    throw e;
 
                 return false;
             }

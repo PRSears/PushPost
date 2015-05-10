@@ -121,9 +121,9 @@ namespace PushPost.Models.HtmlGeneration.Embedded
         public override byte[] GetHashData()
         {
             return Extender.ObjectUtils.Hashing.GenerateHashCode
-                (
-                    new byte[][] { this.PostID.ToByteArray(), base.GetHashData() }
-                );            
+            (
+                new byte[][] { this.PostID.ToByteArray(), base.GetHashData() }
+            );            
         }
 
         public void ForceNewUniqueID()

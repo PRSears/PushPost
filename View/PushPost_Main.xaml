@@ -49,6 +49,28 @@
                           IsChecked="{Binding ViewRefsOpen, UpdateSourceTrigger=PropertyChanged}"
                           Command="{Binding ViewReferencesCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Post">
+                <MenuItem Header="_Add">
+                    <MenuItem Header="_Link" 
+                              Command="{Binding AddIResourceCommand}"
+                              CommandParameter="0"/>
+                    <MenuItem Header="_Code" 
+                              Command="{Binding AddIResourceCommand}"
+                              CommandParameter="1"/>
+                    <MenuItem Header="_Footer" 
+                              Command="{Binding AddIResourceCommand}"
+                              CommandParameter="3"/>
+                    <MenuItem Header="_Inline Image" 
+                              Command="{Binding AddIResourceCommand}"
+                              CommandParameter="2"/>
+                    <MenuItem Header="_Photo" 
+                              Command="{Binding AddPhotoCommand}"
+                              CommandParameter="0"/>
+                </MenuItem>
+                <MenuItem Header="Discard" Command="{Binding DiscardPostCommand}"/>
+                <MenuItem Header="Switch to _code post" Command="{Binding QuickSwitchCodeCommand}"/>
+                <MenuItem Header="Switch to _photo post" Command="{Binding QuickSwitchPhotoCommand}"/>
+            </MenuItem>
             <MenuItem Header="_Settings">
                 <MenuItem Header="Change _settings..." Command="{Binding EditSettingsCommand}"/>
             </MenuItem>

@@ -33,7 +33,7 @@ namespace PushPost.Models.HtmlGeneration
 
         protected override void RenderHeader(HtmlTextWriter w)
         {
-            w.AddAttribute(HtmlTextWriterAttribute.Id, this.UniqueID.ToString());
+            w.AddAttribute(HtmlTextWriterAttribute.Id, this.ShortID);
             w.RenderBeginTag(HtmlTextWriterTag.H1);
             w.Write(this.TitleLink);
             w.RenderEndTag();

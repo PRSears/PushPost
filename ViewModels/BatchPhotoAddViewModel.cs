@@ -1,13 +1,14 @@
 ﻿using Extender.WPF;
 using PushPost.Models.HtmlGeneration.Embedded;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
+    //TODOh Add ability to add from URL (ie: no organizing)
     public class BatchPhotoAddViewModel : Extender.WPF.ViewModel
     {
         #region boxed properties
@@ -31,9 +32,10 @@ namespace PushPost.ViewModels
             set;
         }
 
-        public ICommand AddMoreCommand  { get; protected set; }
-        public ICommand SubmitCommand   { get; protected set; }
-        public ICommand CancelCommand   { get; protected set; }
+        public ICommand AddMoreCommand      { get; protected set; }
+        public ICommand AddFromURLCommand   { get; protected set; }
+        public ICommand SubmitCommand       { get; protected set; }
+        public ICommand CancelCommand       { get; protected set; }
 
         public string DefaultImageDescription
         {
@@ -60,8 +62,7 @@ namespace PushPost.ViewModels
         {
             get
             {
-                return ResizeToggle ? Properties.Settings.Default.DefaultPhotoSize :
-                                      0;
+                return ResizeToggle ? Properties.Settings.Default.DefaultPhotoSize : 0;
             }
             set
             {
@@ -82,15 +83,27 @@ namespace PushPost.ViewModels
                 () => OpenAddDialog()
             );
 
+            AddFromURLCommand = new RelayCommand
+            (
+                () => OpenUrlDialog()
+            );
+
             SubmitCommand = new RelayCommand
             (
                 () =>
                 {
-                    CopyAndOrganize();
-
-                    this.ParentPost.Resources.AddRange
+                    BusySplash.Show
                     (
-                        PhotoControls.Select(pc => pc.Photo)
+                        () =>
+                        {
+                            CopyAndOrganize();
+
+                            this.ParentPost.Resources.AddRange
+                            (
+                                PhotoControls.Select(pc => pc.Photo)
+                            );
+                        },
+                        @"/img/working.png"
                     );
 
                     CloseCommand.Execute(null);
@@ -123,12 +136,25 @@ namespace PushPost.ViewModels
                 foreach(string filename in dialog.FileNames)
                 {
                     AddPhotoControl(new Photo
-                        (
-                            DefaultImageDescription,
-                            filename,
-                            this.ParentPost.UniqueID
-                        ));
+                    (
+                        DefaultImageDescription,
+                        filename,
+                        this.ParentPost.UniqueID
+                    ));
                 }
+            }
+        }
+
+        protected void OpenUrlDialog()
+        {
+            View.BatchPhotoUrlAddDialog dialog = new View.BatchPhotoUrlAddDialog();
+            dialog.ShowDialog();
+
+            List<Photo> photos = dialog.Photos;
+            foreach (Photo photo in photos)
+            {
+                photo.PostID = this.ParentPost.UniqueID;
+                AddPhotoControl(photo);
             }
         }
 
@@ -137,14 +163,7 @@ namespace PushPost.ViewModels
             if (!PushPost.Models.HtmlGeneration.Site.CheckSiteExportFolder())
                 return; // cancel
 
-            ImageProcessor processor = new ImageProcessor
-            (
-                Path.Combine(Properties.Settings.Default.SiteExportFolder,
-                             Properties.Settings.Default.PhotosSubfolder),
-                new int[] { ResizeTo }
-            );
-
-            processor.MakeFinalPathRelative = true;
+            ImgProcessor processor = new ImgProcessor(Properties.Settings.Default.DefaultPhotoSize);
             processor.Organize(PhotoControls.Select(pc => pc.Photo));
         }
 

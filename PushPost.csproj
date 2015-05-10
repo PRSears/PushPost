@@ -76,10 +76,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\HtmlGeneration\Embedded\ImageProcessor.cs" />
+    <Compile Include="Models\HtmlGeneration\Embedded\ImgProcessor.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\Photo.cs" />
     <Compile Include="Models\HtmlGeneration\Site.cs" />
     <Compile Include="ViewModels\BatchPhotoAddViewModel.cs" />
+    <Compile Include="ViewModels\BatchUrlAddDialogViewModel.cs" />
     <Compile Include="ViewModels\CreateRefViewModels\CreatePhotoViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewRefsViewModel.cs" />
@@ -88,6 +89,9 @@
     </Compile>
     <Compile Include="View\BatchPhotoAdder.xaml.cs">
       <DependentUpon>BatchPhotoAdder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BatchPhotoUrlAddDialog.xaml.cs">
+      <DependentUpon>BatchPhotoUrlAddDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SettingsEditor.xaml.cs">
       <DependentUpon>SettingsEditor.xaml</DependentUpon>
@@ -111,11 +115,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\BatchPhotoUrlAddDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PushPost_Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Commands\ResourceCommands.cs" />
     <Compile Include="Models\Database\ArchiveQueue.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\NotifyingResource.cs" />
     <Compile Include="Models\HtmlGeneration\Embedded\ResourceSerializer.cs" />
@@ -208,6 +215,7 @@
     <Resource Include="img\dropshadow.png" />
     <Resource Include="img\noimg.png" />
     <Resource Include="img\aboutbackground.png" />
+    <Resource Include="img\working.png" />
     <Content Include="libtidy.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -43,6 +43,22 @@ namespace PushPost.Models.HtmlGeneration
                 _PostID = value;
             }
         }
+
+        public string ShortID
+        {
+            get
+            {
+                if (this.UniqueID.Equals(Guid.Empty))
+                    return string.Empty;
+
+                return Convert.ToBase64String(this.UniqueID.ToByteArray())
+                              .Replace("/", "")
+                              .Replace("+", "")
+                              .Replace("=", "")
+                              .Substring(0, 6);
+            }
+        }
+
         /// <summary>
         /// Title of the post.
         /// </summary>
@@ -62,9 +78,12 @@ namespace PushPost.Models.HtmlGeneration
         {
             get
             {
-                return string.Format(@"<a href=""{0}"">{1}</a>",
-                            TitlePath,
-                            this.Title);
+                return string.Format
+                (
+                    @"<a href=""{0}"">{1}</a>",
+                    TitlePath,
+                    this.Title
+                );
             }
         }
         public string TitlePath
@@ -72,11 +91,11 @@ namespace PushPost.Models.HtmlGeneration
             get
             {
                 return Path.Combine
-                    (
-                        @"..\",
-                        Properties.Settings.Default.SinglesSubfolder,
-                        string.Format("{0}.html", this.UniqueID.ToString())
-                    );
+                (
+                    @"..\",
+                    Properties.Settings.Default.SinglesSubfolder,
+                    string.Format("{0}.html", this.ShortID)
+                );
             }
         }
         /// <summary>

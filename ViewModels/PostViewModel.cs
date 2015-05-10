@@ -55,6 +55,10 @@ namespace PushPost.ViewModels
         public ICommand AddFootnoteCommand          { get; private set; }
         public ICommand ManageTagsCommand           { get; private set; }
 
+        public ICommand DiscardPostCommand          { get; private set; }
+        public ICommand QuickSwitchCodeCommand      { get; private set; }
+        public ICommand QuickSwitchPhotoCommand     { get; private set; }
+
         public ICommand ImportFromFileCommand       { get; private set; }
         public ICommand ExportToFileCommand         { get; private set; }
         public ICommand PreviewInBrowserCommand     { get; private set; }
@@ -84,10 +88,10 @@ namespace PushPost.ViewModels
             this.QueuePostCommand   = new RelayCommand
             (
                 () =>
-                    {
-                        this.ArchiveQueue.Enqueue(this.Post);
-                        this.Post.ResetToTemplate();
-                    },
+                {
+                    this.ArchiveQueue.Enqueue(this.Post);
+                    this.Post.ResetToTemplate();
+                },
                 () => (!this.PostIsDefault) && !(this.Post is PhotoPost)
             );
             this.SubmitPostCommand  = new RelayCommand
@@ -101,6 +105,26 @@ namespace PushPost.ViewModels
             this.ExportToFileCommand        = new RelayCommand(() => this.ExportToFile());
             this.PreviewInBrowserCommand    = new RelayCommand(() => Site.Preview(this.Post));
             this.CreateSiteCommand          = new RelayCommand(() => Site.Create());
+
+            // Post toolbar menu commands 
+            this.DiscardPostCommand = new RelayCommand
+            (
+                () => 
+                {
+                    if(Extender.WPF.ConfirmationDialog.Show("Discard post", "Are you sure you want to discard the entire post?"))
+                        this.Post.ResetToTemplate();
+                }
+            );
+
+            this.QuickSwitchCodeCommand = new RelayCommand
+            (
+                () => this.Post.Category = NavCategory.Code
+            );
+
+            this.QuickSwitchPhotoCommand = new RelayCommand
+            (
+                () => this.Post.Category = NavCategory.Photography
+            );
 
             // New window commands
             this.EditSettingsCommand = new RelayCommand
@@ -131,7 +155,8 @@ namespace PushPost.ViewModels
                         WindowManager.OpenWindow(new View.BatchPhotoAdder(this.Post));
                     else
                         this.AddReference(4);
-                }
+                },
+                () => this.Post.Category == NavCategory.Photography
             );
 
             this.AddFootnoteCommand     = new RelayCommand(
