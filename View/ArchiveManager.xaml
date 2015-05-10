@@ -71,7 +71,7 @@
                             Grid.Row="1" Grid.Column="1"
                             Grid.RowSpan="2">
                     <CheckBox Margin="10,10,10,0"
-                          IsChecked="{Binding SearchWithDate}">
+                              IsChecked="{Binding SearchWithDate}">
                     <TextBlock TextWrapping="Wrap"
                            Foreground="#2e2e2e"
                            VerticalAlignment="Top"
@@ -80,7 +80,8 @@
                            />
                     </CheckBox>
                     <CheckBox Margin="10"
-                              IsChecked="{Binding UseDateRange}">
+                              IsChecked="{Binding UseDateRange}"
+                              IsEnabled="{Binding SearchWithDate}">
                         <TextBlock TextWrapping="Wrap"
                                Foreground="#2e2e2e"
                                VerticalAlignment="Top"

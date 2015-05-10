@@ -101,12 +101,12 @@ namespace PushPost.ViewModels
                 () =>
                 {
                     Post.MainText = ResourceManager.ExpandReferences
-                        (
-                            Post.MainText,
-                            ResourceCollection.Where(cr => cr.IsChecked)
-                                              .Select(cr => cr.Resource)
-                                              .ToList()
-                        );
+                    (
+                        Post.MainText,
+                        ResourceCollection.Where(cr => cr.IsChecked)
+                                          .Select(cr => cr.Resource)
+                                          .ToList()
+                    );
                 },
                 () => HasSelected
             );

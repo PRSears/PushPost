@@ -240,12 +240,6 @@ namespace PushPost.Models.Database
         /// <param name="posts">Array of posts to search for and (if found) remove from the database.</param>
         public void DeletePosts(Post[] posts)
         {
-            //var matches = db.Posts.Join(
-            //    posts.Select(ids => ids.UniqueID),
-            //    layer => layer.UniqueID,
-            //    id => id,
-            //    (layer, id) => layer);
-
             var matches = db.Posts.Where(m => posts.Select(p => p.UniqueID)
                                                    .Contains(m.UniqueID));
 
@@ -344,10 +338,6 @@ namespace PushPost.Models.Database
                 return null;
             }
 
-            //List<Post> pulled = new List<Post>();
-            //foreach (PostTableLayer layer in queried)
-            //    pulled.Add(layer.TryCreatePost());
-
             Post[] pulled = new Post[queried.Length];
             for (int i = 0; i < pulled.Length; i++)
             {
@@ -361,10 +351,10 @@ namespace PushPost.Models.Database
                                                  .ToList();
 
                     pulled[i].Resources.AddRange
-                        (
-                            db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
-                                     .ToList()
-                        );
+                    (
+                        db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
+                                    .ToList()
+                    );
                 }
             }
 
