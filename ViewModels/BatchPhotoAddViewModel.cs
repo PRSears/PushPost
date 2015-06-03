@@ -8,7 +8,6 @@ using System.Windows.Input;
 
 namespace PushPost.ViewModels
 {
-    //TODOh Add ability to add from URL (ie: no organizing)
     public class BatchPhotoAddViewModel : Extender.WPF.ViewModel
     {
         #region boxed properties

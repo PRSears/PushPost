@@ -126,7 +126,7 @@ namespace PushPost.ViewModels
                 new QueueViewModel(this),
                 new DatabaseViewModel(this)
             };
-            Current                 = Tabs[1];
+            Current                 = Tabs[0];
             ArchiveQueue            = archiveQueue;
 
             // Selection

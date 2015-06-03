@@ -38,7 +38,11 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
-        //TODO think of a way to edit photo objects from the db to attach to new / multiple posts
+        //TODO Think of a way to edit photo objects from the db to attach to new / multiple posts
+        //     
+        //     This is probably unnecessary since it adds complexity and doesn't really gain anything.
+        //     Since only path information is stored (and not the image itself) it doesn't make much 
+        //     difference if the database is filled with a few extra copies of some Photos.
 
         public PhotoPost() : base()
         {

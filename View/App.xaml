@@ -136,8 +136,7 @@
                            CornerRadius="0" 
                            BorderThickness="0,0,0,0"
                            Background="Transparent"
-                           BorderBrush="#B8B8B8"
-                            >
+                           BorderBrush="#B8B8B8">
                             <ContentPresenter 
                              Margin="2"
                              HorizontalAlignment="Center"
@@ -175,6 +174,7 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Opacity" Value="0.8"/>
             <Setter Property="Height" Value="24"/>
+            <!--<Setter Property="Width" Value="200"/>-->
             <Setter Property="SelectedIndex" Value="0"/>
         </Style>
         

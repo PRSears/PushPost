@@ -44,6 +44,7 @@ namespace PushPost.Models.HtmlGeneration
             }
         }
 
+        [System.Xml.Serialization.XmlIgnore]
         public string ShortID
         {
             get

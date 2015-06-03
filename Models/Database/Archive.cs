@@ -312,7 +312,7 @@ namespace PushPost.Models.Database
             pulled.Resources.AddRange
             (
                 db.Photos.Where(p => p.PostID.Equals(postID))
-                            .ToList()
+                         .ToList()
             );
 
             return pulled;
@@ -338,6 +338,10 @@ namespace PushPost.Models.Database
                 return null;
             }
 
+            //List<Post> pulled = new List<Post>();
+            //foreach (PostTableLayer layer in queried)
+            //    pulled.Add(layer.TryCreatePost());
+
             Post[] pulled = new Post[queried.Length];
             for (int i = 0; i < pulled.Length; i++)
             {
@@ -351,10 +355,10 @@ namespace PushPost.Models.Database
                                                  .ToList();
 
                     pulled[i].Resources.AddRange
-                    (
-                        db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
-                                    .ToList()
-                    );
+                        (
+                            db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
+                                     .ToList()
+                        );
                 }
             }
 

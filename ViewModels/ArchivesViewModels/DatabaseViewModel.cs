@@ -138,8 +138,8 @@ namespace PushPost.ViewModels.ArchivesViewModels
             this._Parent = parent;
             this._SelectedSearchOption  = SearchFieldOptions[0];
             this._SearchField           = string.Empty;
-            this._SearchDateA           = DateTime.Now.Date; // start of current day
-            this._SearchDateB           = DateTime.Now.Date.AddDays(1).AddTicks(-1); // end of current day
+            this._SearchDateA           = DateTime.Now.Subtract(new TimeSpan(0,1,0,0,0)); // an hour ago
+            this._SearchDateB           = DateTime.Now.AddHours(1);                       // an hour from now
             this._UseDateRange          = true;
             this._SearchWithDate        = true;
         }
@@ -169,22 +169,16 @@ namespace PushPost.ViewModels.ArchivesViewModels
                     else if (SearchWithDate && !UseDateRange)
                         results = db.TryPullPostsWhere(p => p.Timestamp.Date.Equals(this.SearchDateA.Date));
 
-                    if (SearchWithDate && results == null) return; // no posts in date/date range
+                    if (SearchWithDate && results == null) return;
 
-                    if (SearchField.Equals("*")) // search wildcard
-                    {
-                        // if results is NOT null, we already have all posts from specific date(s)
-                        if (results == null) 
-                            results = db.Dump();
-                    }
-                    else if (SelectedSearchOption == SearchFieldOptions[0] && SearchField != string.Empty) // search in title
+                    if (SelectedSearchOption == SearchFieldOptions[0] && SearchField != string.Empty)
                     { // refine using Title
                         if (results != null && results.Count() > 0)
                             results = results.Where(p => p.Title.Contains(SearchField));
                         else
                             results = db.TryPullPostsWhere(p => p.Title.Contains(SearchField));
                     }
-                    else if (SelectedSearchOption == SearchFieldOptions[1] && SearchField != string.Empty) // search in body
+                    else if (SelectedSearchOption == SearchFieldOptions[1] && SearchField != string.Empty)
                     { // refine using Content
                         if (results != null && results.Count() > 0)
                             results = results.Where(p => p.MainText.Contains(SearchField));
@@ -195,22 +189,14 @@ namespace PushPost.ViewModels.ArchivesViewModels
 
                     if (results == null)
                         return;
-                    else 
-                        RefreshCollection
-                        (
-                            new Queue<Post>(results.OrderByDescending(p => p.Timestamp))
-                        );
+                    else RefreshCollection(new Queue<Post>(
+                        results.OrderByDescending(p => p.Timestamp)));
                 }
             }
             catch (System.Data.SqlClient.SqlException e)
             {
                 System.Windows.Forms.MessageBox.Show
-                (
-                    e.Message, 
-                    "Database exception", 
-                    System.Windows.Forms.MessageBoxButtons.OK
-                );
-
+                    (e.Message, "Database exception", System.Windows.Forms.MessageBoxButtons.OK);
                 ExceptionTools.WriteExceptionText(e, true);
             }
         }

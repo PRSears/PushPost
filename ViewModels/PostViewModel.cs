@@ -323,7 +323,7 @@ namespace PushPost.ViewModels
 
             View.AddRefsDialog newDialog = new View.AddRefsDialog(this.Post, startIndex);
 
-            // If this dialog if for a photo, we have to set the SwitchToBatchModeCommand 
+            // If this dialog is for a photo, we have to set the SwitchToBatchModeCommand 
             // from here so this.WindowManager can be used, and the PostView is the parent
             // of all the correct windows.
             if(newDialog.DataContext is ViewModels.CreateRefViewModel) // I'm sorry.
