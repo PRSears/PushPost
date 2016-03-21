@@ -35,6 +35,7 @@ namespace PushPost
 
                 Console.SetOut(LogStream);
 
+
                 Extender.Debugging.Debug.WriteMessage
                 (
                     "Application Startup.",

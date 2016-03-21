@@ -199,7 +199,7 @@ namespace PushPost.Models.Database
 
         /// <summary>
         /// Removes all posts with matching UniqueID from the database, and backs them up in
-        /// a seperate 'trash' database.
+        /// a separate 'trash' database.
         /// </summary>
         public void DeletePost(Post post)
         {
@@ -217,7 +217,7 @@ namespace PushPost.Models.Database
 
         /// <summary>
         /// Removes all posts with matching UniqueID from the database, and backs them up in
-        /// a seperate 'trash' database.
+        /// a separate 'trash' database.
         /// </summary>
         public void DeletePost(string title, DateTime date)
         {
@@ -346,7 +346,7 @@ namespace PushPost.Models.Database
             for (int i = 0; i < pulled.Length; i++)
             {
                 pulled[i] = queried[i].TryCreatePost();
-                if(pulled[i] != null)
+                if (pulled[i] != null)
                 {
                     pulled[i].Footers   = db.Footnotes.Where(f => f.PostID.Equals(pulled[i].UniqueID))
                                                       .ToList();
@@ -355,10 +355,10 @@ namespace PushPost.Models.Database
                                                  .ToList();
 
                     pulled[i].Resources.AddRange
-                        (
-                            db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
-                                     .ToList()
-                        );
+                    (
+                        db.Photos.Where(p => p.PostID.Equals(pulled[i].UniqueID))
+                                    .ToList()
+                    );
                 }
             }
 
